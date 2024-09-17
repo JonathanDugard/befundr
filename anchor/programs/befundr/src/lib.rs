@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 
+pub mod constants;
 pub mod instructions;
 pub mod state;
-pub mod constants;
 
 use instructions::*;
 
@@ -12,7 +12,12 @@ declare_id!("29rtbJLEFXoCc6sTzp2jAHhXgrZTEb6EaMnUTDP14VFv");
 pub mod befundr {
     use super::*;
 
-    pub fn create_user(ctx: Context<CreateUserProfile>, name: Option<String>, avatar_url: Option<String>, bio: Option<String>) -> Result<()> {
+    pub fn create_user(
+        ctx: Context<CreateUser>,
+        name: Option<String>,
+        avatar_url: Option<String>,
+        bio: Option<String>,
+    ) -> Result<()> {
         instructions::create_user(ctx, name, avatar_url, bio)
     }
 }

@@ -15,7 +15,7 @@ describe('befundr', () => {
 
   const program = anchor.workspace.Befundr as Program<Befundr>;
 
-  const createUserWalletWithSol = async () : Promise<Keypair> => {
+  const createUserWalletWithSol = async (): Promise<Keypair> => {
     const wallet = new Keypair()
     const tx = await program.provider.connection.requestAirdrop(wallet.publicKey, 1000 * LAMPORTS_PER_SOL);
     await program.provider.connection.confirmTransaction(tx);
@@ -31,18 +31,18 @@ describe('befundr', () => {
 
     // Call the createUser method
     const createUserTx = await program.methods
-    .createUser(
-      userData.name ?? null,
-      userData.avatar_url ?? null,
-      userData.bio ?? null,
-    )
-    .accountsPartial({
-      signer: wallet.publicKey,
-      user: userPdaPublicKey,
-      systemProgram: systemProgram.programId,
-    })
-    .signers([wallet])
-    .rpc();
+      .createUser(
+        userData.name ?? null,
+        userData.avatar_url ?? null,
+        userData.bio ?? null,
+      )
+      .accountsPartial({
+        signer: wallet.publicKey,
+        user: userPdaPublicKey,
+        systemProgram: systemProgram.programId,
+      })
+      .signers([wallet])
+      .rpc();
     await program.provider.connection.confirmTransaction(createUserTx);
     return userPdaPublicKey;
   }
@@ -52,24 +52,24 @@ describe('befundr', () => {
       const userWallet = await createUserWalletWithSol();
       const userData = usersDataset[i];
 
-      const userProfilePda = await createUser(userData, userWallet);
+      const userPda = await createUser(userData, userWallet);
 
       // Fetch the created user profile
-      const userProfile = await program.account.userProfile.fetch(userProfilePda);
+      const user = await program.account.user.fetch(userPda);
 
       // Assert that the user profile was created correctly
-      expect(userProfile.walletPubkey.toString()).toEqual(userWallet.publicKey.toString());
-      expect(userProfile.name).toEqual(userData.name ?? null);
-      expect(userProfile.avatarUrl).toEqual(userData.avatar_url ?? null);
-      expect(userProfile.bio).toEqual(userData.bio ?? null);
-      expect(userProfile.createdProjectCounter).toEqual(0);
+      expect(user.walletPubkey.toString()).toEqual(userWallet.publicKey.toString());
+      expect(user.name).toEqual(userData.name ?? null);
+      expect(user.avatarUrl).toEqual(userData.avatar_url ?? null);
+      expect(user.bio).toEqual(userData.bio ?? null);
+      expect(user.createdProjectCounter).toEqual(0);
 
       console.log(`User ${i + 1} created:`, {
-        wallet: userProfile.walletPubkey.toString(),
-        name: userProfile.name,
-        avatarUrl: userProfile.avatarUrl,
-        bio: userProfile.bio,
-        createdProjectCounter: userProfile.createdProjectCounter,
+        wallet: user.walletPubkey.toString(),
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+        bio: user.bio,
+        createdProjectCounter: user.createdProjectCounter,
       });
     }
   });
@@ -78,26 +78,26 @@ describe('befundr', () => {
     for (let i = 0; i < 2; i++) {
       const userWallet = await createUserWalletWithSol();
 
-      const userProfilePda = await createUser({}, userWallet);
+      const userPda = await createUser({}, userWallet);
 
       // Fetch the created user profile
-      const userProfile = await program.account.userProfile.fetch(userProfilePda);
+      const user = await program.account.user.fetch(userPda);
 
       // Assert that the user profile was created correctly
-      expect(userProfile.walletPubkey.toString()).toEqual(userWallet.publicKey.toString());
-      expect(userProfile.name).toBeNull();
-      expect(userProfile.avatarUrl).toBeNull();
-      expect(userProfile.bio).toBeNull();
-      expect(userProfile.createdProjectCounter).toEqual(0);
+      expect(user.walletPubkey.toString()).toEqual(userWallet.publicKey.toString());
+      expect(user.name).toBeNull();
+      expect(user.avatarUrl).toBeNull();
+      expect(user.bio).toBeNull();
+      expect(user.createdProjectCounter).toEqual(0);
 
       console.log(`User ${i + 1} created:`, {
-        wallet: userProfile.walletPubkey.toString(),
-        name: userProfile.name,
-        avatarUrl: userProfile.avatarUrl,
-        bio: userProfile.bio,
-        createdProjectCounter: userProfile.createdProjectCounter,
+        wallet: user.walletPubkey.toString(),
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+        bio: user.bio,
+        createdProjectCounter: user.createdProjectCounter,
       });
     }
   });
-  
+
 });

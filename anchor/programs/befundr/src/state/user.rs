@@ -1,9 +1,9 @@
-use anchor_lang::prelude::*;
 use crate::constants::user::*;
+use anchor_lang::prelude::*;
 
 #[account]
 #[derive(InitSpace)]
-pub struct UserProfile {
+pub struct User {
     pub wallet_pubkey: Pubkey,
     #[max_len(MAX_NAME_LENGTH)]
     pub name: Option<String>,
@@ -14,14 +14,14 @@ pub struct UserProfile {
     pub created_project_counter: u16,
 }
 
-impl Default for UserProfile {
+impl Default for User {
     fn default() -> Self {
         Self {
             wallet_pubkey: Pubkey::default(),
             name: None,
             avatar_url: None,
             bio: None,
-            created_project_counter: 0
+            created_project_counter: 0,
         }
     }
 }

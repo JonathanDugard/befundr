@@ -75,22 +75,22 @@
   ],
   "accounts": [
     {
-      "name": "UserProfile",
+      "name": "User",
       "discriminator": [
-        32,
-        37,
-        119,
-        205,
-        179,
-        180,
-        13,
-        194
+        159,
+        117,
+        95,
+        227,
+        239,
+        151,
+        58,
+        236
       ]
     }
   ],
   "types": [
     {
-      "name": "UserProfile",
+      "name": "User",
       "type": {
         "kind": "struct",
         "fields": [

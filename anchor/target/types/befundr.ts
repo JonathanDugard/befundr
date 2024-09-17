@@ -81,22 +81,22 @@ export type Befundr = {
   ],
   "accounts": [
     {
-      "name": "userProfile",
+      "name": "user",
       "discriminator": [
-        32,
-        37,
-        119,
-        205,
-        179,
-        180,
-        13,
-        194
+        159,
+        117,
+        95,
+        227,
+        239,
+        151,
+        58,
+        236
       ]
     }
   ],
   "types": [
     {
-      "name": "userProfile",
+      "name": "user",
       "type": {
         "kind": "struct",
         "fields": [
