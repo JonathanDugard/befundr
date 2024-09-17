@@ -1,5 +1,5 @@
 {
-  "address": "96wTDUBBReTTxkHzsf3ehi73qqEX97n4JWoV8mcH7gNp",
+  "address": "29rtbJLEFXoCc6sTzp2jAHhXgrZTEb6EaMnUTDP14VFv",
   "metadata": {
     "name": "befundr",
     "version": "0.1.0",
@@ -8,19 +8,120 @@
   },
   "instructions": [
     {
-      "name": "greet",
+      "name": "create_user",
       "discriminator": [
-        203,
-        194,
-        3,
-        150,
-        228,
-        58,
-        181,
-        62
+        108,
+        227,
+        130,
+        130,
+        252,
+        109,
+        75,
+        218
       ],
-      "accounts": [],
-      "args": []
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "avatar_url",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "bio",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "UserProfile",
+      "discriminator": [
+        32,
+        37,
+        119,
+        205,
+        179,
+        180,
+        13,
+        194
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "UserProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "avatar_url",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "bio",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "created_project_counter",
+            "type": "u16"
+          }
+        ]
+      }
     }
   ]
 }
