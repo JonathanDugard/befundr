@@ -58,14 +58,14 @@ describe('befundr', () => {
       const user = await program.account.user.fetch(userPda);
 
       // Assert that the user profile was created correctly
-      expect(user.walletPubkey.toString()).toEqual(userWallet.publicKey.toString());
+      expect(user.owner.toString()).toEqual(userWallet.publicKey.toString());
       expect(user.name).toEqual(userData.name ?? null);
       expect(user.avatarUrl).toEqual(userData.avatar_url ?? null);
       expect(user.bio).toEqual(userData.bio ?? null);
       expect(user.createdProjectCounter).toEqual(0);
 
       console.log(`User ${i + 1} created:`, {
-        wallet: user.walletPubkey.toString(),
+        wallet: user.owner.toString(),
         name: user.name,
         avatarUrl: user.avatarUrl,
         bio: user.bio,
@@ -84,14 +84,14 @@ describe('befundr', () => {
       const user = await program.account.user.fetch(userPda);
 
       // Assert that the user profile was created correctly
-      expect(user.walletPubkey.toString()).toEqual(userWallet.publicKey.toString());
+      expect(user.owner.toString()).toEqual(userWallet.publicKey.toString());
       expect(user.name).toBeNull();
       expect(user.avatarUrl).toBeNull();
       expect(user.bio).toBeNull();
       expect(user.createdProjectCounter).toEqual(0);
 
       console.log(`User ${i + 1} created:`, {
-        wallet: user.walletPubkey.toString(),
+        wallet: user.owner.toString(),
         name: user.name,
         avatarUrl: user.avatarUrl,
         bio: user.bio,

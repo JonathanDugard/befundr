@@ -95,7 +95,7 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "wallet_pubkey",
+            "name": "owner",
             "type": "pubkey"
           },
           {

@@ -101,7 +101,7 @@ export type Befundr = {
         "kind": "struct",
         "fields": [
           {
-            "name": "walletPubkey",
+            "name": "owner",
             "type": "pubkey"
           },
           {

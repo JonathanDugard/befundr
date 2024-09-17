@@ -8,7 +8,7 @@ pub fn create_user(
     bio: Option<String>,
 ) -> Result<()> {
     let user = &mut ctx.accounts.user;
-    user.wallet_pubkey = ctx.accounts.signer.key();
+    user.owner = ctx.accounts.signer.key();
     user.name = name;
     user.avatar_url = avatar_url;
     user.bio = bio;

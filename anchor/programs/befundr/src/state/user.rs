@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct User {
-    pub wallet_pubkey: Pubkey,
+    pub owner: Pubkey,
     #[max_len(MAX_NAME_LENGTH)]
     pub name: Option<String>,
     #[max_len(MAX_AVATAR_URL_LENGTH)]
@@ -17,7 +17,7 @@ pub struct User {
 impl Default for User {
     fn default() -> Self {
         Self {
-            wallet_pubkey: Pubkey::default(),
+            owner: Pubkey::default(),
             name: None,
             avatar_url: None,
             bio: None,
