@@ -6,7 +6,9 @@ pub struct Reward {
     pub name: String,
 
     #[max_len(256)]
-    pub reward_description: String,
+    pub description: String,
 
-    pub reward_amount: u32,
+    pub price: u64,
+    pub max_supply: u16,
+    pub current_supply: u32,
 }

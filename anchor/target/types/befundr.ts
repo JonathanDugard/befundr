@@ -316,11 +316,19 @@ export type Befundr = {
             "type": "string"
           },
           {
-            "name": "rewardDescription",
+            "name": "description",
             "type": "string"
           },
           {
-            "name": "rewardAmount",
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "maxSupply",
+            "type": "u16"
+          },
+          {
+            "name": "currentSupply",
             "type": "u32"
           }
         ]

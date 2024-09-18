@@ -24,18 +24,18 @@ pub struct Project {
     pub status: Status,
     pub contribution_counter: u16,
 
-    #[max_len(50, 324)] //50 rewards of 324 bytes each
+    #[max_len(15)]
     pub rewards: Vec<Reward>,
 }
 
 impl Project {}
 
-#[derive(Clone, InitSpace, AnchorSerialize, AnchorDeserialize, PartialEq, Eq)]
+#[derive(Clone, InitSpace, AnchorSerialize, AnchorDeserialize)]
 pub enum Status {
-    Draft = 0,
-    Fundraising = 1,
-    Realising = 2,
-    Completed = 3,
-    Abandoned = 4,
-    Suspended = 5,
+    Draft,
+    Fundraising,
+    Realising,
+    Completed,
+    Abandoned,
+    Suspended,
 }

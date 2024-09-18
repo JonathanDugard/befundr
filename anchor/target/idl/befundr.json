@@ -310,11 +310,19 @@
             "type": "string"
           },
           {
-            "name": "reward_description",
+            "name": "description",
             "type": "string"
           },
           {
-            "name": "reward_amount",
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "max_supply",
+            "type": "u16"
+          },
+          {
+            "name": "current_supply",
             "type": "u32"
           }
         ]

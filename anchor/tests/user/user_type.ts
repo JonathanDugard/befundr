@@ -3,5 +3,12 @@ export type User = {
   name?: string
   avatar_url?: string
   bio?: string
-  created_project_counter?: number
+}
+
+export type UserPda = {
+  owner?: string
+  name?: string
+  avatar_url?: string
+  bio?: string
+  created_project_counter: number
 }
