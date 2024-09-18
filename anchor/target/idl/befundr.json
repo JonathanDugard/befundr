@@ -8,6 +8,70 @@
   },
   "instructions": [
     {
+      "name": "create_project",
+      "discriminator": [
+        148,
+        219,
+        181,
+        42,
+        221,
+        114,
+        145,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "project",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "image_url",
+          "type": "string"
+        },
+        {
+          "name": "project_description",
+          "type": "string"
+        },
+        {
+          "name": "goal_amount",
+          "type": "u64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        },
+        {
+          "name": "rewards",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "Reward"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "create_user",
       "discriminator": [
         108,
@@ -143,6 +207,19 @@
   ],
   "accounts": [
     {
+      "name": "Project",
+      "discriminator": [
+        205,
+        168,
+        189,
+        202,
+        181,
+        247,
+        142,
+        19
+      ]
+    },
+    {
       "name": "User",
       "discriminator": [
         159,
@@ -157,6 +234,118 @@
     }
   ],
   "types": [
+    {
+      "name": "Project",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "image_url",
+            "type": "string"
+          },
+          {
+            "name": "project_description",
+            "type": "string"
+          },
+          {
+            "name": "goal_amount",
+            "type": "u64"
+          },
+          {
+            "name": "raised_amount",
+            "type": "u64"
+          },
+          {
+            "name": "created_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "Status"
+              }
+            }
+          },
+          {
+            "name": "contribution_counter",
+            "type": "u16"
+          },
+          {
+            "name": "rewards",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Reward"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "reward_description",
+            "type": "string"
+          },
+          {
+            "name": "reward_amount",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Draft"
+          },
+          {
+            "name": "Fundraising"
+          },
+          {
+            "name": "Realising"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Abandoned"
+          },
+          {
+            "name": "Suspended"
+          }
+        ]
+      }
+    },
     {
       "name": "User",
       "type": {
