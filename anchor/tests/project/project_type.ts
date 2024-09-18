@@ -1,5 +1,4 @@
-// Project type used by datasets and tests files
-
+import { BN } from '@coral-xyz/anchor';
 import { ProjectStatus } from "./project_status"
 import { Reward } from "./reward_type"
 
@@ -8,13 +7,13 @@ export type Project = {
   owner?: string
   user?: string
   name: string
-  image_url: string
-  project_description: string
-  goal_amount: number
-  raised_amount?: number
-  created_time: number
-  end_time: number
+  imageUrl: string
+  projectDescription: string
+  goalAmount: BN
+  raisedAmount?: BN
+  createdTime: BN
+  endTime: BN
   status?: ProjectStatus
-  contribution_counter?: number
+  contributionCounter?: BN
   rewards: Reward[]
 }

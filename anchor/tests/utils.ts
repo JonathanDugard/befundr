@@ -95,10 +95,10 @@ export const createProject = async (
     const createTx = await program.methods
         .createProject(
             projectData.name,
-            projectData.image_url,
-            projectData.project_description,
-            projectData.goal_amount,
-            new BN(Math.floor(projectData.end_time / 1000)),
+            projectData.imageUrl,
+            projectData.projectDescription,
+            projectData.goalAmount,
+            new BN(Math.floor(projectData.endTime / 1000)),
             serializedRewards
         )
         .accountsPartial({

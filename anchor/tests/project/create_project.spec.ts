@@ -12,11 +12,11 @@ describe('createProject', () => {
         const projectPda = await program.account.project.fetch(projectPdaKey);
 
         expect(projectPda.name).toEqual(projectData1.name);
-        expect(projectPda.projectDescription).toEqual(projectData1.project_description);
-        expect(projectPda.imageUrl).toEqual(projectData1.image_url);
+        expect(projectPda.projectDescription).toEqual(projectData1.projectDescription);
+        expect(projectPda.imageUrl).toEqual(projectData1.imageUrl);
         expect(projectPda.owner).toEqual(userWallet.publicKey);
         expect(projectPda.user).toEqual(userPdaKey);
-        expect(projectPda.endTime.toNumber()).toEqual(projectData1.end_time / 1000);
-        expect(projectPda.goalAmount.toNumber()).toEqual(projectData1.goal_amount.toNumber());
+        expect(projectPda.endTime.toNumber()).toEqual(projectData1.endTime.toNumber() / 1000);
+        expect(projectPda.goalAmount.toNumber()).toEqual(projectData1.goalAmount.toNumber());
     });
 });
