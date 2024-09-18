@@ -1,57 +1,14 @@
-import * as anchor from '@coral-xyz/anchor';
-import { Program } from '@coral-xyz/anchor';
-import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
-import { User } from './user_type';
-import { usersDataset } from './users_dataset';
-import { Befundr } from '../../target/types/befundr';
-import { confirmTransaction } from '../utils';
+import { userData1, userData2, userData3 } from './user_dataset';
+import { createUser, createUserWalletWithSol } from '../utils';
+import { program } from '../config';
 
 describe('createUser', () => {
 
-  // Reference to Solana's System Program, used for creating accounts and other system-level operations
-  const systemProgram = anchor.web3.SystemProgram;
-
-  // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
-
-  const program = anchor.workspace.Befundr as Program<Befundr>;
-
-  const createUserWalletWithSol = async (): Promise<Keypair> => {
-    const wallet = new Keypair()
-    const tx = await program.provider.connection.requestAirdrop(wallet.publicKey, 1000 * LAMPORTS_PER_SOL);
-    await confirmTransaction(program, tx);
-    return wallet
-  }
-
-  // Modify the createUser function
-  const createUser = async (userData: User, wallet: Keypair): Promise<PublicKey> => {
-    const [userPdaPublicKey] = await anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("user"), wallet.publicKey.toBuffer()],
-      program.programId
-    );
-
-    // Call the createUser method
-    const createUserTx = await program.methods
-      .createUser(
-        userData.name ?? null,
-        userData.avatar_url ?? null,
-        userData.bio ?? null,
-      )
-      .accountsPartial({
-        signer: wallet.publicKey,
-        user: userPdaPublicKey,
-        systemProgram: systemProgram.programId,
-      })
-      .signers([wallet])
-      .rpc();
-    await confirmTransaction(program, createUserTx);
-    return userPdaPublicKey;
-  }
-
   it("Creates 3 users with predefined data", async () => {
+    const userDataList = [userData1, userData2, userData3]
     for (let i = 0; i < 3; i++) {
       const userWallet = await createUserWalletWithSol();
-      const userData = usersDataset[i];
+      const userData = userDataList[i];
 
       const userPda = await createUser(userData, userWallet);
 
@@ -64,14 +21,6 @@ describe('createUser', () => {
       expect(user.avatarUrl).toEqual(userData.avatar_url ?? null);
       expect(user.bio).toEqual(userData.bio ?? null);
       expect(user.createdProjectCounter).toEqual(0);
-
-      console.log(`User ${i + 1} created:`, {
-        wallet: user.owner.toString(),
-        name: user.name,
-        avatarUrl: user.avatarUrl,
-        bio: user.bio,
-        createdProjectCounter: user.createdProjectCounter,
-      });
     }
   });
 
@@ -90,14 +39,6 @@ describe('createUser', () => {
       expect(user.avatarUrl).toBeNull();
       expect(user.bio).toBeNull();
       expect(user.createdProjectCounter).toEqual(0);
-
-      console.log(`User ${i + 1} created:`, {
-        wallet: user.owner.toString(),
-        name: user.name,
-        avatarUrl: user.avatarUrl,
-        bio: user.bio,
-        createdProjectCounter: user.createdProjectCounter,
-      });
     }
   });
 

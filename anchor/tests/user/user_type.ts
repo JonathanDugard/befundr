@@ -1,7 +1,16 @@
+import { BN } from "@coral-xyz/anchor"
+
 export type User = {
   owner?: string
   name?: string
   avatar_url?: string
   bio?: string
-  created_project_counter?: number
+}
+
+export type UserPda = {
+  owner?: string
+  name?: string
+  avatar_url?: string
+  bio?: string
+  created_project_counter: BN
 }
