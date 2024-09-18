@@ -1,53 +1,26 @@
-import * as anchor from '@coral-xyz/anchor';
-import { Program } from '@coral-xyz/anchor';
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { User } from './user_type';
-import { usersDataset } from './users_dataset';
-import { Befundr } from '../../target/types/befundr';
-import { confirmTransaction, INIT_BALANCE } from '../utils';
+import { userData1, userData2, userData3 } from './user_dataset';
+import { projectData1 } from "../project/project_dataset";
+import { confirmTransaction, createUser, createUserWalletWithSol, createProject } from '../utils';
+import { program, systemProgram } from '../config';
+import * as bs58 from "bs58";
+
+// Generate admin keypair from secret key 
+// FOR LOCAL TESTING PURPOSES ONLY
+const adminKeypair = Keypair.fromSecretKey(
+  bs58.decode(
+    "tpXxTgtdHNPiXeU7cQ8WWkZdti9spg3GoXVCViFjdY5FXhDVwaGCFXvdDGbgCtSBrnQ5C1XW87qUYfa3m6iQyd9",
+  ),
+);
+
 
 describe('deleteUser', () => {
-    // Reference to Solana's System Program, used for creating accounts and other system-level operations
-    const systemProgram = anchor.web3.SystemProgram;
 
-    // Configure the client to use the local cluster.
-    anchor.setProvider(anchor.AnchorProvider.env());
-
-    const program = anchor.workspace.Befundr as Program<Befundr>;
-
-    const createUserWalletWithSol = async (): Promise<Keypair> => {
-        const wallet = new Keypair()
-        const tx = await program.provider.connection.requestAirdrop(wallet.publicKey, INIT_BALANCE);
-        await confirmTransaction(program, tx);
-        return wallet;
-    }
-
-    // Modify the createUser function
-    const createUser = async (userData: User, wallet: Keypair): Promise<PublicKey> => {
-        const [userPdaPublicKey] = await anchor.web3.PublicKey.findProgramAddressSync(
-            [Buffer.from("user"), wallet.publicKey.toBuffer()],
-            program.programId
-        );
-
-        // Call the createUser method
-        const createUserTx = await program.methods
-            .createUser(
-                userData.name ?? null,
-                userData.avatar_url ?? null,
-                userData.bio ?? null,
-            )
-            .accountsPartial({
-                signer: wallet.publicKey,
-                user: userPdaPublicKey,
-                systemProgram: systemProgram.programId,
-            })
-            .signers([wallet])
-            .rpc();
-        await confirmTransaction(program, createUserTx);
-        return userPdaPublicKey;
-    }
-
-    // Add the deleteUser function definition
+    /**
+    * Delete user function
+    * @param userPda - The PDA of the user to delete
+    * @param authorityWallet - The wallet of the authority to delete the user
+    */
     const deleteUser = async (userPda: PublicKey, authorityWallet: Keypair): Promise<void> => {
         // Implement the logic to delete the user
         const deleteUserTx = await program.methods
@@ -60,12 +33,28 @@ describe('deleteUser', () => {
             .signers([authorityWallet])
             .rpc();
         const signature = await confirmTransaction(program, deleteUserTx);
-        console.log(signature);
     };
 
+    it("should success to delete the user by admin", async () => {
+        const userWallet = await createUserWalletWithSol();
+        
+        const userData = userData1;
+
+        const userPda = await createUser(userData, userWallet);
+
+        await deleteUser(userPda, adminKeypair);
+
+        try {
+            await program.account.user.fetch(userPda);
+        } catch (err) {
+            expect(err.message).toContain("Account does not exist");
+        }
+    });
+
+    // Add the deleteUser function definition
     it("should fail to delete the user by user himself", async () => {
         const userWallet = await createUserWalletWithSol();
-        const userData = usersDataset[0];
+        const userData = userData1;
 
         const userPda = await createUser(userData, userWallet);
 
@@ -83,7 +72,7 @@ describe('deleteUser', () => {
 
     it("should fail to delete the user by another user", async () => {
         const userWallet = await createUserWalletWithSol();
-        const userData = usersDataset[0];
+        const userData = userData2;
 
         const userPda = await createUser(userData, userWallet);
 
@@ -100,6 +89,22 @@ describe('deleteUser', () => {
         }
     });
 
-    // Add test with user that has associated projects or contributions
+    it("should fail to delete the user by admin if the user has created a project", async () => {
+        const userWallet = await createUserWalletWithSol();
+        const userData = userData1;
+
+        const userPda = await createUser(userData, userWallet);
+        // Create a project for the user
+        const projectPda = await createProject(projectData1, 0, userPda, userWallet);
+
+        // Attempt to delete the user profile
+        try {
+            await deleteUser(userPda, adminKeypair);
+        } catch (err) {
+            expect(err).toHaveProperty("error");
+            expect(err.error.errorCode.code).toEqual("UserHasActivity"); // Assuming this error code exists
+        }
+    });
+
     // Add test with admin user account
 });
