@@ -20,6 +20,15 @@ pub mod befundr {
     ) -> Result<()> {
         instructions::create_user(ctx, name, avatar_url, bio)
     }
+
+    pub fn update_user(
+        ctx: Context<UpdateUser>,
+        name: Option<String>,
+        avatar_url: Option<String>,
+        bio: Option<String>,
+    ) -> Result<()> {
+        instructions::update_user(ctx, name, avatar_url, bio)
+    }
 }
 
 #[derive(Accounts)]

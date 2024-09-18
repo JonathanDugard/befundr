@@ -3,9 +3,10 @@ import { Program } from '@coral-xyz/anchor';
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
 import { User } from './user_type';
 import { usersDataset } from './users_dataset';
-import { Befundr } from '../target/types/befundr';
+import { Befundr } from '../../target/types/befundr';
+import { confirmTransaction } from '../utils';
 
-describe('befundr', () => {
+describe('createUser', () => {
 
   // Reference to Solana's System Program, used for creating accounts and other system-level operations
   const systemProgram = anchor.web3.SystemProgram;
@@ -18,7 +19,7 @@ describe('befundr', () => {
   const createUserWalletWithSol = async (): Promise<Keypair> => {
     const wallet = new Keypair()
     const tx = await program.provider.connection.requestAirdrop(wallet.publicKey, 1000 * LAMPORTS_PER_SOL);
-    await program.provider.connection.confirmTransaction(tx);
+    await confirmTransaction(program, tx);
     return wallet
   }
 
@@ -43,7 +44,7 @@ describe('befundr', () => {
       })
       .signers([wallet])
       .rpc();
-    await program.provider.connection.confirmTransaction(createUserTx);
+    await confirmTransaction(program, createUserTx);
     return userPdaPublicKey;
   }
 
