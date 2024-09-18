@@ -52,6 +52,11 @@ module.exports = {
           fontSize: theme("fontSize.base"),
           fontWeight: theme("fontWeight.light"),
         },
+        ".textStyle-headline2": {
+          color: theme("colors.textColor-main"),
+          fontSize: theme("fontSize.lg"),
+          fontWeight: theme("fontWeight.light"),
+        },
         ".textStyle-body": {
           color: theme("colors.textColor-second"),
           fontSize: theme("fontSize.sm"),
@@ -64,6 +69,11 @@ module.exports = {
         },
         ".textStyle-body-white": {
           color: theme("colors.main"),
+          fontSize: theme("fontSize.sm"),
+          fontWeight: theme("fontWeight.light"),
+        },
+        ".textStyle-body-accent": {
+          color: theme("colors.accent"),
           fontSize: theme("fontSize.sm"),
           fontWeight: theme("fontWeight.light"),
         },

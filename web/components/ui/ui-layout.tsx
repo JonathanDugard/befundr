@@ -14,8 +14,8 @@ import {
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
-import InputField from '../library/display elements/InputField';
-import MainButtonLabel from '../library/button/MainButtonLabel';
+import InputField from '../z_library/display elements/InputField';
+import MainButtonLabel from '../z_library/button/MainButtonLabel';
 import Image from 'next/image';
 
 export function UiLayout({
@@ -65,7 +65,7 @@ export function UiLayout({
           {bottomBarLinks.map(({ label, path }) => (
             <li key={path}>
               <Link
-                className={pathname.startsWith(path) ? 'active' : ''}
+                className={pathname.startsWith(path) ? 'text-accent font-normal' : ''}
                 href={path}
               >
                 {label}
@@ -78,7 +78,7 @@ export function UiLayout({
         <AccountChecker />
       </ClusterChecker>
       {/* set the global ui constrain here */}
-      <div className="flex-grow mx-4 my-12 lg:mx-auto "> 
+      <div className="flex-grow mx-4 my-4 md:my-10 lg:mx-auto w-full px-4 md:px-60"> 
         <Suspense
           fallback={
             <div className="text-center my-32">
