@@ -6,13 +6,8 @@ import { useWallet } from '@solana/wallet-adapter-react'
 // type Props = {}
 
 const Homepage = (/*props: Props*/) => {
-    // //* GLOBAL STATE
-    const {publicKey} = useWallet()
-
-
-    // //* TEST
-    console.log("public key:",publicKey);
-    
+    //* GLOBAL STATE
+    const {publicKey} = useWallet()    
 
     return (
         <div className='flex flex-col items-center justify-start gap-10 '>

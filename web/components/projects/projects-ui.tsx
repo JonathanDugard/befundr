@@ -7,6 +7,7 @@ import InputField from "../z_library/display elements/InputField"
 import WhiteBlock from "../z_library/display elements/WhiteBlock"
 import ToggleButton from "../z_library/button/ToggleButton"
 import Slider from "../z_library/button/Slider"
+import MainButtonLabel from "../z_library/button/MainButtonLabel"
 
 export const ProjectsFilters =()=>{
     return(
@@ -51,8 +52,10 @@ export const ProjectsFilters =()=>{
                             <Slider max={4} min={1} initValue={3} onChange={()=>{}} step={1}/>
                         </div>
                     </div>
-
-
+                </div>
+                <DividerLight/>
+                <div className="w-full flex justify-end">
+                    <button><MainButtonLabel label="Apply filter"/></button>
                 </div>
             </div>
         </WhiteBlock>
