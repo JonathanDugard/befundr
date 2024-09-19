@@ -9,6 +9,6 @@ pub struct Reward {
     pub description: String,
 
     pub price: u64,
-    pub max_supply: u16,
+    pub max_supply: Option<u16>,
     pub current_supply: u32,
 }
