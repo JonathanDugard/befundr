@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use super::Reward;
+use super::{project_feed::ProjectFeed, Reward};
 
 #[account]
 #[derive(InitSpace)]
@@ -24,8 +24,10 @@ pub struct Project {
     pub status: Status,
     pub contribution_counter: u16,
 
-    #[max_len(15)]
+    #[max_len(10)]
     pub rewards: Vec<Reward>,
+
+    pub feed: Pubkey,
 }
 
 impl Project {}
