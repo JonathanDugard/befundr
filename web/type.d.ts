@@ -13,6 +13,8 @@ type Project = {
     contributionCounter:number
     trustScore:number //between 0 to 100
     rewards:any
+    safetyDeposit:number
+    updates: Update[]
 }
 
 type Reward = {
@@ -20,7 +22,23 @@ type Reward = {
     imageUrl:string
     description:string
     price:number
-    maxSupply:number
+    maxSupply?:number
     currentSupply:number
+}
+
+type User = {
+    ownerAddress : string
+    name:string
+    city?:string
+    avatarUrl:string
+    bio:string
+    createdProjectCounter:number
+}
+
+type Update = {
+    title:string
+    type: "information" | "funds unlock" | "milestone"
+    createdAt: Date
+    description:string
 }
 

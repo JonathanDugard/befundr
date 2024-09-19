@@ -40,21 +40,21 @@ module.exports = {
         ".textStyle-title": {
           color: theme("colors.textColor-main"),
           fontSize: theme("fontSize.4xl"),
-          fontWeight: theme("fontWeight.extralight"),
+          fontWeight: theme("fontWeight.light"),
         },
-        ".textStyle-title2": {
+        ".textStyle-subtitle": {
           color: theme("colors.textColor-main"),
           fontSize: theme("fontSize.3xl"),
           fontWeight: theme("fontWeight.light"),
         },
         ".textStyle-headline": {
-          color: theme("colors.textColor-second"),
-          fontSize: theme("fontSize.base"),
-          fontWeight: theme("fontWeight.light"),
-        },
-        ".textStyle-headline2": {
           color: theme("colors.textColor-main"),
           fontSize: theme("fontSize.lg"),
+          fontWeight: theme("fontWeight.light"),
+        },
+        ".textStyle-subheadline": {
+          color: theme("colors.textColor-second"),
+          fontSize: theme("fontSize.base"),
           fontWeight: theme("fontWeight.light"),
         },
         ".textStyle-body": {
@@ -80,7 +80,7 @@ module.exports = {
         ".textStyle-footnote-black": {
           color: theme("colors.textColor-main"),
           fontSize: theme("fontSize.xs"),
-          fontWeight: theme("fontWeight.normal"),
+          fontWeight: theme("fontWeight.light"),
         },
       };
       addUtilities(newUtilities, ["responsive", "hover"]);
