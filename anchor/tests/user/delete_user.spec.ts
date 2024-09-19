@@ -32,7 +32,7 @@ describe('deleteUser', () => {
             })
             .signers([authorityWallet])
             .rpc();
-        const signature = await confirmTransaction(program, deleteUserTx);
+        await confirmTransaction(program, deleteUserTx);
     };
 
     it("should success to delete the user by admin", async () => {
@@ -43,99 +43,87 @@ describe('deleteUser', () => {
         */
 
         const userWallet = await createUserWalletWithSol();
-        const userWallet2 = await createUserWalletWithSol();
-        
-        const userData = userData1;
-
-        const userPda = await createUser(userData, userWallet);
+        const userPda = await createUser(userData1, userWallet);
         const fetchUserAccount = await program.account.user.fetch(userPda);
+
+        // Get the wallet info before deletion
         const fetchOwnerWalletBf = await anchor.getProvider().connection.getAccountInfo(fetchUserAccount.owner);
 
+        // Deletion should success
         await deleteUser(userPda, fetchUserAccount.owner, adminKeypair);
 
+        // Get the wallet info after deletion
         const fetchOwnerWalletAf = await anchor.getProvider().connection.getAccountInfo(fetchUserAccount.owner);
 
-        expect(fetchOwnerWalletAf.lamports).toBeGreaterThan(fetchOwnerWalletBf.lamports);
+        // Check if lamports have been refund to owner
+        expect(fetchOwnerWalletAf?.lamports).toBeGreaterThan(fetchOwnerWalletBf?.lamports ?? 0);
 
-        try {
-            await program.account.user.fetch(userPda);
-        } catch (err) {
-            expect(err.message).toContain("Account does not exist");
-        }
+        const expectedError = /^Account does not exist or has no data.*/;
+        await expect(program.account.user.fetch(userPda))
+            .rejects
+            .toThrow(expectedError);
     });
 
     it("should failed to delete the user by admin as the sol destination wallet is not the user account owner", async () => {
 
         const userWallet = await createUserWalletWithSol();
         const userWallet2 = await createUserWalletWithSol();
-        
-        const userData = userData1;
+        const userPda = await createUser(userData1, userWallet);
 
-        const userPda = await createUser(userData, userWallet);
-        const fetchUserAccount = await program.account.user.fetch(userPda);
-
-        try {
-            await deleteUser(userPda, userWallet2.publicKey, adminKeypair);
-        } catch (err) {
-            expect(err).toHaveProperty("error");
-            expect(err.error.errorCode.code).toEqual("BadOwnerAccount");
-        }
+        const expectedError = /^AnchorError thrown.*.Wrong owner account/;
+        await expect(deleteUser(userPda, userWallet2.publicKey, adminKeypair))
+            .rejects
+            .toThrow(expectedError);
     });
 
     // Add the deleteUser function definition
     it("should fail to delete the user by user himself", async () => {
+  
         const userWallet = await createUserWalletWithSol();
-        const userData = userData1;
-
-        const userPda = await createUser(userData, userWallet);
-
-        // Fetch the created user profile to delete
+        const userPda = await createUser(userData1, userWallet);
+        // Fetching to confirm user account exists
         const fetchUserAccount = await program.account.user.fetch(userPda);
 
-        // Delete the user profile
-        try {
-            await deleteUser(userPda, fetchUserAccount.owner, userWallet);
-        } catch (err) {
-            expect(err).toHaveProperty("error");
-            expect(err.error.errorCode.code).toEqual("Unauthorized");
-        }
+        // Delete the user profile with the owner wallet
+        const expectedError = /^AnchorError thrown.*.Unauthorized: Only the admin can delete users/;
+        await expect(deleteUser(userPda, fetchUserAccount.owner, userWallet))
+            .rejects
+            .toThrow(expectedError);
     });
 
     it("should fail to delete the user by another user", async () => {
+        
+        const expectedError = /^AnchorError thrown.*.Unauthorized: Only the admin can delete users/;
+        
         const userWallet = await createUserWalletWithSol();
         const userData = userData2;
-
         const userPda = await createUser(userData, userWallet);
-
-        // Fetch the created user profile to delete
+        // Fetching to confirm user account exists
         const fetchUserAccount = await program.account.user.fetch(userPda);
 
-        // Delete the user profile
-        try {
-            const anotherWallet = await createUserWalletWithSol();
-            await deleteUser(userPda, fetchUserAccount.owner, anotherWallet);
-        } catch (err) {
-            expect(err).toHaveProperty("error");
-            expect(err.error.errorCode.code).toEqual("Unauthorized");
-        }
+        // Delete the user profile with another wallet
+        const anotherWallet = await createUserWalletWithSol();
+        await expect(deleteUser(userPda, fetchUserAccount.owner, anotherWallet))
+        .rejects
+        .toThrow(expectedError);
     });
 
     it("should fail to delete the user by admin if the user has created a project", async () => {
+
+        const expectedError = /^AnchorError thrown.*.User has associated projects or contributions/;
+
         const userWallet = await createUserWalletWithSol();
         const userData = userData1;
-
         const userPda = await createUser(userData, userWallet);
-        // Create a project for the user
-        const projectPda = await createProject(projectData1, 0, userPda, userWallet);
-
+        // Fetching to confirm user account exists
         const fetchUserAccount = await program.account.user.fetch(userPda);
 
+        // Create a project for the user
+        await createProject(projectData1, 0, userPda, userWallet);
+
         // Attempt to delete the user profile
-        try {
-            await deleteUser(userPda, fetchUserAccount.owner, adminKeypair);
-        } catch (err) {
-            expect(err).toHaveProperty("error");
-            expect(err.error.errorCode.code).toEqual("UserHasActivity"); // Assuming this error code exists
-        }
+        await expect(deleteUser(userPda, fetchUserAccount.owner, adminKeypair))
+        .rejects
+        .toThrow(expectedError);
     });
 });

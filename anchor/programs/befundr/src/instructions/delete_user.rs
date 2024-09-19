@@ -15,7 +15,7 @@ pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
     require!(user.created_project_counter == 0, DeleteUserError::UserHasActivity);
 
     // Check if the sol destination wallet is the user account owner
-    require!(owner.key() == user.owner, DeleteUserError::BadOwnerAccount);
+    require!(owner.key() == user.owner, DeleteUserError::WrongOwnerAccount);
 
     // TODO: Check if the user has any contributions
 
