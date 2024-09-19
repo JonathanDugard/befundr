@@ -2,7 +2,7 @@ import { Keypair, PublicKey } from "@solana/web3.js";
 import { userData1, userData2, userData3 } from './user_dataset';
 import { projectData1 } from "../project/project_dataset";
 import { confirmTransaction, createUser, createUserWalletWithSol, createProject } from '../utils';
-import { program, systemProgram } from '../config';
+import { program, systemProgram, anchor } from '../config';
 import * as bs58 from "bs58";
 
 // Generate admin keypair from secret key 
@@ -13,7 +13,6 @@ const adminKeypair = Keypair.fromSecretKey(
   ),
 );
 
-
 describe('deleteUser', () => {
 
     /**
@@ -21,12 +20,13 @@ describe('deleteUser', () => {
     * @param userPda - The PDA of the user to delete
     * @param authorityWallet - The wallet of the authority to delete the user
     */
-    const deleteUser = async (userPda: PublicKey, authorityWallet: Keypair): Promise<void> => {
+    const deleteUser = async (userPda: PublicKey, ownerWallet: PublicKey, authorityWallet: Keypair): Promise<void> => {
         // Implement the logic to delete the user
         const deleteUserTx = await program.methods
             .deleteUser()
             .accountsPartial({
                 user: userPda,
+                owner: ownerWallet,
                 authority: authorityWallet.publicKey,
                 systemProgram: systemProgram.programId,
             })
@@ -36,18 +36,49 @@ describe('deleteUser', () => {
     };
 
     it("should success to delete the user by admin", async () => {
+
+        /* This test is to check : 
+        * 1. if the user's owner lamports will be returned to the owner after the user pda is deleted
+        * 2. if the user's pda is deleted
+        */
+
         const userWallet = await createUserWalletWithSol();
+        const userWallet2 = await createUserWalletWithSol();
         
         const userData = userData1;
 
         const userPda = await createUser(userData, userWallet);
+        const fetchUserAccount = await program.account.user.fetch(userPda);
+        const fetchOwnerWalletBf = await anchor.getProvider().connection.getAccountInfo(fetchUserAccount.owner);
 
-        await deleteUser(userPda, adminKeypair);
+        await deleteUser(userPda, fetchUserAccount.owner, adminKeypair);
+
+        const fetchOwnerWalletAf = await anchor.getProvider().connection.getAccountInfo(fetchUserAccount.owner);
+
+        expect(fetchOwnerWalletAf.lamports).toBeGreaterThan(fetchOwnerWalletBf.lamports);
 
         try {
             await program.account.user.fetch(userPda);
         } catch (err) {
             expect(err.message).toContain("Account does not exist");
+        }
+    });
+
+    it("should failed to delete the user by admin as the sol destination wallet is not the user account owner", async () => {
+
+        const userWallet = await createUserWalletWithSol();
+        const userWallet2 = await createUserWalletWithSol();
+        
+        const userData = userData1;
+
+        const userPda = await createUser(userData, userWallet);
+        const fetchUserAccount = await program.account.user.fetch(userPda);
+
+        try {
+            await deleteUser(userPda, userWallet2.publicKey, adminKeypair);
+        } catch (err) {
+            expect(err).toHaveProperty("error");
+            expect(err.error.errorCode.code).toEqual("BadOwnerAccount");
         }
     });
 
@@ -59,11 +90,11 @@ describe('deleteUser', () => {
         const userPda = await createUser(userData, userWallet);
 
         // Fetch the created user profile to delete
-        const user = await program.account.user.fetch(userPda);
+        const fetchUserAccount = await program.account.user.fetch(userPda);
 
         // Delete the user profile
         try {
-            await deleteUser(userPda, userWallet);
+            await deleteUser(userPda, fetchUserAccount.owner, userWallet);
         } catch (err) {
             expect(err).toHaveProperty("error");
             expect(err.error.errorCode.code).toEqual("Unauthorized");
@@ -77,12 +108,12 @@ describe('deleteUser', () => {
         const userPda = await createUser(userData, userWallet);
 
         // Fetch the created user profile to delete
-        const user = await program.account.user.fetch(userPda);
+        const fetchUserAccount = await program.account.user.fetch(userPda);
 
         // Delete the user profile
         try {
             const anotherWallet = await createUserWalletWithSol();
-            await deleteUser(userPda, anotherWallet);
+            await deleteUser(userPda, fetchUserAccount.owner, anotherWallet);
         } catch (err) {
             expect(err).toHaveProperty("error");
             expect(err.error.errorCode.code).toEqual("Unauthorized");
@@ -97,14 +128,14 @@ describe('deleteUser', () => {
         // Create a project for the user
         const projectPda = await createProject(projectData1, 0, userPda, userWallet);
 
+        const fetchUserAccount = await program.account.user.fetch(userPda);
+
         // Attempt to delete the user profile
         try {
-            await deleteUser(userPda, adminKeypair);
+            await deleteUser(userPda, fetchUserAccount.owner, adminKeypair);
         } catch (err) {
             expect(err).toHaveProperty("error");
             expect(err.error.errorCode.code).toEqual("UserHasActivity"); // Assuming this error code exists
         }
     });
-
-    // Add test with admin user account
 });

@@ -5,6 +5,7 @@ use crate::errors::UserDeleteError;
 
 pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
     let user = &mut ctx.accounts.user;
+    let owner = &mut ctx.accounts.owner;
     let authority = &ctx.accounts.authority;
 
     // Check if the authority is an admin
@@ -12,10 +13,14 @@ pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
 
     // Check if the user has any associated projects or contributions
     require!(user.created_project_counter == 0, UserDeleteError::UserHasActivity);
+
+    // Check if the sol destination wallet is the user account owner
+    require!(owner.key() == user.owner, UserDeleteError::BadOwnerAccount);
+
     // TODO: Check if the user has any contributions
 
     // Checks done, close the user account
-    user.close(ctx.accounts.authority.to_account_info())?;
+    user.close(owner.to_account_info())?;
     Ok(())
 }
 
@@ -23,6 +28,8 @@ pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
 pub struct DeleteUser<'info> {
     #[account(mut, close = authority)]
     pub user: Account<'info, User>,
+    #[account(mut)]
+    pub owner: SystemAccount<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     pub system_program: Program<'info, System>,

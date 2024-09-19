@@ -6,4 +6,6 @@ pub enum UserDeleteError {
     Unauthorized,
     #[msg("User has associated projects or contributions.")]
     UserHasActivity,
+    #[msg("Bad owner account.")]
+    BadOwnerAccount,
 }
