@@ -50,6 +50,7 @@ export const createUser = async (userData: User, wallet: Keypair): Promise<Publi
             userData.name ?? null,
             userData.avatar_url ?? null,
             userData.bio ?? null,
+            userData.city ?? null,
         )
         .accountsPartial({
             signer: wallet.publicKey,

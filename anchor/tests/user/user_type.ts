@@ -5,6 +5,7 @@ export type User = {
   name?: string
   avatar_url?: string
   bio?: string
+  city?: string
 }
 
 export type UserPda = {
@@ -12,5 +13,6 @@ export type UserPda = {
   name?: string
   avatar_url?: string
   bio?: string
+  city?: string
   created_project_counter: BN
 }
