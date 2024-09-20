@@ -6,7 +6,7 @@ pub fn create_project(
         ctx: Context<CreateProject>,
         name: String,
         image_url: String,
-        project_description: String,
+        description: String,
         goal_amount: u64,
         end_time: i64,
         rewards: Vec<Reward>,
@@ -16,7 +16,7 @@ pub fn create_project(
     ctx.accounts.project.user = ctx.accounts.user.key();
     ctx.accounts.project.name = name;
     ctx.accounts.project.image_url = image_url;
-    ctx.accounts.project.project_description = project_description;
+    ctx.accounts.project.description = description;
     ctx.accounts.project.goal_amount = goal_amount;
     ctx.accounts.project.raised_amount = 0;
     ctx.accounts.project.created_time = Clock::get()?.unix_timestamp;

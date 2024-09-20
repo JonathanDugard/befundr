@@ -12,7 +12,7 @@ describe('createProject', () => {
         const projectPda = await program.account.project.fetch(projectPdaKey);
 
         expect(projectPda.name).toEqual(projectData1.name);
-        expect(projectPda.projectDescription).toEqual(projectData1.projectDescription);
+        expect(projectPda.description).toEqual(projectData1.description);
         expect(projectPda.imageUrl).toEqual(projectData1.imageUrl);
         expect(projectPda.owner).toEqual(userWallet.publicKey);
         expect(projectPda.user).toEqual(userPdaKey);

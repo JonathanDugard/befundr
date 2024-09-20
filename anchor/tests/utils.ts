@@ -97,7 +97,7 @@ export const createProject = async (
         .createProject(
             projectData.name,
             projectData.imageUrl,
-            projectData.projectDescription,
+            projectData.description,
             projectData.goalAmount,
             new BN(Math.floor(projectData.endTime / 1000)),
             serializedRewards

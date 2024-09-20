@@ -8,7 +8,7 @@ export type Project = {
   user?: string
   name: string
   imageUrl: string
-  projectDescription: string
+  description: string
   goalAmount: BN
   raisedAmount?: BN
   createdTime: BN
