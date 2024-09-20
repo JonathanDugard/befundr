@@ -14,14 +14,14 @@ import {
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
-import InputField from '../z_library/display elements/InputField';
-import MainButtonLabel from '../z_library/button/MainButtonLabel';
+import InputField from '../z-library/display elements/InputField';
+import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Image from 'next/image';
 
 export function UiLayout({
   children,
   topBarLinks,
-  bottomBarLinks
+  bottomBarLinks,
 }: {
   children: ReactNode;
   topBarLinks: { label: string; path: string }[];
@@ -35,7 +35,14 @@ export function UiLayout({
       <div className="navbar h-20 bg-main text-textColor-main flex-col md:flex-row space-y-2 md:space-y-0">
         <div className="flex-1 pr-2">
           <Link className="btn btn-ghost normal-case text-xl" href="/">
-            <Image className="h-4 md:h-10" alt="Logo" src="/logo_befundr_light.png" width={183} height={40} quality={100}/>
+            <Image
+              className="h-4 md:h-10"
+              alt="Logo"
+              src="/logo_befundr_light.png"
+              width={183}
+              height={40}
+              quality={100}
+            />
           </Link>
           <ul className="menu menu-horizontal px-1 space-x-2">
             {topBarLinks.map(({ label, path }) => (
@@ -49,10 +56,12 @@ export function UiLayout({
               </li>
             ))}
           </ul>
-          <div className='flex-grow mx-10'>
-            <InputField placeholder='Look for a project'/>
+          <div className="flex-grow mx-10">
+            <InputField placeholder="Look for a project" />
           </div>
-          <button><MainButtonLabel label='Launch your project'/></button>
+          <button>
+            <MainButtonLabel label="Launch your project" />
+          </button>
         </div>
         <div className="flex-none mx-4">
           <WalletButton />
@@ -61,24 +70,26 @@ export function UiLayout({
       </div>
       {/* bottom navbar */}
       <div className="w-full h-10 bg-second textStyle-body-black flex-col md:flex-row justify-center items-center">
-          <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-1/2 mx-auto">
+        <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-1/2 mx-auto">
           {bottomBarLinks.map(({ label, path }) => (
             <li key={path}>
               <Link
-                className={pathname.startsWith(path) ? 'text-accent font-normal' : ''}
+                className={
+                  pathname.startsWith(path) ? 'text-accent font-normal' : ''
+                }
                 href={path}
               >
                 {label}
               </Link>
             </li>
           ))}
-        </ul> 
+        </ul>
       </div>
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
       {/* set the global ui constrain here */}
-      <div className="flex-grow mx-4 my-4 md:my-10 lg:mx-auto w-full px-4 md:px-60"> 
+      <div className="flex-grow mx-4 my-4 md:my-10 lg:mx-auto w-full px-4 md:px-60">
         <Suspense
           fallback={
             <div className="text-center my-32">

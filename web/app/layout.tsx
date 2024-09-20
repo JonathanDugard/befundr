@@ -32,6 +32,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="light">
+      <head>
+        <link rel="icon" href="/logo_32x32.png" sizes="32x32"></link>
+        <link rel="icon" href="/logo_192x192.png" sizes="192x192"></link>
+      </head>
       <body className={`${lato.className} bg-main`}>
         <ReactQueryProvider>
           <ClusterProvider>

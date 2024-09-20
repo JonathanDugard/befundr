@@ -1,5 +1,5 @@
 'use client';
-import Project from '@/components/project/project';
+import ProjectMarketplace from '@/components/marketplace/projectMarketplace';
 import { projects } from '@/data/localdata';
 import { getProjectById } from '@/utils/functions/projectsFunctions';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +20,8 @@ const page = (props: Props) => {
     setProjectToDisplay(getProjectById(projects, props.params.projectId));
   }, [props.params.projectId]);
 
-  if (projectToDisplay) return <Project project={projectToDisplay} />;
+  if (projectToDisplay)
+    return <ProjectMarketplace project={projectToDisplay} />;
 };
 
 export default page;
