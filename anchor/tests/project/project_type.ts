@@ -15,5 +15,6 @@ export type Project = {
   endTime: BN
   status?: ProjectStatus
   contributionCounter?: BN
-  rewards: Reward[]
+  rewards: Reward[],
+  safetyDeposit: BN
 }

@@ -10,6 +10,7 @@ pub fn create_project(
         goal_amount: u64,
         end_time: i64,
         rewards: Vec<Reward>,
+        safety_deposit: u64,
     ) -> Result<()> {
 
     ctx.accounts.project.owner = ctx.accounts.signer.key();
@@ -23,6 +24,11 @@ pub fn create_project(
     ctx.accounts.project.end_time = end_time;
     ctx.accounts.project.status = Status::Fundraising;
     ctx.accounts.project.rewards = rewards;
+
+    if safety_deposit > 0 {
+        //TODO Handle deposit in SOL
+    }
+    ctx.accounts.project.safety_deposit = safety_deposit;
 
     // Increment project user counter
     ctx.accounts.user.created_project_counter += 1;

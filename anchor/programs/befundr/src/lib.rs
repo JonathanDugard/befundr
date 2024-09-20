@@ -44,6 +44,7 @@ pub mod befundr {
         goal_amount: u64,
         end_time: i64,
         rewards: Vec<Reward>,
+        safety_deposit: u64,
     ) -> Result<()> {
         instructions::create_project(
             ctx,
@@ -53,6 +54,7 @@ pub mod befundr {
             goal_amount,
             end_time,
             rewards,
+            safety_deposit,
         )
     }
 

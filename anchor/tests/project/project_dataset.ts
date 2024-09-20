@@ -15,6 +15,7 @@ export const projectData1: Project = {
   createdTime: new BN(new Date().getTime()),
   endTime: new BN(new Date('2024-07-31T00:00:00Z').getTime()),
   rewards: [reward1, reward2, reward3],
+  safetyDeposit: new BN(0)
 }
 
 export const projectData2: Project = {
@@ -25,6 +26,7 @@ export const projectData2: Project = {
   createdTime: new BN(new Date('2024-05-01T00:00:00Z').getTime()),
   endTime: new BN(new Date('2024-08-31T00:00:00Z').getTime()),
   rewards: [reward1, reward2, reward3],
+  safetyDeposit: new BN(0)
 }
 
 export const projectData3: Project = {
@@ -36,4 +38,5 @@ export const projectData3: Project = {
   createdTime: new BN(new Date('2024-01-01T00:00:00Z').getTime()),
   endTime: new BN(new Date('2024-06-31T00:00:00Z').getTime()),
   rewards: [reward1, reward2, reward3],
+  safetyDeposit: new BN(5000)
 }

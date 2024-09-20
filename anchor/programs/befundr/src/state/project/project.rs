@@ -28,6 +28,7 @@ pub struct Project {
     pub rewards: Vec<Reward>,
 
     pub feed: Pubkey,
+    pub safety_deposit: u64,
 }
 
 impl Project {}
