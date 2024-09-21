@@ -1,0 +1,49 @@
+# Number of spaces for indentation
+tab_spaces = 4
+
+# Maximum width of a line before splitting into multiple lines
+max_width = 100
+
+# Whether to add a trailing comma in lists, structs, etc.
+# Options: "Always", "Never", "Preserve"
+trailing_comma = "Always"
+
+# Wrap strings into multiple lines if they exceed `max_width`
+wrap_comments = true
+
+# Align function parameters for readability
+fn_call_width = 80
+
+# Align struct literals for improved readability
+struct_lit_width = 40
+
+# Reorder imports alphabetically
+reorder_imports = true
+
+# Controls the indentation of items in `match` blocks
+match_block_trailing_comma = true
+
+# Ensure each field in a struct is aligned
+struct_field_align_threshold = 30
+
+# Control the placement of braces for functions, structs, etc.
+# Options: "AlwaysNextLine", "SameLineWhere"
+brace_style = "AlwaysNextLine"
+
+# Force a blank line before function declarations
+newline_before_fn_sig = true
+
+# Number of blank lines to keep before a function
+blank_lines_upper_bound = 1
+
+# Number of blank lines to keep after a function
+blank_lines_lower_bound = 1
+
+# Add blank lines before or after block comments.
+format_code_in_doc_comments = true
+
+# Decide whether to reformat specific macros
+format_macro_matchers = true
+
+# Specifies the format of strings inside #[derive()] attributes
+normalize_comments = true
