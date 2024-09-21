@@ -6,12 +6,14 @@ pub fn update_user(
     name: Option<String>,
     avatar_url: Option<String>,
     bio: Option<String>,
+    city: Option<String>,
 ) -> Result<()> {
     let user = &mut ctx.accounts.user;
 
     update_field(&mut user.name, name);
     update_field(&mut user.avatar_url, avatar_url);
     update_field(&mut user.bio, bio);
+    update_field(&mut user.city, city);
 
     Ok(())
 }
