@@ -10,6 +10,9 @@ pub use create_user::*;
 pub mod update_user;
 pub use update_user::*;
 
+pub mod delete_user;
+pub use delete_user::*;
+
 pub mod withdraw;
 pub use withdraw::*;
 

@@ -3,6 +3,8 @@ use anchor_lang::prelude::*;
 pub mod constants;
 pub mod instructions;
 pub mod state;
+pub mod utils;
+pub mod errors;
 
 use instructions::*;
 use state::Reward;
@@ -52,6 +54,10 @@ pub mod befundr {
             end_time,
             rewards,
         )
+    }
+
+    pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
+        instructions::delete_user(ctx)
     }
 }
 
