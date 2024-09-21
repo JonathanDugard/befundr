@@ -21,8 +21,9 @@ pub mod befundr {
         name: Option<String>,
         avatar_url: Option<String>,
         bio: Option<String>,
+        city: Option<String>,
     ) -> Result<()> {
-        instructions::create_user(ctx, name, avatar_url, bio)
+        instructions::create_user(ctx, name, avatar_url, bio, city)
     }
 
     pub fn update_user(
@@ -30,8 +31,9 @@ pub mod befundr {
         name: Option<String>,
         avatar_url: Option<String>,
         bio: Option<String>,
+        city: Option<String>,
     ) -> Result<()> {
-        instructions::update_user(ctx, name, avatar_url, bio)
+        instructions::update_user(ctx, name, avatar_url, bio, city)
     }
 
     pub fn create_project(

@@ -6,12 +6,14 @@ pub fn create_user(
     name: Option<String>,
     avatar_url: Option<String>,
     bio: Option<String>,
+    city: Option<String>,
 ) -> Result<()> {
     let user = &mut ctx.accounts.user;
     user.owner = ctx.accounts.signer.key();
     user.name = name;
     user.avatar_url = avatar_url;
     user.bio = bio;
+    user.city = city;
     user.created_project_counter = 0;
     Ok(())
 }

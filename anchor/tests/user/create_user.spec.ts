@@ -20,6 +20,7 @@ describe('createUser', () => {
       expect(user.name).toEqual(userData.name ?? null);
       expect(user.avatarUrl).toEqual(userData.avatar_url ?? null);
       expect(user.bio).toEqual(userData.bio ?? null);
+      expect(user.city).toEqual(userData.city ?? null);
       expect(user.createdProjectCounter).toEqual(0);
     }
   });
@@ -38,6 +39,7 @@ describe('createUser', () => {
       expect(user.name).toBeNull();
       expect(user.avatarUrl).toBeNull();
       expect(user.bio).toBeNull();
+      expect(user.city).toBeNull();
       expect(user.createdProjectCounter).toEqual(0);
     }
   });

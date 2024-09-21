@@ -11,6 +11,8 @@ pub struct User {
     pub avatar_url: Option<String>,
     #[max_len(MAX_BIO_LENGTH)]
     pub bio: Option<String>,
+    #[max_len(MAX_CITY_LENGTH)]
+    pub city: Option<String>,
     pub created_project_counter: u16,
 }
 
@@ -21,6 +23,7 @@ impl Default for User {
             name: None,
             avatar_url: None,
             bio: None,
+            city: None,
             created_project_counter: 0,
         }
     }

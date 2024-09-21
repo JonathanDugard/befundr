@@ -12,6 +12,7 @@ describe('updateUser', () => {
                 newUser.name ?? null,
                 newUser.avatar_url ?? null,
                 newUser.bio ?? null,
+                newUser.city ?? null,
             )
             .accountsPartial({
                 owner: userWallet.publicKey,
@@ -29,7 +30,8 @@ describe('updateUser', () => {
         const expectedData = {
             name: "James",
             avatar_url: "https://example.com/avatars/james.jpg",
-            bio: "Blockchain enthusiast and Solana advisor"
+            bio: "Blockchain enthusiast and Solana advisor",
+            city: "Solana Beach"
         }
         const userPda = await createUser(userData1, userWallet);
 
@@ -43,6 +45,7 @@ describe('updateUser', () => {
         expect(user.name).toEqual(expectedData.name);
         expect(user.avatarUrl).toEqual(expectedData.avatar_url);
         expect(user.bio).toEqual(expectedData.bio);
+        expect(user.city).toEqual(expectedData.city);
         expect(user.createdProjectCounter).toEqual(0);
     });
 
@@ -51,7 +54,8 @@ describe('updateUser', () => {
         const expectedData = {
             name: "",
             avatar_url: "",
-            bio: ""
+            bio: "",
+            city: ""
         }
         const userPda = await createUser(userData1, userWallet);
 
@@ -65,6 +69,7 @@ describe('updateUser', () => {
         expect(user.name).toBeNull();
         expect(user.avatarUrl).toBeNull();
         expect(user.bio).toBeNull();
+        expect(user.city).toBeNull();
         expect(user.createdProjectCounter).toEqual(0);
     });
 });
