@@ -34,7 +34,7 @@ pub fn create_project(
         end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
         CreateProjectError::ExceedingEndTime
     );
-    require!(rewards.len() as u16 <= MIN_REWARDS_NUMBER, CreateProjectError::NotEnoughRewards);
+    require!(rewards.len() as u16 >= MIN_REWARDS_NUMBER, CreateProjectError::NotEnoughRewards);
     require!(rewards.len() as u16 <= MAX_REWARDS_NUMBER, CreateProjectError::TooManyRewards);
 
     for reward in rewards.iter() {
