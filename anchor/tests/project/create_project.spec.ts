@@ -16,7 +16,7 @@ describe('createProject', () => {
         expect(projectPda.imageUrl).toEqual(projectData1.imageUrl);
         expect(projectPda.owner).toEqual(userWallet.publicKey);
         expect(projectPda.user).toEqual(userPdaKey);
-        expect(projectPda.endTime.toNumber()).toEqual(projectData1.endTime.toNumber() / 1000);
+        expect(projectPda.endTime.toNumber()).toEqual(Math.floor(projectData1.endTime.toNumber() / 1000));
         expect(projectPda.goalAmount.toNumber()).toEqual(projectData1.goalAmount.toNumber());
         expect(projectPda.safetyDeposit.toNumber()).toEqual(projectData1.safetyDeposit.toNumber());
     });
