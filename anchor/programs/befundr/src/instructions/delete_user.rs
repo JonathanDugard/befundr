@@ -1,7 +1,7 @@
-use anchor_lang::prelude::*;
+use crate::errors::DeleteUserError;
 use crate::state::User;
 use crate::utils::is_admin;
-use crate::errors::DeleteUserError;
+use anchor_lang::prelude::*;
 
 pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
     let user = &mut ctx.accounts.user;
