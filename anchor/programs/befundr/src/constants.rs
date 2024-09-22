@@ -6,9 +6,11 @@ pub mod user {
 }
 
 pub mod project {
-    pub const MAX_NAME_LENGTH: u64 = 64; //USD
-    pub const MAX_DESCRIPTION_LENGTH: u64 = 3000; //USD
-    pub const MAX_URL_LENGTH: u64 = 128; //USD
+    pub const MIN_NAME_LENGTH: u64 = 5;
+    pub const MAX_NAME_LENGTH: u64 = 64;
+    pub const MIN_DESCRIPTION_LENGTH: u64 = 10;
+    pub const MAX_DESCRIPTION_LENGTH: u64 = 500;
+    pub const MAX_URL_LENGTH: u64 = 128;
     pub const MIN_PROJECT_GOAL_AMOUNT: u64 = 0; //USD
     pub const MIN_PROJECT_CAMPAIGN_DURATION: i64 = 86400; // 1 day
     pub const MAX_PROJECT_CAMPAIGN_DURATION: i64 = 86400 * 90; //90 days
@@ -18,7 +20,7 @@ pub mod project {
 
 pub mod reward {
     pub const MAX_NAME_LENGTH: u64 = 64;
-    pub const MAX_DESCRIPTION_LENGTH: u64 = 256;
+    pub const MAX_DESCRIPTION_LENGTH: u64 = 100;
 }
 
 // Temporary admins keys const
