@@ -3,7 +3,8 @@ use anchor_lang::prelude::*;
 use crate::{
     constants::project::{
         MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_REWARDS_NUMBER,
-        MAX_URL_LENGTH, MIN_PROJECT_GOAL_AMOUNT, MIN_REWARDS_NUMBER,
+        MAX_URL_LENGTH, MIN_DESCRIPTION_LENGTH, MIN_NAME_LENGTH, MIN_PROJECT_GOAL_AMOUNT,
+        MIN_REWARDS_NUMBER,
     },
     errors::CreateProjectError,
     state::{Project, Reward, Status, User},
@@ -21,15 +22,25 @@ pub fn create_project(
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
-    require!(name.len() as u64 <= MAX_NAME_LENGTH, CreateProjectError::NameTooLong);
+    let name_length = name.len() as u64;
+    require!(name_length >= MIN_NAME_LENGTH, CreateProjectError::NameTooShort);
+    require!(name_length <= MAX_NAME_LENGTH, CreateProjectError::NameTooLong);
+
     require!(image_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::ImageUrlTooLong);
+
+    let description_length = description.len() as u64;
     require!(
-        description.len() as u64 <= MAX_DESCRIPTION_LENGTH,
+        description_length >= MIN_DESCRIPTION_LENGTH,
+        CreateProjectError::DescriptionTooShort
+    );
+    require!(
+        description_length <= MAX_DESCRIPTION_LENGTH,
         CreateProjectError::DescriptionTooLong
     );
+
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
 
-    require!(end_time > now, CreateProjectError::EndTimeBeforeCreatedTime);
+    require!(end_time > now, CreateProjectError::EndTimeInPast);
     require!(
         end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
         CreateProjectError::ExceedingEndTime
