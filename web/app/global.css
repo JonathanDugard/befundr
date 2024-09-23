@@ -8,12 +8,36 @@ body {
 }
 
 .wallet-adapter-button-trigger {
-  background: rgb(100, 26, 230) !important;
-  border-radius: 8px !important;
-  padding-left: 16px !important;
-  padding-right: 16px !important;
+  background-color: rgb(253, 255, 255) !important; /* .bg-main */
+  border: 1px solid rgb(102,102,102) !important;
+  border-radius: 6px !important; /* .rounded-md */
+  height: 32px !important; /* .h-8 (taille en pixels) */
+  width: 172px !important;
+  padding-left: 16px !important; /* .px-8 (16px) */
+  padding-right: 16px !important; /* .px-8 (16px) */
+  padding-top: 4px !important; /* .py-1 (4px) */
+  padding-bottom: 4px !important; /* .py-1 (4px) */
+  color: rgb(0,0,0) !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important; 
 }
 .wallet-adapter-dropdown-list,
 .wallet-adapter-button {
   font-family: inherit !important;
+}
+
+
+.mask-logo {
+  -webkit-mask-image: url('/svg/logo.svg');
+  mask-image: url('/svg/logo.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: #f59e0b; /* Couleur de remplissage */
+  width: 100%;
+  height: 100%;
 }
