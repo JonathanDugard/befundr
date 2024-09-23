@@ -1,8 +1,8 @@
 pub mod add_contribution;
 pub use add_contribution::*;
 
-pub mod create_project;
-pub use create_project::*;
+pub mod project;
+pub use project::*;
 
 pub mod create_user;
 pub use create_user::*;

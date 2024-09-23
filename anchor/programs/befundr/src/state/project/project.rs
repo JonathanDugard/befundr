@@ -1,5 +1,9 @@
 use anchor_lang::prelude::*;
 
+use crate::constants::project::{
+    MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_REWARDS_NUMBER, MAX_URL_LENGTH,
+};
+
 use super::Reward;
 
 #[account]
@@ -8,14 +12,14 @@ pub struct Project {
     pub owner: Pubkey,
     pub user: Pubkey,
 
-    #[max_len(64)]
+    #[max_len(MAX_NAME_LENGTH)]
     pub name: String,
 
-    #[max_len(128)]
+    #[max_len(MAX_URL_LENGTH)]
     pub image_url: String,
 
-    #[max_len(3000)]
-    pub project_description: String,
+    #[max_len(MAX_DESCRIPTION_LENGTH)]
+    pub description: String,
 
     pub goal_amount: u64,
     pub raised_amount: u64,
@@ -24,8 +28,11 @@ pub struct Project {
     pub status: Status,
     pub contribution_counter: u16,
 
-    #[max_len(15)]
+    #[max_len(MAX_REWARDS_NUMBER)]
     pub rewards: Vec<Reward>,
+
+    pub feed: Pubkey,
+    pub safety_deposit: u64,
 }
 
 impl Project {}
