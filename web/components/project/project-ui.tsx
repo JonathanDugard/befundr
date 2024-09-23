@@ -75,8 +75,12 @@ export const FounderBlock = ({
         <p className="textStyle-headline">Safety deposit</p>
         <p className="textStyle-title">{safetyDeposit} $</p>
         <p className="textStyle-footnote-black text-right">
-          Safety deposit is escrowed until the project final delivery. It will
-          be refund to all contributors in case of project stop.
+          Safety deposit are escrowed and will get back to the founder if the
+          project is cancelled due to lack of initial contributions or when the
+          project is successfull.
+          <br />
+          In case of non delivery of the rewards expected for this project,
+          these funds will be used to refund contributors.
         </p>
       </div>
     </div>

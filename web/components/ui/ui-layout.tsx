@@ -14,7 +14,7 @@ import {
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
-import InputField from '../z-library/display elements/InputField';
+import SearchField from '../z-library/button/SearchField';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Image from 'next/image';
 
@@ -57,11 +57,11 @@ export function UiLayout({
             ))}
           </ul>
           <div className="flex-grow mx-10">
-            <InputField placeholder="Look for a project" />
+            <SearchField placeholder="Look for a project" />
           </div>
-          <button>
+          <Link href={'/launchproject'}>
             <MainButtonLabel label="Launch your project" />
-          </button>
+          </Link>
         </div>
         <div className="flex-none mx-4">
           <WalletButton />
