@@ -18,7 +18,7 @@ pub enum CreateProjectError {
     NameTooLong,
     #[msg("Image URL is too long (max 128 characters).")]
     ImageUrlTooLong,
-    #[msg("Description is too short (min 5 characters).")]
+    #[msg("Description is too short (min 10 characters).")]
     DescriptionTooShort,
     #[msg("Description is too long (max 500 characters).")]
     DescriptionTooLong,
@@ -38,7 +38,7 @@ pub enum CreateProjectError {
 pub enum RewardError {
     #[msg("Name cannot exceed 64 characters.")]
     NameTooLong,
-    #[msg("Description cannot exceed 256 characters.")]
+    #[msg("Description cannot exceed 100 characters.")]
     DescriptionTooLong,
     #[msg("Price must be greater than 0.")]
     PriceInvalid,

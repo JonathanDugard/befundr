@@ -58,7 +58,7 @@ describe('createProject', () => {
     it("should throw an error if the description is too short", async () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData1, userWallet);
-        const expectedError = /Error Code: DescriptionTooShort\. Error Number: .*\. Error Message: Description is too short \(min 5 characters\).*/;
+        const expectedError = /Error Code: DescriptionTooShort\. Error Number: .*\. Error Message: Description is too short \(min 10 characters\).*/;
         const MIN_DESCRIPTION_LENGTH = 10;
         const projectData = { ...projectData1, description: "a".repeat(Math.max(0, MIN_DESCRIPTION_LENGTH - 1)) };
 
@@ -120,7 +120,7 @@ describe('createProject', () => {
             .toThrow(expectedError);
     });
 
-    it("should throw an error if there are too manu rewards", async () => {
+    it("should throw an error if there are too many rewards", async () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData1, userWallet);
         const expectedError = /Error Code: TooManyRewards\. Error Number: .*\. Error Message: Too many rewards \(max 10\).*/;
