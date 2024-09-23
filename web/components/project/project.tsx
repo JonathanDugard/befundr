@@ -32,9 +32,6 @@ const Project = (props: Props) => {
     'about' | 'rewards' | 'funder' | 'update' | 'vote'
   >('about');
 
-  console.log(calculateTimeRemaining(props.project.endTime));
-  console.log(props.project.endTime);
-
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       {/* header */}
