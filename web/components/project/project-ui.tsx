@@ -2,7 +2,7 @@ import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import RewardCardDetailled from '../z-library/card/RewardCardDetailled';
 import FeedCard from '../z-library/card/FeedCard';
 import Divider from '../z-library/display elements/Divider';
-import VoteCard from '../z-library/card/VoteCard';
+import FundsRequestCard from '../z-library/card/VoteCard';
 
 export const AboutBlock = ({ description }: { description: string }) => {
   return <p className="textStyle-body">{description}</p>;
@@ -101,16 +101,22 @@ export const UpdateBlock = ({ feeds }: { feeds: Feed[] }) => {
   );
 };
 
-export const VoteBlock = ({ votes }: { votes: Vote[] }) => {
+export const FundsRequestBlock = ({
+  fundsRequests,
+}: {
+  fundsRequests: FundsRequest[];
+}) => {
   // sort votes by timestamp
-  const votesToDisplay = votes.sort((a, b) => b.timestamp - a.timestamp);
+  const fundsRequestsToDisplay = fundsRequests.sort(
+    (a, b) => b.timestamp - a.timestamp
+  );
 
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* update list */}
-      {votesToDisplay.map((vote: Vote, index) => (
+      {fundsRequestsToDisplay.map((fundsRequest: FundsRequest, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
-          <VoteCard vote={vote} />
+          <FundsRequestCard fundsRequest={fundsRequest} />
           <Divider />
         </div>
       ))}

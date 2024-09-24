@@ -26,8 +26,6 @@ const Launchproject = () => {
   //* LOCAL STATE
   const [selectedStep, setSelectedStep] = useState<number>(0);
 
-  console.log(publicKey);
-
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
       <button onClick={() => router.back()}>

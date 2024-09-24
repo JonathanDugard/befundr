@@ -6,44 +6,44 @@ import CancelButtonLabel from '../button/CancelButtonLabel';
 import InfoLabel from '../display elements/InfoLabel';
 
 type Props = {
-  vote: Vote;
+  fundsRequest: FundsRequest;
 };
 
-const VoteCard = (props: Props) => {
+const FundsRequestCard = (props: Props) => {
   return (
     <div className="flex justify-between items-start gap-10">
       {/* info */}
       <div className="flex flex-col items-start justify-start">
         <div className="flex justify-start items-center gap-10">
-          <p className="textStyle-headline">{props.vote.title}</p>
-          <InfoLabel label={props.vote.status} />
+          <p className="textStyle-headline">{props.fundsRequest.title}</p>
+          <InfoLabel label={props.fundsRequest.status} />
         </div>
         <p className="textStyle-subheadline">
-          Amount ask : {props.vote.amountAsked}
+          Amount ask : {props.fundsRequest.amountAsked}
         </p>
         <p className="textStyle-subheadline">
-          {calculateTimeElapsed(props.vote.timestamp)} days ago
+          {calculateTimeElapsed(props.fundsRequest.timestamp)} days ago
         </p>
         <p className="textStyle-body !font-normal !text-textColor-main">
           Expected deliveries :
         </p>
-        <p className="textStyle-body">{props.vote.description}</p>
+        <p className="textStyle-body">{props.fundsRequest.description}</p>
       </div>
       {/* buttons and stat */}
       <div className="flex flex-col items-start justify-center w-full gap-10">
         <p className="-mb-10 textStyle-body">
           votes repartition (
           {(
-            (props.vote.voteFor * 100) /
-            (props.vote.voteAgainst + props.vote.voteFor)
+            (props.fundsRequest.voteFor * 100) /
+            (props.fundsRequest.voteAgainst + props.fundsRequest.voteFor)
           ).toFixed(0)}
           % for)
         </p>
         <VoteProgressBar
-          voteAgainst={props.vote.voteAgainst}
-          voteFor={props.vote.voteFor}
+          voteAgainst={props.fundsRequest.voteAgainst}
+          voteFor={props.fundsRequest.voteFor}
         />
-        {props.vote.status === 'ongoing' && (
+        {props.fundsRequest.status === 'ongoing' && (
           <div className="flex flex-col items-end justify-center gap-4 w-full">
             <button>
               <MainButtonLabel label="Accept" />
@@ -58,4 +58,4 @@ const VoteCard = (props: Props) => {
   );
 };
 
-export default VoteCard;
+export default FundsRequestCard;
