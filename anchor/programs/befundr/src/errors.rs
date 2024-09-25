@@ -47,3 +47,19 @@ pub enum RewardError {
     #[msg("Max supply must be greater than or equal to current supply.")]
     MaxSupplyInvalid,
 }
+
+#[error_code]
+pub enum ContributionError {
+    #[msg("Project fundraising has ended.")]
+    ProjectNotFundraising,
+    #[msg("Signer must be the user.")]
+    SignerNotUser,
+    #[msg("Reward does not exist.")]
+    RewardError,
+    #[msg("Reward already reserved.")]
+    RewardAlreadyReserved,
+    #[msg("Contribution amount is insufficient for the selected reward.")]
+    RewardPriceError,
+    #[msg("Unauthorized action.")]
+    Unauthorized,
+}

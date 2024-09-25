@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 
 pub mod constants;
+pub mod errors;
 pub mod instructions;
 pub mod state;
 pub mod utils;
-pub mod errors;
 
 use instructions::*;
 use state::Reward;
@@ -15,6 +15,8 @@ declare_id!("29rtbJLEFXoCc6sTzp2jAHhXgrZTEb6EaMnUTDP14VFv");
 pub mod befundr {
 
     use super::*;
+
+    /* User */
 
     pub fn create_user(
         ctx: Context<CreateUser>,
@@ -35,6 +37,12 @@ pub mod befundr {
     ) -> Result<()> {
         instructions::update_user(ctx, name, avatar_url, bio, city)
     }
+
+    pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
+        instructions::delete_user(ctx)
+    }
+
+    /* Project */
 
     pub fn create_project(
         ctx: Context<CreateProject>,
@@ -58,8 +66,18 @@ pub mod befundr {
         )
     }
 
-    pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
-        instructions::delete_user(ctx)
+    /* Contribution */
+
+    pub fn add_contribution(
+        ctx: Context<AddContribution>,
+        amount: u64,
+        reward_id: u64,
+    ) -> Result<()> {
+        instructions::add_contribution(ctx, amount, reward_id)
+    }
+
+    pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
+        instructions::cancel_contribution(ctx)
     }
 }
 

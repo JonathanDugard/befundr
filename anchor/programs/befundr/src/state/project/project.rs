@@ -37,7 +37,7 @@ pub struct Project {
 
 impl Project {}
 
-#[derive(Clone, InitSpace, AnchorSerialize, AnchorDeserialize)]
+#[derive(Clone, InitSpace, AnchorSerialize, AnchorDeserialize, PartialEq, Eq)]
 pub enum Status {
     Draft,
     Fundraising,

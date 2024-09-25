@@ -18,6 +18,10 @@ pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
     require!(owner.key() == user.owner, DeleteUserError::WrongOwnerAccount);
 
     // TODO: Check if the user has any contributions
+    // Can be done in differents ways:
+    // 1. Sending user contributions account as remaining accounts
+    // 2. Add a counter of contributions for each user
+    // 3. (recommended) Store a list of contributions Pubkey for each user
 
     // Checks done, close the user account
     user.close(owner.to_account_info())?;
