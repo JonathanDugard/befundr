@@ -24,7 +24,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**', // Autorise toutes les origines d'images
+        hostname: '**',
       },
     ],
   },
