@@ -27,19 +27,19 @@ export function useBefundrProgram() {
     queryFn: () => connection.getParsedAccountInfo(programId),
   });
 
-  const greet = useMutation({
-    mutationKey: ['befundr', 'greet', { cluster }],
-    mutationFn: (keypair: Keypair) => program.methods.greet().rpc(),
-    onSuccess: (signature) => {
-      transactionToast(signature);
-    },
-    onError: () => toast.error('Failed to run program'),
-  });
+  // const greet = useMutation({
+  //   mutationKey: ['befundr', 'greet', { cluster }],
+  //   mutationFn: (keypair: Keypair) => program.methods.greet().rpc(),
+  //   onSuccess: (signature) => {
+  //     transactionToast(signature);
+  //   },
+  //   onError: () => toast.error('Failed to run program'),
+  // });
 
   return {
     program,
     programId,
     getProgramAccount,
-    greet,
+    // greet,
   };
 }

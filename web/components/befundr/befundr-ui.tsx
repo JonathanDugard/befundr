@@ -3,19 +3,19 @@
 import { Keypair } from '@solana/web3.js';
 import { useBefundrProgram } from './befundr-data-access';
 
-export function BefundrCreate() {
-  const { greet } = useBefundrProgram();
+// export function BefundrCreate() {
+//   const { greet } = useBefundrProgram();
 
-  return (
-    <button
-      className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => greet.mutateAsync(Keypair.generate())}
-      disabled={greet.isPending}
-    >
-      Run program{greet.isPending && '...'}
-    </button>
-  );
-}
+//   return (
+//     <button
+//       className="btn btn-xs lg:btn-md btn-primary"
+//       onClick={() => greet.mutateAsync(Keypair.generate())}
+//       disabled={greet.isPending}
+//     >
+//       Run program{greet.isPending && '...'}
+//     </button>
+//   );
+// }
 
 export function BefundrProgram() {
   const { getProgramAccount } = useBefundrProgram();

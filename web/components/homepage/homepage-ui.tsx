@@ -57,18 +57,18 @@ export const UserDashboard = () => {
           <p className="textStyle-subheadline">
             <strong className="text-4xl text-accent">8 </strong>funded projects
           </p>
-          <button>
+          <Link href={'/profile/myfundedprojects/'}>
             <MainButtonLabel label="My projects" />
-          </button>
+          </Link>
         </div>
         <div className="flex justify-start items-baseline gap-4">
           <p className="textStyle-subheadline">
             <strong className="text-4xl text-accent">10 </strong>owned
             contributions
           </p>
-          <button>
+          <Link href={'/profile/mycontributions/'}>
             <MainButtonLabel label="My contributions" />
-          </button>
+          </Link>
         </div>
       </WhiteBlock>
     </div>

@@ -1,3 +1,5 @@
+import reward from '../public/Reward.png';
+
 //* CATEGORY=================================
 export const categories: string[] = ['All', 'Art', 'Tech', 'Design'];
 
@@ -15,49 +17,53 @@ export const user1: User = {
 export const reward1: Reward = {
   id: '1',
   name: 'Reward 1',
-  imageUrl: '',
+  imageUrl: '/Reward.png',
   description:
     'Quisque ullamcorper placerat ipsum. Cras nibh. Morbi vel justo vitae lacus tincidunt ultrices. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In hac habitasse platea dictumst. Integer tempus convallis augue. Etiam facilisis. Nunc elementum fermentum wisi. Aenean placerat. Ut imperdiet, enim sed gravida sollicitudin, felis odio placerat quam, ac pulvinar elit purus eget enim. Nunc vitae tortor. Proin tempus nibh sit amet nisl. Vivamus quis tortor vitae risus porta vehicula.',
   price: 50,
   maxSupply: 1000,
   currentSupply: 243,
+  isAvailable: true,
+  redeemLimitTime: 1728382939,
 };
 
 export const reward2: Reward = {
   id: '2',
   name: 'Reward 2',
-  imageUrl: '',
+  imageUrl: '/Reward2.jpg',
   description:
     'Quisque ullamcorper placerat ipsum. Cras nibh. Morbi vel justo vitae lacus tincidunt ultrices. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In hac habitasse platea dictumst. Integer tempus convallis augue. Etiam facilisis. Nunc elementum fermentum wisi. Aenean placerat. Ut imperdiet, enim sed gravida sollicitudin, felis odio placerat quam, ac pulvinar elit purus eget enim. Nunc vitae tortor. Proin tempus nibh sit amet nisl. Vivamus quis tortor vitae risus porta vehicula.',
   price: 100,
   maxSupply: 100,
   currentSupply: 100,
+  isAvailable: false,
 };
 
 export const reward3: Reward = {
   id: '3',
   name: 'Reward 3',
-  imageUrl: '',
+  imageUrl: '/Reward.png',
   description:
     'Quisque ullamcorper placerat ipsum. Cras nibh. Morbi vel justo vitae lacus tincidunt ultrices. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In hac habitasse platea dictumst. Integer tempus convallis augue. Etiam facilisis. Nunc elementum fermentum wisi. Aenean placerat. Ut imperdiet, enim sed gravida sollicitudin, felis odio placerat quam, ac pulvinar elit purus eget enim. Nunc vitae tortor. Proin tempus nibh sit amet nisl. Vivamus quis tortor vitae risus porta vehicula.',
   price: 200,
   maxSupply: 50,
   currentSupply: 40,
+  isAvailable: false,
 };
 
 export const rewards: Reward[] = [
   reward1,
   reward1,
+  reward2,
+  reward3,
   reward1,
   reward1,
   reward1,
+  reward2,
   reward1,
   reward1,
-  reward1,
-  reward1,
-  reward1,
-  reward1,
-  reward1,
+  reward3,
+  reward3,
 ];
 
 //* FEED =================================
@@ -70,7 +76,7 @@ export const feed1: Feed = {
 };
 
 //* VOTE =================================
-export const vote1: Vote = {
+export const fundsRequest1: FundsRequest = {
   id: '1',
   amountAsked: 20000,
   title: 'Launch of the project',
@@ -82,7 +88,7 @@ export const vote1: Vote = {
   voteFor: 95,
 };
 
-export const vote2: Vote = {
+export const fundsRequest2: FundsRequest = {
   id: '2',
   amountAsked: 40000,
   title: 'Second phase of the project',
@@ -97,7 +103,7 @@ export const vote2: Vote = {
 //* PROJECT=================================
 export const project1: Project = {
   id: '1',
-  ownerId: '0',
+  ownerId: 'xxxx',
   name: 'First project',
   imageUrl: '',
   projectDescription:
@@ -109,10 +115,10 @@ export const project1: Project = {
   status: 'Fundraising',
   contributionCounter: 243,
   trustScore: 75,
-  rewards: [reward1, reward2, reward3],
+  rewards: [reward1],
   safetyDeposit: 5000,
   feed: [feed1, feed1, feed1],
-  votes: [],
+  fundsRequests: [],
 };
 
 export const project2: Project = {
@@ -129,10 +135,10 @@ export const project2: Project = {
   status: 'Realising',
   contributionCounter: 1250,
   trustScore: 90,
-  rewards: [reward1, reward2, reward3],
+  rewards: [reward2, reward3],
   safetyDeposit: 5000,
   feed: [feed1, feed1, feed1],
-  votes: [vote1, vote2],
+  fundsRequests: [fundsRequest1, fundsRequest2],
 };
 
 export const projects: Project[] = [
@@ -229,6 +235,7 @@ export const sales: SaleTransaction[] = [
 //* CONTRIBUTIONS =================================
 
 export const contribution1: Contribution = {
+  id: '0',
   initialOwner: 'xxxx',
   currentOwner: 'xxxx',
   amount: 50,
@@ -238,6 +245,7 @@ export const contribution1: Contribution = {
 };
 
 export const contribution2: Contribution = {
+  id: '1',
   initialOwner: 'xxxx',
   currentOwner: 'xxxx',
   amount: 100,
@@ -247,6 +255,7 @@ export const contribution2: Contribution = {
 };
 
 export const contribution3: Contribution = {
+  id: '2',
   initialOwner: 'xxxx',
   currentOwner: 'xxxx',
   amount: 200,
