@@ -12,11 +12,11 @@ pub struct Contribution {
     pub creation_timestamp: i64,
     pub is_for_sale: bool,
     pub selling_price: Option<u64>,
-    pub status: Status,
+    pub status: ContributionStatus,
 }
 
 #[derive(Clone, InitSpace, AnchorSerialize, AnchorDeserialize, PartialEq, Eq)]
-pub enum Status {
+pub enum ContributionStatus {
     Active,
     Cancelled,
 }

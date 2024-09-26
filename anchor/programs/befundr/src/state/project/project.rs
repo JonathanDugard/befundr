@@ -27,7 +27,7 @@ pub struct Project {
     pub raised_amount: u64,
     pub created_time: i64,
     pub end_time: i64,
-    pub status: Status,
+    pub status: ProjectStatus,
     pub contribution_counter: u16,
 
     #[max_len(MAX_REWARDS_NUMBER)]
@@ -40,7 +40,7 @@ pub struct Project {
 impl Project {}
 
 #[derive(Clone, InitSpace, AnchorSerialize, AnchorDeserialize, PartialEq, Eq)]
-pub enum Status {
+pub enum ProjectStatus {
     Draft,
     Fundraising,
     Realising,

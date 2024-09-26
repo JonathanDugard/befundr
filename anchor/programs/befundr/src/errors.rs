@@ -46,6 +46,8 @@ pub enum RewardError {
     CurrentSupplyInvalid,
     #[msg("Max supply must be greater than or equal to current supply.")]
     MaxSupplyInvalid,
+    #[msg("Reward maximum supply reached.")]
+    RewardSupplyReach,
 }
 
 #[error_code]
@@ -60,8 +62,6 @@ pub enum ContributionError {
     RewardAlreadyReserved,
     #[msg("Contribution amount is insufficient for the selected reward.")]
     RewardPriceError,
-    #[msg("Reward maximum supply reached.")]
-    RewardSupplyReach,
     #[msg("Unauthorized action.")]
     Unauthorized,
 }
