@@ -59,7 +59,7 @@ impl Reward {
         if self.current_supply > 0 {
             self.current_supply -= 1;
         } else {
-            return Err(RewardError::RewardSupplyReach.into());
+            return Err(RewardError::RewardSupplyEmpty.into());
         }
 
         Ok(())
