@@ -21,22 +21,6 @@ pub struct Contribution {
     status: ContributionStatus,
 }
 
-impl Default for Contribution {
-    fn default() -> Self {
-        Self {
-            initial_owner: Pubkey::default(),
-            current_owner: Pubkey::default(),
-            project: Pubkey::default(),
-            amount: 0,
-            reward_id: None,
-            creation_timestamp: 0,
-            is_for_sale: false,
-            selling_price: None,
-            status: ContributionStatus::Active,
-        }
-    }
-}
-
 impl Contribution {
     pub fn get_status(&self) -> ContributionStatus {
         self.status
