@@ -81,7 +81,7 @@ pub struct AddContribution<'info> {
         init_if_needed,
         payer = signer,
         space = 8 + Contribution::INIT_SPACE,
-        seeds = [b"contribution", project.key().as_ref(), user.key().as_ref()],
+        seeds = [b"contribution", project.key().as_ref(), &(project.contribution_counter + 1).to_le_bytes()],
         bump
     )]
     pub contribution: Account<'info, Contribution>,
