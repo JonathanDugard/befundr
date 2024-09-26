@@ -60,6 +60,14 @@ pub enum ContributionError {
     RewardAlreadyReserved,
     #[msg("Contribution amount is insufficient for the selected reward.")]
     RewardPriceError,
+    #[msg("Reward maximum supply reached.")]
+    RewardSupplyReach,
     #[msg("Unauthorized action.")]
     Unauthorized,
+}
+
+#[error_code]
+pub enum TransferError {
+    #[msg("Funds transfer failed.")]
+    TransferFailed,
 }
