@@ -68,27 +68,25 @@ const MyProfile = (props: Props) => {
   //* PROGRAM INTERACTIONS
   const handleProfileUpdate = async () => {
     if (!publicKey) return;
-    console.log('handleProfileUpdate');
     setIsLoading(true);
     // handle profile pic upload if needed
     let avatarUrl = userToDisplay.avatarUrl;
     const oldAvatarUrl = userToDisplay.avatarUrl;
 
+    // upload file to firestore and get the url to put in upadteUser.avatarUrl
     if (profileImageFile) {
-      // upload file to firestore and get the url to put in upadteUser.avatarUrl
-      if (profileImageFile) {
-        try {
-          avatarUrl = await uploadImageToFirebase(
-            profileImageFile,
-            publicKey.toString()
-          );
-        } catch (error) {
-          console.error(error);
-          setIsLoading(false);
-          return;
-        }
+      try {
+        avatarUrl = await uploadImageToFirebase(
+          profileImageFile,
+          publicKey.toString()
+        );
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+        return;
       }
     }
+
     // handle blockchain tx
     try {
       await updateUser.mutateAsync({
@@ -103,7 +101,6 @@ const MyProfile = (props: Props) => {
       if (profileImageFile && oldAvatarUrl) {
         await deleteImageFromFirebase(oldAvatarUrl);
       }
-      console.log('Profile updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -115,21 +112,21 @@ const MyProfile = (props: Props) => {
     setIsLoading(true);
     // handle profile pic upload if needed
     let avatarUrl = userToDisplay.avatarUrl;
+
+    // upload file to firestore and get the url to put in upadteUser.avatarUrl
     if (profileImageFile) {
-      // upload file to firestore and get the url to put in upadteUser.avatarUrl
-      if (profileImageFile) {
-        try {
-          avatarUrl = await uploadImageToFirebase(
-            profileImageFile,
-            publicKey.toString()
-          );
-        } catch (error) {
-          console.error(error);
-          setIsLoading(false);
-          return;
-        }
+      try {
+        avatarUrl = await uploadImageToFirebase(
+          profileImageFile,
+          publicKey.toString()
+        );
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+        return;
       }
     }
+
     // handle blockchain tx
     try {
       await createUser.mutateAsync({
@@ -139,8 +136,6 @@ const MyProfile = (props: Props) => {
         bio: userToDisplay.bio,
         city: userToDisplay.city || '',
       });
-
-      console.log('Profile created successfully');
     } catch (error) {
       console.error('Error creating profile:', error);
     }

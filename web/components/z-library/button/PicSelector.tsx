@@ -30,7 +30,7 @@ const PicSelector = (props: Props) => {
     }
   }, [props.defaultImage]);
 
-  // Fonction to open dialog box
+  // Function to open dialog box
   const handleUploadClick = () => {
     if (selectedFileName !== null) {
       setSelectedFileName(null);
@@ -82,7 +82,7 @@ const PicSelector = (props: Props) => {
             type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
-            style={{ display: 'none' }} // Cache l'input file
+            style={{ display: 'none' }}
             accept="image/png, image/jpeg, image/webp"
           />
           <IoMdCloudUpload size={50} className="text-accent" />
