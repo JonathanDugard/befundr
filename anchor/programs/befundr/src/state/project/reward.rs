@@ -44,11 +44,11 @@ impl Reward {
     /// Adds one to the current supply of the reward.
     /// Ensures that the current supply does not exceed the maximum supply.
     pub fn add_supply(&mut self) -> Result<()> {
-        require!(
-            self.current_supply < self.max_supply.unwrap().into(),
-            RewardError::RewardSupplyReach
-        );
-        self.current_supply += 1;
+        if self.current_supply < self.max_supply.unwrap().into() {
+            self.current_supply += 1;
+        } else {
+            return Err(RewardError::RewardSupplyReach.into());
+        }
 
         Ok(())
     }
@@ -56,8 +56,11 @@ impl Reward {
     /// Removes one from the current supply of the reward.
     /// Ensures that the current supply does not go below zero.
     pub fn remove_supply(&mut self) -> Result<()> {
-        require!(self.current_supply > 0, RewardError::RewardSupplyReach);
-        self.current_supply -= 1;
+        if self.current_supply > 0 {
+            self.current_supply -= 1;
+        } else {
+            return Err(RewardError::RewardSupplyReach.into());
+        }
 
         Ok(())
     }
