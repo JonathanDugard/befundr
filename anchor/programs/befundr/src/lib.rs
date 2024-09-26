@@ -71,7 +71,7 @@ pub mod befundr {
     pub fn add_contribution(
         ctx: Context<AddContribution>,
         amount: u64,
-        reward_id: u64,
+        reward_id: Option<u64>,
     ) -> Result<()> {
         instructions::add_contribution(ctx, amount, reward_id)
     }
