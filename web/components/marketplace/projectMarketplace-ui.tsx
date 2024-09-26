@@ -36,7 +36,7 @@ export const RewardMarketplaceBlock = ({ reward }: { reward: Reward }) => {
       getContributionByRewardIdAndUserAddress(
         contributions,
         reward.id,
-        user1.ownerAddress
+        user1.owner
       )
     );
   }, [reward.id]);
@@ -86,7 +86,7 @@ export const RewardMarketplaceBlock = ({ reward }: { reward: Reward }) => {
                     <p className="textStyle-body">
                       {calculateTimeElapsed(saleTx.creationTimestamp)} days ago
                     </p>
-                    {saleTx.seller === user1.ownerAddress && (
+                    {saleTx.seller === user1.owner && (
                       <div className="textStyle-body !text-custom-red">
                         (your)
                       </div>

@@ -4,6 +4,9 @@ type Props = {
   placeholder: string;
   label: string;
   rows: number;
+  value: string;
+  inputName: string;
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
 const TextArea = (props: Props) => {
@@ -16,6 +19,9 @@ const TextArea = (props: Props) => {
         className="bg-main rounded-md w-full border border-gray-300 p-2 textStyle-body"
         rows={props.rows}
         placeholder={props.placeholder}
+        value={props.value}
+        name={props.inputName}
+        onChange={props.handleChange}
       />
     </div>
   );

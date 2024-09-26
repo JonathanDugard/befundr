@@ -19,3 +19,20 @@ export function calculateTimeElapsed(pastDate: number): number {
   // Retourne 0 si la date est dans le futur
   return daysElapsed >= 0 ? daysElapsed : 0;
 }
+
+export function concatFileName(fileName: string): string {
+  // Extraction de l'extension du fichier
+  const extension = fileName.split('.').pop();
+
+  // Si le nom du fichier est plus long que 15 caractères, le tronquer et ajouter "..." suivi de l'extension
+  if (fileName.length > 10) {
+    const baseName = fileName.substring(0, 10);
+    // Si le fichier a une extension, l'ajouter après les "..."
+    return extension && fileName.includes('.')
+      ? `${baseName}....${extension}`
+      : `${baseName}...`;
+  }
+
+  // Si le nom du fichier est court, le retourner tel quel
+  return fileName;
+}

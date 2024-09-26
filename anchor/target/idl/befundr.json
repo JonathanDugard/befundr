@@ -1,5 +1,5 @@
 {
-  "address": "29rtbJLEFXoCc6sTzp2jAHhXgrZTEb6EaMnUTDP14VFv",
+  "address": "GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk",
   "metadata": {
     "name": "befundr",
     "version": "0.1.0",
@@ -48,7 +48,7 @@
           "type": "string"
         },
         {
-          "name": "project_description",
+          "name": "description",
           "type": "string"
         },
         {
@@ -68,6 +68,10 @@
               }
             }
           }
+        },
+        {
+          "name": "safety_deposit",
+          "type": "u64"
         }
       ]
     },
@@ -133,8 +137,47 @@
           "type": {
             "option": "string"
           }
+        },
+        {
+          "name": "city",
+          "type": {
+            "option": "string"
+          }
         }
       ]
+    },
+    {
+      "name": "delete_user",
+      "discriminator": [
+        186,
+        85,
+        17,
+        249,
+        219,
+        231,
+        98,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
     },
     {
       "name": "update_user",
@@ -201,6 +244,12 @@
           "type": {
             "option": "string"
           }
+        },
+        {
+          "name": "city",
+          "type": {
+            "option": "string"
+          }
         }
       ]
     }
@@ -233,6 +282,23 @@
       ]
     }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: Only the admin can delete users."
+    },
+    {
+      "code": 6001,
+      "name": "UserHasActivity",
+      "msg": "User has associated projects or contributions."
+    },
+    {
+      "code": 6002,
+      "name": "WrongOwnerAccount",
+      "msg": "Wrong owner account."
+    }
+  ],
   "types": [
     {
       "name": "Project",
@@ -256,7 +322,7 @@
             "type": "string"
           },
           {
-            "name": "project_description",
+            "name": "description",
             "type": "string"
           },
           {
@@ -296,6 +362,14 @@
                 }
               }
             }
+          },
+          {
+            "name": "feed",
+            "type": "pubkey"
+          },
+          {
+            "name": "safety_deposit",
+            "type": "u64"
           }
         ]
       }
@@ -319,7 +393,9 @@
           },
           {
             "name": "max_supply",
-            "type": "u16"
+            "type": {
+              "option": "u16"
+            }
           },
           {
             "name": "current_supply",
@@ -377,6 +453,12 @@
           },
           {
             "name": "bio",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "city",
             "type": {
               "option": "string"
             }

@@ -4,6 +4,9 @@ type Props = {
   placeholder: string;
   label: string;
   type: string;
+  value: string;
+  inputName: string;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const InputField = (props: Props) => {
@@ -16,6 +19,9 @@ const InputField = (props: Props) => {
         className="bg-main rounded-md w-full border border-gray-300 p-2 textStyle-body"
         type={props.type}
         placeholder={props.placeholder}
+        name={props.inputName}
+        onChange={props.handleChange}
+        value={props.value}
       />
     </div>
   );

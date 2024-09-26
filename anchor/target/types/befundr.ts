@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/befundr.json`.
  */
 export type Befundr = {
-  "address": "29rtbJLEFXoCc6sTzp2jAHhXgrZTEb6EaMnUTDP14VFv",
+  "address": "GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk",
   "metadata": {
     "name": "befundr",
     "version": "0.1.0",
@@ -54,7 +54,7 @@ export type Befundr = {
           "type": "string"
         },
         {
-          "name": "projectDescription",
+          "name": "description",
           "type": "string"
         },
         {
@@ -74,6 +74,10 @@ export type Befundr = {
               }
             }
           }
+        },
+        {
+          "name": "safetyDeposit",
+          "type": "u64"
         }
       ]
     },
@@ -139,8 +143,47 @@ export type Befundr = {
           "type": {
             "option": "string"
           }
+        },
+        {
+          "name": "city",
+          "type": {
+            "option": "string"
+          }
         }
       ]
+    },
+    {
+      "name": "deleteUser",
+      "discriminator": [
+        186,
+        85,
+        17,
+        249,
+        219,
+        231,
+        98,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
     },
     {
       "name": "updateUser",
@@ -207,6 +250,12 @@ export type Befundr = {
           "type": {
             "option": "string"
           }
+        },
+        {
+          "name": "city",
+          "type": {
+            "option": "string"
+          }
         }
       ]
     }
@@ -239,6 +288,23 @@ export type Befundr = {
       ]
     }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "unauthorized",
+      "msg": "Unauthorized: Only the admin can delete users."
+    },
+    {
+      "code": 6001,
+      "name": "userHasActivity",
+      "msg": "User has associated projects or contributions."
+    },
+    {
+      "code": 6002,
+      "name": "wrongOwnerAccount",
+      "msg": "Wrong owner account."
+    }
+  ],
   "types": [
     {
       "name": "project",
@@ -262,7 +328,7 @@ export type Befundr = {
             "type": "string"
           },
           {
-            "name": "projectDescription",
+            "name": "description",
             "type": "string"
           },
           {
@@ -302,6 +368,14 @@ export type Befundr = {
                 }
               }
             }
+          },
+          {
+            "name": "feed",
+            "type": "pubkey"
+          },
+          {
+            "name": "safetyDeposit",
+            "type": "u64"
           }
         ]
       }
@@ -325,7 +399,9 @@ export type Befundr = {
           },
           {
             "name": "maxSupply",
-            "type": "u16"
+            "type": {
+              "option": "u16"
+            }
           },
           {
             "name": "currentSupply",
@@ -383,6 +459,12 @@ export type Befundr = {
           },
           {
             "name": "bio",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "city",
             "type": {
               "option": "string"
             }

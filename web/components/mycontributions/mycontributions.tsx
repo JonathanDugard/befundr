@@ -7,19 +7,29 @@ import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { contributions, user1 } from '@/data/localdata';
 import { getContributionByUserAddress } from '@/utils/functions/contributionsFunctions';
 import ContributionCard from '../z-library/card/ContributionCard';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useRouter } from 'next/navigation';
 
 type Props = {};
 
 const MyContributions = (props: Props) => {
+  //* GLOBAL STATE
+  const { publicKey } = useWallet();
+  const router = useRouter();
+
+  //* LOCAL STATE
   const [contributionsToDisplay, setContributionsToDisplay] = useState<
     Contribution[] | null | undefined
   >(null);
 
   useEffect(() => {
     setContributionsToDisplay(
-      getContributionByUserAddress(contributions, user1.ownerAddress)
+      getContributionByUserAddress(contributions, user1.owner)
     );
   }, [user1]);
+
+  // nagiguate to homepage is user disconnected
+  if (!publicKey) router.push('/');
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
