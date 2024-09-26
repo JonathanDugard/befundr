@@ -3,7 +3,7 @@
 // from project PDA balance to his wallet
 use crate::{
     errors::ContributionError,
-    state::{Contribution, Project, Status, User},
+    state::{Contribution, Project, ProjectStatus, Reward, User},
 };
 use anchor_lang::prelude::*;
 
@@ -15,31 +15,41 @@ pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
     let contribution = &mut ctx.accounts.contribution;
 
     // Check if the project is in a fundraising state and in fundraising period
-    require!(project.status == Status::Fundraising, ContributionError::ProjectNotFundraising);
+    require!(
+        project.status == ProjectStatus::Fundraising,
+        ContributionError::ProjectNotFundraising
+    );
     require!(project.end_time > now, ContributionError::ProjectNotFundraising);
 
     // Check if the Contribution PDA exists and belongs to the user
     // Add USDC balance > 0 check to transfer USDC to user wallet before closing
     require!(contribution.current_owner == user.key(), ContributionError::Unauthorized);
+    require!(signer.key() == user.owner, ContributionError::Unauthorized);
 
     // Transfer the contribution amount back to the user
-    // Todo: handle USDC ATA
-    **project.to_account_info().try_borrow_mut_lamports()? -= contribution.amount;
-    **user.to_account_info().try_borrow_mut_lamports()? += contribution.amount;
+    /* Todo: handle USDC ATA refund transfer
+     *   - Get USDC contribution balance
+     *   - Call transfer SPL token from contribution ATA to user wallet ATA
+     *   - Transfer funds
+     */
 
     // Update the project's raised_amount and contribution_counter
-    project.raised_amount -= contribution.amount; // Todo: handle USDC
-    project.contribution_counter -= 1;
+    project.raised_amount -= contribution.amount; // Todo: handle USDC ATA
 
-    // Update project reward current supply
-    if let Some(reward) = project.rewards.get_mut(contribution.reward_id as usize) {
-        reward.current_supply -= 1;
-    } else {
-        return Err(ContributionError::RewardError.into());
+    let mut reward: Option<&mut Reward> = None;
+    if contribution.reward_id.is_some() {
+        reward = project
+            .rewards
+            .get_mut(contribution.reward_id.unwrap() as usize);
     }
 
-    // Close the Contribution PDA
-    contribution.close(signer.to_account_info())?;
+    // Update project reward current supply
+    if let Some(reward) = reward {
+        reward.remove_supply()?;
+    }
+
+    // Update contribution status
+    contribution.set_cancelled();
 
     Ok(())
 }
