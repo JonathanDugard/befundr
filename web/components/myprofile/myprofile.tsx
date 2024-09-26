@@ -203,16 +203,6 @@ const MyProfile = (props: Props) => {
           handleChange={handleChange}
           inputName="bio"
         />
-        {/* <InputField
-          label="Your X account (optional)"
-          placeholder="Type your x handle"
-          type="text"
-        />
-        <InputField
-          label="Your website (optional)"
-          placeholder="Type your website address"
-          type="text"
-        /> */}
         <div className="flex justify-start items-center gap-2">
           <p>Your DID profile status</p>
           <button>
