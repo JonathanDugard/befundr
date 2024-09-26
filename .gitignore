@@ -49,3 +49,9 @@ anchor/target/.rustc_info.json
 #!anchor/target/types/*.ts
 test-ledger
 .yarn
+
+# Ignore all .env files
+.env*
+
+# Except .env.example
+!.env.example

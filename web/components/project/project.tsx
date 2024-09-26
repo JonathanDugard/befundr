@@ -1,6 +1,6 @@
 'use client';
 import { project1, user1 } from '@/data/localdata';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import Divider from '../z-library/display elements/Divider';
@@ -15,9 +15,12 @@ import {
   FounderBlock,
   RewardBlock,
   UpdateBlock,
-  VoteBlock,
+  FundsRequestBlock,
 } from './project-ui';
 import Link from 'next/link';
+import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
+import MainButtonLabel from '../z-library/button/MainButtonLabel';
+import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 
 type Props = {
   project: Project;
@@ -28,6 +31,8 @@ const Project = (props: Props) => {
   const router = useRouter();
 
   //* LOCAL STATE
+  const pathname = usePathname();
+
   const [selectedMenu, setSelectedMenu] = useState<
     'about' | 'rewards' | 'funder' | 'update' | 'vote'
   >('about');
@@ -164,6 +169,20 @@ const Project = (props: Props) => {
           </button>
         )}
       </div>
+      {props.project.ownerId === user1.owner && (
+        <div className="w-full h-10 bg-accent flex justify-center items-center px-4  -mt-14 mb-10">
+          {selectedMenu === 'update' && (
+            <button>
+              <SecondaryButtonLabel label="Add an update" />
+            </button>
+          )}
+          {selectedMenu === 'vote' && (
+            <button>
+              <SecondaryButtonLabel label="Ask for funds unlock" />
+            </button>
+          )}
+        </div>
+      )}
       {/* blocks to display */}
       {selectedMenu === 'about' && (
         <AboutBlock description={props.project.projectDescription} />
@@ -182,7 +201,9 @@ const Project = (props: Props) => {
         />
       )}
       {selectedMenu === 'update' && <UpdateBlock feeds={props.project.feed} />}
-      {selectedMenu === 'vote' && <VoteBlock votes={props.project.votes} />}
+      {selectedMenu === 'vote' && (
+        <FundsRequestBlock fundsRequests={props.project.fundsRequests} />
+      )}
     </div>
   );
 };

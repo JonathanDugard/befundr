@@ -22,7 +22,7 @@ type Project = {
   rewards: Reward[];
   safetyDeposit: number;
   feed: Update[];
-  votes: Vote[];
+  fundsRequests: FundsRequest[];
 };
 
 type Reward = {
@@ -33,10 +33,12 @@ type Reward = {
   price: number;
   maxSupply?: number;
   currentSupply: number;
+  isAvailable: boolean;
+  redeemLimitTime?: number;
 };
 
 type User = {
-  ownerAddress: string;
+  owner: string;
   name: string;
   city?: string;
   avatarUrl: string;
@@ -52,6 +54,7 @@ type Feed = {
 };
 
 type Contribution = {
+  id: string;
   initialOwner: string;
   currentOwner: string;
   amount: number;
@@ -70,7 +73,7 @@ type SaleTransaction = {
   creationTimestamp: number;
 };
 
-type Vote = {
+type FundsRequest = {
   id: string;
   title: string;
   amountAsked: number;

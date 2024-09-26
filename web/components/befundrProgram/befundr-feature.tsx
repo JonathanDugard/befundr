@@ -5,7 +5,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { useBefundrProgram } from './befundr-data-access';
-import { BefundrCreate, BefundrProgram } from './befundr-ui';
+// import { BefundrCreate, BefundrProgram } from './befundr-ui';
 
 export default function BefundrFeature() {
   const { publicKey } = useWallet();
@@ -23,9 +23,9 @@ export default function BefundrFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <BefundrCreate />
+        {/* <BefundrCreate /> */}
       </AppHero>
-      <BefundrProgram />
+      {/* <BefundrProgram /> */}
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">

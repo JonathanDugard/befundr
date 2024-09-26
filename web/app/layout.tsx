@@ -25,6 +25,13 @@ const bottomBarLinks: { label: string; path: string }[] = [
   { label: 'Rewards marketplace', path: '/marketplace' },
 ];
 
+const profileBarLinks: { label: string; path: string }[] = [
+  { label: 'My profile', path: '/profile/myprofile' },
+  { label: 'My funded projects', path: '/profile/myfundedprojects' },
+  { label: 'My contributions', path: '/profile/mycontributions' },
+  { label: 'My created projects', path: '/profile/mycreatedprojects' },
+];
+
 export default function RootLayout({
   children,
 }: {
@@ -43,6 +50,7 @@ export default function RootLayout({
               <UiLayout
                 topBarLinks={topBarLinks}
                 bottomBarLinks={bottomBarLinks}
+                profileBarLinks={profileBarLinks}
               >
                 {children}
               </UiLayout>

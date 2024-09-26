@@ -9,7 +9,7 @@ pub mod utils;
 use instructions::*;
 use state::Reward;
 
-declare_id!("29rtbJLEFXoCc6sTzp2jAHhXgrZTEb6EaMnUTDP14VFv");
+declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
 
 #[program]
 pub mod befundr {

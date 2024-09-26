@@ -4,7 +4,7 @@ use crate::constants::project::{
     MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_REWARDS_NUMBER, MAX_URL_LENGTH,
 };
 
-use super::Reward;
+use super::{ProjectCategory, Reward};
 
 #[account]
 #[derive(InitSpace)]
@@ -20,6 +20,8 @@ pub struct Project {
 
     #[max_len(MAX_DESCRIPTION_LENGTH)]
     pub description: String,
+
+    pub category: ProjectCategory,
 
     pub goal_amount: u64,
     pub raised_amount: u64,

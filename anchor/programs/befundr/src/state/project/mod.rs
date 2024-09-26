@@ -6,3 +6,9 @@ pub use project::*;
 
 pub mod feed;
 pub use feed::*;
+
+pub mod project_contributions;
+pub use project_contributions::*;
+
+pub mod project_category;
+pub use project_category::ProjectCategory;

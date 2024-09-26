@@ -17,17 +17,22 @@ import toast, { Toaster } from 'react-hot-toast';
 import SearchField from '../z-library/button/SearchField';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Image from 'next/image';
+import { useWallet } from '@solana/wallet-adapter-react';
+import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 
 export function UiLayout({
   children,
   topBarLinks,
   bottomBarLinks,
+  profileBarLinks,
 }: {
   children: ReactNode;
   topBarLinks: { label: string; path: string }[];
   bottomBarLinks: { label: string; path: string }[];
+  profileBarLinks: { label: string; path: string }[];
 }) {
   const pathname = usePathname();
+  const { publicKey } = useWallet();
 
   return (
     <div className="h-full flex flex-col ">
@@ -65,26 +70,66 @@ export function UiLayout({
         </div>
         <div className="flex-none mx-4">
           <WalletButton />
-          {/* <ClusterUiSelect /> */}
+          <ClusterUiSelect />
         </div>
       </div>
-      {/* bottom navbar */}
-      <div className="w-full h-10 bg-second textStyle-body-black flex-col md:flex-row justify-center items-center">
-        <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-1/2 mx-auto">
-          {bottomBarLinks.map(({ label, path }) => (
-            <li key={path}>
-              <Link
-                className={
-                  pathname.startsWith(path) ? 'text-accent font-normal' : ''
-                }
-                href={path}
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* bottom navbar outside profile*/}
+      {!pathname.startsWith('/profile') && (
+        <div className="w-full h-10 bg-second textStyle-body-black flex-col md:flex-row justify-center items-center">
+          <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-1/2 mx-auto">
+            {bottomBarLinks.map(({ label, path }) => (
+              <li key={path}>
+                <Link
+                  className={
+                    pathname.startsWith(path) ? 'text-accent font-normal' : ''
+                  }
+                  href={path}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+            {publicKey && (
+              <li key={'profile'}>
+                <Link
+                  className={
+                    pathname.startsWith('/profile')
+                      ? 'text-accent font-normal'
+                      : ''
+                  }
+                  href={'/profile/myprofile'}
+                >
+                  Your profile
+                </Link>
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+      {/* bottom navbar inside profile*/}
+      {pathname.startsWith('/profile') && (
+        <div className="w-full h-10 bg-accent textStyle-body !text-main flex-col md:flex-row justify-center items-center">
+          <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-2/3 mx-auto">
+            {profileBarLinks.map(({ label, path }) => (
+              <li key={path}>
+                <Link
+                  className={
+                    pathname.startsWith(path)
+                      ? 'text-textColor-main font-normal'
+                      : ''
+                  }
+                  href={path}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+            <Link href={'/'}>
+              <SecondaryButtonLabel label="Leave profile" />
+            </Link>
+          </ul>
+        </div>
+      )}
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
@@ -214,10 +259,10 @@ export function ellipsify(str = '', len = 4) {
 }
 
 export function useTransactionToast() {
-  return (signature: string) => {
+  return (signature: string, message: string) => {
     toast.success(
       <div className={'text-center'}>
-        <div className="text-lg">Transaction sent</div>
+        <div className="text-lg">{message}</div>
         <ExplorerLink
           path={`tx/${signature}`}
           label={'View Transaction'}
