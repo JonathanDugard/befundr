@@ -169,7 +169,7 @@ const Project = (props: Props) => {
           </button>
         )}
       </div>
-      {props.project.ownerId === user1.ownerAddress && (
+      {props.project.ownerId === user1.owner && (
         <div className="w-full h-10 bg-accent flex justify-center items-center px-4  -mt-14 mb-10">
           {selectedMenu === 'update' && (
             <button>

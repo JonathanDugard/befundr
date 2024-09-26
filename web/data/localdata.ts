@@ -5,7 +5,7 @@ export const categories: string[] = ['All', 'Art', 'Tech', 'Design'];
 
 //* USER=================================
 export const user1: User = {
-  ownerAddress: 'xxxx',
+  owner: 'xxxx',
   name: 'Albert HALL',
   city: 'London',
   avatarUrl: '',

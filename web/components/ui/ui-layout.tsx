@@ -70,7 +70,7 @@ export function UiLayout({
         </div>
         <div className="flex-none mx-4">
           <WalletButton />
-          {/* <ClusterUiSelect /> */}
+          <ClusterUiSelect />
         </div>
       </div>
       {/* bottom navbar outside profile*/}
@@ -259,10 +259,10 @@ export function ellipsify(str = '', len = 4) {
 }
 
 export function useTransactionToast() {
-  return (signature: string) => {
+  return (signature: string, message: string) => {
     toast.success(
       <div className={'text-center'}>
-        <div className="text-lg">Transaction sent</div>
+        <div className="text-lg">{message}</div>
         <ExplorerLink
           path={`tx/${signature}`}
           label={'View Transaction'}

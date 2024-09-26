@@ -12,11 +12,14 @@ import { contributions, user1 } from '@/data/localdata';
 import { useWallet } from '@solana/wallet-adapter-react';
 import FundedProjectCard from '../z-library/card/FundedProjectCard';
 import Divider from '../z-library/display elements/Divider';
+import { useRouter } from 'next/navigation';
 
 type Props = {};
 
 const MyFundedProjects = (props: Props) => {
   //* GLOBAL STATE
+  const { publicKey } = useWallet();
+  const router = useRouter();
 
   //* LOCAL STATE
   const [contributionsToDisplay, setContributionsToDisplay] = useState<
@@ -26,9 +29,12 @@ const MyFundedProjects = (props: Props) => {
   useEffect(() => {
     if (user1)
       setContributionsToDisplay(
-        getContributionByUserAddress(contributions, user1.ownerAddress)
+        getContributionByUserAddress(contributions, user1.owner)
       );
   }, [user1]);
+
+  // nagiguate to homepage is user disconnected
+  if (!publicKey) router.push('/');
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">

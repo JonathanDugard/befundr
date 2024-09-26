@@ -8,7 +8,7 @@ const InfoLabel = (props: Props) => {
   return (
     <div
       className="
-      bg-none rounded-md h-8 w-44 px-2 py-1 border border-accent
+      bg-none rounded-md h-8 min-w-44 px-2 py-1 border border-accent
         textStyle-body-accent text-center
     "
     >

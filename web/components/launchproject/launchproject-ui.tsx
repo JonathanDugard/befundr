@@ -115,7 +115,7 @@ export const FundingBlock = () => {
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       <h3 className="textStyle-headline">Step 2 : Funding informations</h3>
-      <InputField
+      {/* <InputField
         label="Funding campain starting date"
         placeholder="Pick the starting date"
         type="date"
@@ -132,7 +132,7 @@ export const FundingBlock = () => {
         label="Funding goal in $"
         placeholder="Set the total targeted amount in $"
         type="number"
-      />
+      /> */}
     </div>
   );
 };

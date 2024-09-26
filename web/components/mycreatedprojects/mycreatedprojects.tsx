@@ -4,17 +4,27 @@ import { getProjectsByOwnerId } from '@/utils/functions/projectsFunctions';
 import React, { useEffect, useState } from 'react';
 import ProjectCard from '../z-library/card/ProjectCard';
 import CreatedProjectCard from '../z-library/card/CreatedProjectCard';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useRouter } from 'next/router';
 
 type Props = {};
 
 const MyCreatedProjects = (props: Props) => {
+  //* GLOBAL STATE
+  const { publicKey } = useWallet();
+  const router = useRouter();
+
+  //* LOCAL STATE
   const [projectsToDisplay, setProjectsToDisplay] = useState<
     Project[] | null | undefined
   >(null);
 
   useEffect(() => {
-    setProjectsToDisplay(getProjectsByOwnerId(projects, user1.ownerAddress));
+    setProjectsToDisplay(getProjectsByOwnerId(projects, user1.owner));
   }, [user1]);
+
+  // nagiguate to homepage is user disconnected
+  if (!publicKey) router.push('/');
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">

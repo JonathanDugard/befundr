@@ -1,4 +1,4 @@
-import BefundrFeature from '@/components/befundr/befundr-feature';
+import BefundrFeature from '@/components/befundrProgram/befundr-feature';
 
 export default function Page() {
   return <BefundrFeature />;

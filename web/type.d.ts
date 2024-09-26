@@ -38,7 +38,7 @@ type Reward = {
 };
 
 type User = {
-  ownerAddress: string;
+  owner: string;
   name: string;
   city?: string;
   avatarUrl: string;
