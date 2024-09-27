@@ -49,3 +49,17 @@ pub enum RewardError {
     #[msg("Max supply must be greater than or equal to current supply.")]
     MaxSupplyInvalid,
 }
+
+#[error_code]
+pub enum CreateUnlockVoteError {
+    #[msg("Requested amount to unlock is too high")]
+    RequestedAmountTooHigh,
+    #[msg("Insufficient remaining funds")]
+    NotEnoughFunds,
+    #[msg("The project is not in realization")]
+    WrongProjectStatus,
+    #[msg("There is already a vote ongoing")]
+    UnlockVoteAlreadyOngoing,
+    #[msg("Request cooldown ongoing")]
+    WaitBeforeNewRequest,
+}
