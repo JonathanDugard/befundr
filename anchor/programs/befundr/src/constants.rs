@@ -27,6 +27,14 @@ pub mod reward {
     pub const MAX_DESCRIPTION_LENGTH: u64 = 100;
 }
 
+pub mod unlock_request_vote {
+    pub const MAX_VOTE_NUMBER: u64 = 10000;
+}
+
+pub mod unlock_request {
+    pub const MAX_REQUEST_NUMBER: u64 = 1000;
+}
+
 // Temporary admins keys const
 // FOR LOCAL DEV PURPOSES ONLY
 pub const ADMIN_PUBKEYS: &[&str] = &[
