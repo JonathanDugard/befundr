@@ -10,6 +10,7 @@ type Project = {
   id: string;
   ownerId: string;
   name: string;
+  category: string;
   imageUrl: string;
   projectDescription: string;
   goalAmount: number;
@@ -31,7 +32,7 @@ type Reward = {
   imageUrl: string;
   description: string;
   price: number;
-  maxSupply?: number;
+  maxSupply: number | null;
   currentSupply: number;
   isAvailable: boolean;
   redeemLimitTime?: number;

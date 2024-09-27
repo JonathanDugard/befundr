@@ -1,7 +1,16 @@
-import reward from '../public/Reward.png';
-
 //* CATEGORY=================================
-export const categories: string[] = ['All', 'Art', 'Tech', 'Design'];
+export const categories: string[] = [
+  'All',
+  'Art',
+  'Education',
+  'Entertainment',
+  'Environment',
+  'Finance',
+  'Health',
+  'Science',
+  'Social impact',
+  'Technology',
+];
 
 //* USER=================================
 export const user1: User = {
@@ -105,6 +114,7 @@ export const project1: Project = {
   id: '1',
   ownerId: 'xxxx',
   name: 'First project',
+  category: 'tech',
   imageUrl: '',
   projectDescription:
     'Morbi congue congue metus. Aenean sed purus.  Nam pede magna, tristique nec, porta id, sollicitudin quis, sapien.  Vestibulum blandit. Suspendisse ut augue ac nibh ullamcorper  posuere. Integer euismod, neque at eleifend fringilla, augue elit  ornare dolor, vel tincidunt purus est id lacus. Vivamus lorem dui,  commodo quis, scelerisque eu, tincidunt non, magna. Cras sodales.  Quisque vestibulum pulvinar diam. Phasellus tincidunt, leo vitae  tristique facilisis, ipsum wisi interdum sem, dapibus semper nulla  velit vel lectus. Cras dapibus mauris et augue. Quisque cursus nulla  in libero. Suspendisse et lorem sit amet mauris malesuada mollis.  Nullam id justo. Maecenas venenatis. Donec lacus arcu, egestas ac,  fermentum consectetuer, tempus eu, metus. Proin sodales, sem in  pretium fermentum, arcu sapien commodo mauris, venenatis consequat  augue urna in wisi. Quisque sapien nunc, varius eget, condimentum  quis, lacinia in, est. Fusce facilisis. Praesent nec ipsum.\n\n Integer interdum varius diam. Nam aliquam  velit a pede. Vivamus dictum nulla et wisi. Vestibulum a massa.  Donec vulputate nibh vitae risus dictum varius. Nunc suscipit, nunc  nec facilisis convallis, lacus ligula bibendum nulla, ac  sollicitudin sapien nisl fermentum velit. Lorem ipsum dolor sit  amet, consectetuer adipiscing elit. Nullam commodo dui ut augue  molestie scelerisque. Sed aliquet rhoncus tortor. Fusce laoreet,  turpis a facilisis tristique, leo mauris accumsan tellus, vitae  ornare lacus pede sit amet purus. Sed dignissim velit vitae ligula.  Sed sit amet diam sit amet arcu luctus ullamcorper.\n\n Nulla venenatis lorem id arcu. Morbi cursus urna  a ipsum. Donec porttitor. Integer eleifend, est non mattis  malesuada, mi nulla convallis mi, et auctor lectus sapien ut purus.  Aliquam nulla augue, pharetra sit amet, faucibus semper, molestie  vel, nibh. Pellentesque vestibulum magna et mi. Sed fringilla dolor  vel tellus. Nunc libero nunc, venenatis eget, convallis hendrerit,  iaculis elementum, mi. Nullam aliquam, felis et accumsan vehicula,  magna justo vehicula diam, eu condimentum nisl felis et nunc.  Quisque volutpat mauris a velit. Pellentesque massa. Integer at  lorem. Nam metus erat, lacinia id, convallis ut, pulvinar non, wisi.   Cras iaculis mauris ut neque. Cras sodales, sem vitae imperdiet  consequat, pede purus sollicitudin urna, ac aliquam metus orci in  leo. Ut molestie ultrices mauris. Vivamus vitae sem. Aliquam erat  volutpat. Praesent commodo, nisl ac dapibus aliquet, tortor orci  sodales lorem, non ornare nulla lorem quis nisl.',
@@ -125,6 +135,7 @@ export const project2: Project = {
   id: '2',
   ownerId: '0',
   name: 'Second project',
+  category: 'art',
   imageUrl: '',
   projectDescription:
     'Morbi congue congue metus. Aenean sed purus.  Nam pede magna, tristique nec, porta id, sollicitudin quis, sapien.  Vestibulum blandit. Suspendisse ut augue ac nibh ullamcorper  posuere. Integer euismod, neque at eleifend fringilla, augue elit  ornare dolor, vel tincidunt purus est id lacus. Vivamus lorem dui,  commodo quis, scelerisque eu, tincidunt non, magna. Cras sodales.  Quisque vestibulum pulvinar diam. Phasellus tincidunt, leo vitae  tristique facilisis, ipsum wisi interdum sem, dapibus semper nulla  velit vel lectus. Cras dapibus mauris et augue. Quisque cursus nulla  in libero. Suspendisse et lorem sit amet mauris malesuada mollis.  Nullam id justo. Maecenas venenatis. Donec lacus arcu, egestas ac,  fermentum consectetuer, tempus eu, metus. Proin sodales, sem in  pretium fermentum, arcu sapien commodo mauris, venenatis consequat  augue urna in wisi. Quisque sapien nunc, varius eget, condimentum  quis, lacinia in, est. Fusce facilisis. Praesent nec ipsum.\n\n Integer interdum varius diam. Nam aliquam  velit a pede. Vivamus dictum nulla et wisi. Vestibulum a massa.  Donec vulputate nibh vitae risus dictum varius. Nunc suscipit, nunc  nec facilisis convallis, lacus ligula bibendum nulla, ac  sollicitudin sapien nisl fermentum velit. Lorem ipsum dolor sit  amet, consectetuer adipiscing elit. Nullam commodo dui ut augue  molestie scelerisque. Sed aliquet rhoncus tortor. Fusce laoreet,  turpis a facilisis tristique, leo mauris accumsan tellus, vitae  ornare lacus pede sit amet purus. Sed dignissim velit vitae ligula.  Sed sit amet diam sit amet arcu luctus ullamcorper.\n\n Nulla venenatis lorem id arcu. Morbi cursus urna  a ipsum. Donec porttitor. Integer eleifend, est non mattis  malesuada, mi nulla convallis mi, et auctor lectus sapien ut purus.  Aliquam nulla augue, pharetra sit amet, faucibus semper, molestie  vel, nibh. Pellentesque vestibulum magna et mi. Sed fringilla dolor  vel tellus. Nunc libero nunc, venenatis eget, convallis hendrerit,  iaculis elementum, mi. Nullam aliquam, felis et accumsan vehicula,  magna justo vehicula diam, eu condimentum nisl felis et nunc.  Quisque volutpat mauris a velit. Pellentesque massa. Integer at  lorem. Nam metus erat, lacinia id, convallis ut, pulvinar non, wisi.   Cras iaculis mauris ut neque. Cras sodales, sem vitae imperdiet  consequat, pede purus sollicitudin urna, ac aliquam metus orci in  leo. Ut molestie ultrices mauris. Vivamus vitae sem. Aliquam erat  volutpat. Praesent commodo, nisl ac dapibus aliquet, tortor orci  sodales lorem, non ornare nulla lorem quis nisl.',
