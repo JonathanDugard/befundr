@@ -7,6 +7,7 @@ use crate::constants::unlock_request::MAX_REQUEST_NUMBER;
 pub struct UnlockRequests {
     pub project: Pubkey,
     pub request_counter: u64,
+    pub unlocked_amount: u64,
 
     #[max_len(MAX_REQUEST_NUMBER)]
     pub requests: Vec<Pubkey>,
