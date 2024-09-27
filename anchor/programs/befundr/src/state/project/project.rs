@@ -21,6 +21,9 @@ pub struct Project {
     #[max_len(MAX_DESCRIPTION_LENGTH)]
     pub description: String,
 
+    #[max_len(MAX_URL_LENGTH)]
+    pub x_account_url: String,
+
     pub category: ProjectCategory,
 
     pub goal_amount: u64,

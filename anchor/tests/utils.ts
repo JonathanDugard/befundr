@@ -101,7 +101,8 @@ export const createProject = async (
             projectData.goalAmount,
             new BN(Math.floor(projectData.endTime / 1000)),
             serializedRewards,
-            projectData.safetyDeposit
+            projectData.safetyDeposit,
+            projectData.xAccountUrl
         )
         .accountsPartial({
             user: userPubkey,

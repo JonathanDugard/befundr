@@ -19,6 +19,7 @@ pub fn create_project(
     end_time: i64,
     rewards: Vec<Reward>,
     safety_deposit: u64,
+    x_account_url: String,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
@@ -37,6 +38,8 @@ pub fn create_project(
         description_length <= MAX_DESCRIPTION_LENGTH,
         CreateProjectError::DescriptionTooLong
     );
+
+    require!(x_account_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::UrlTooLong);
 
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
 
@@ -57,6 +60,7 @@ pub fn create_project(
     ctx.accounts.project.name = name;
     ctx.accounts.project.image_url = image_url;
     ctx.accounts.project.description = description;
+    ctx.accounts.project.x_account_url = x_account_url;
     ctx.accounts.project.goal_amount = goal_amount;
     ctx.accounts.project.raised_amount = 0;
     ctx.accounts.project.created_time = now;

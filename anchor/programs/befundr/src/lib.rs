@@ -53,6 +53,7 @@ pub mod befundr {
         end_time: i64,
         rewards: Vec<Reward>,
         safety_deposit: u64,
+        x_account_url: String,
     ) -> Result<()> {
         instructions::create_project(
             ctx,
@@ -63,6 +64,7 @@ pub mod befundr {
             end_time,
             rewards,
             safety_deposit,
+            x_account_url,
         )
     }
 
