@@ -33,6 +33,10 @@ pub mod unlock_request_vote {
 
 pub mod unlock_request {
     pub const MAX_REQUEST_NUMBER: u64 = 1000;
+    pub const MAX_REQUESTED_PERCENTAGE_AMOUNT: u64 = 30;
+    pub const VOTING_PERIOD: i64 = 86400 * 7;
+    pub const REQUEST_COOLDOWN: i64 = 86400 * 7;
+    pub const REJECTED_REQUEST_COOLDOWN: i64 = 86400 * 14;
 }
 
 // Temporary admins keys const
