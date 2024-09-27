@@ -16,5 +16,6 @@ export type Project = {
   status?: ProjectStatus
   contributionCounter?: BN
   rewards: Reward[],
-  safetyDeposit: BN
+  safetyDeposit: BN,
+  xAccountUrl: string
 }

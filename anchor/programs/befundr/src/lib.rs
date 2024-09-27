@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 
 pub mod constants;
+pub mod errors;
 pub mod instructions;
 pub mod state;
 pub mod utils;
-pub mod errors;
 
 use instructions::*;
 use state::Reward;
@@ -45,6 +45,7 @@ pub mod befundr {
         end_time: i64,
         rewards: Vec<Reward>,
         safety_deposit: u64,
+        x_account_url: String,
     ) -> Result<()> {
         instructions::create_project(
             ctx,
@@ -55,6 +56,7 @@ pub mod befundr {
             end_time,
             rewards,
             safety_deposit,
+            x_account_url,
         )
     }
 

@@ -18,6 +18,7 @@ export const projectData1: Project = {
   createdTime: new BN(now),
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
   rewards: [reward1, reward2, reward3],
+  xAccountUrl: "https://myURL.com/myXAccount",
   safetyDeposit: new BN(0)
 }
 
@@ -29,6 +30,7 @@ export const projectData2: Project = {
   createdTime: new BN(new Date('2024-05-01T00:00:00Z').getTime()),
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
   rewards: [reward1, reward2, reward3],
+  xAccountUrl: "https://myURL.com/myXAccount",
   safetyDeposit: new BN(0)
 }
 
@@ -41,5 +43,6 @@ export const projectData3: Project = {
   createdTime: new BN(new Date('2024-01-01T00:00:00Z').getTime()),
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
   rewards: [reward1, reward2, reward3],
+  xAccountUrl: "https://myURL.com/myXAccount",
   safetyDeposit: new BN(5000)
 }
