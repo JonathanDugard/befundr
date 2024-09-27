@@ -10,7 +10,7 @@ use anchor_lang::prelude::*;
 pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
     let project = &mut ctx.accounts.project;
-    let user = &mut ctx.accounts.user;
+    let user = &ctx.accounts.user;
     let signer = &mut ctx.accounts.signer;
     let contribution = &mut ctx.accounts.contribution;
 
@@ -59,7 +59,6 @@ pub struct CancelContribution<'info> {
     #[account(mut)]
     pub project: Account<'info, Project>,
 
-    #[account(mut)]
     pub user: Account<'info, User>,
 
     #[account(mut, close = signer)]
