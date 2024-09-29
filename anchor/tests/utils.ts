@@ -126,3 +126,70 @@ export const createProject = async (
 
     return projectPdaPublicKey;
 }
+
+/**
+ * Create a new contribution
+ * @param projectPubkey 
+ * @param userPubkey 
+ * @param wallet
+ * @param projectContributionCounter
+ * @param amount 
+ * @param rewardId 
+ * @returns 
+ */
+export const createContribution = async (
+    projectPubkey: PublicKey,
+    userPubkey: PublicKey,
+    wallet: Keypair,
+    projectContributionCounter: number,
+    amount: number,
+    rewardId: number | null
+): Promise<PublicKey> => {
+    const [contributionPdaPublicKey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("contribution"),
+            projectPubkey.toBuffer(),
+            new BN(projectContributionCounter + 1).toArray('le', 2),
+        ],
+        program.programId
+    );
+
+    // Get projectContributions PDA Pubkey
+    const [projectContributionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("project_contributions"),
+            projectPubkey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    // Get userContributions PDA Pubkey
+    const [userContributionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_contributions"),
+            userPubkey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    // Call the addContribution method
+    const createTx = await program.methods
+        .addContribution(
+            new BN(amount),
+            rewardId !== null ? new BN(rewardId) : null
+        )
+        .accounts({
+            project: projectPubkey,
+            projectContributions: projectContributionsPubkey,
+            user: userPubkey,
+            userContributions: userContributionsPubkey,
+            contribution: contributionPdaPublicKey,
+            signer: wallet.publicKey,
+        })
+        .signers([wallet])
+        .rpc();
+
+    await confirmTransaction(program, createTx);
+
+    return contributionPdaPublicKey;
+}

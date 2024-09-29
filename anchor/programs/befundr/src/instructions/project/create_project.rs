@@ -7,7 +7,7 @@ use crate::{
         MIN_REWARDS_NUMBER,
     },
     errors::CreateProjectError,
-    state::{Project, ProjectCategory, ProjectContributions, Reward, Status, User},
+    state::{Project, ProjectCategory, ProjectContributions, Reward, ProjectStatus, User},
 };
 
 pub fn create_project(
@@ -67,7 +67,7 @@ pub fn create_project(
     ctx.accounts.project.created_time = now;
 
     ctx.accounts.project.end_time = end_time;
-    ctx.accounts.project.status = Status::Fundraising;
+    ctx.accounts.project.status = ProjectStatus::Fundraising;
     ctx.accounts.project.rewards = rewards;
     ctx.accounts.project.category = category;
 
