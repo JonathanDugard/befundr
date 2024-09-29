@@ -7,7 +7,7 @@ use crate::{
         MIN_REWARDS_NUMBER,
     },
     errors::CreateProjectError,
-    state::{Project, Reward, Status, User},
+    state::{Project, ProjectContributions, Reward, Status, User},
 };
 
 pub fn create_project(
@@ -91,8 +91,17 @@ pub struct CreateProject<'info> {
     space = 8 + Project::INIT_SPACE,
     seeds = [b"project", user.key().as_ref(), &(user.created_project_counter + 1).to_le_bytes()],
     bump
-  )]
+    )]
     pub project: Account<'info, Project>,
+
+    #[account(
+        init,
+        payer = signer,
+        space = 8 + ProjectContributions::INIT_SPACE,
+        seeds = [b"project_contributions", project.key().as_ref()],
+        bump
+    )]
+    pub project_contributions: Account<'info, ProjectContributions>,
 
     #[account(mut)]
     pub signer: Signer<'info>,

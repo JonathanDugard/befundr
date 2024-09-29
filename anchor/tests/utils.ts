@@ -83,6 +83,15 @@ export const createProject = async (
         program.programId
     );
 
+    // Get projectContributions PDA Pubkey
+    const [projectContributionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("project_contributions"),
+            projectPdaPublicKey.toBuffer(),
+        ],
+        program.programId
+    );
+
     // Rewards serialization
     const serializedRewards = projectData.rewards.map((reward) => ({
         name: reward.name,
