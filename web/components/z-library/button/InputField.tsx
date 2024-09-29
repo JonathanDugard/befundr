@@ -8,6 +8,8 @@ type Props = {
   inputName: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isDisabled?: boolean;
+  min?: number;
+  max?: number;
 };
 
 const InputField = (props: Props) => {
@@ -26,6 +28,10 @@ const InputField = (props: Props) => {
         onChange={props.handleChange}
         value={props.type === 'number' && props.value === 0 ? '' : props.value}
         disabled={props.isDisabled}
+        minLength={props.min}
+        maxLength={props.max}
+        min={props.min}
+        max={props.max}
       />
     </div>
   );

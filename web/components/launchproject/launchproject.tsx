@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Divider from '../z-library/display elements/Divider';
 import { useRouter } from 'next/navigation';
 import BackButton from '../z-library/button/BackButton';
@@ -13,11 +13,19 @@ import { RewardsBlock } from './rewards-ui';
 import { DescriptionBLock } from './description-ui';
 import { TrustBlock } from './trust-ui';
 import { ValidationBlock } from './validation-ui';
+import { handleProjectCreation } from './handleProjectCreation';
+import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { BN } from '@coral-xyz/anchor';
+import { PublicKey } from '@solana/web3.js';
 
 const Launchproject = () => {
   //* GENERAL STATE
   const router = useRouter();
   const { publicKey } = useWallet();
+  const { createProject } = useBefundrProgramProject();
+  const { userAccount, getUserEntryAddress } = useBefundrProgramUser();
 
   //* LOCAL STATE
   const [selectedStep, setSelectedStep] = useState<number>(0);
@@ -39,8 +47,37 @@ const Launchproject = () => {
     safetyDeposit: 0,
     feed: [],
     fundsRequests: [],
+    // xAccountUrl: '',
   });
   const [projectImageUrl, setProjectImageUrl] = useState<File | null>(null);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
+
+  const [userEntryAddress, setUserEntryAddress] = useState<PublicKey | null>(
+    null
+  );
+  const [userProjectCounter, setUserProjectCounter] = useState(0);
+
+  // get the user entry address
+  useEffect(() => {
+    const fetchUserEntryAddress = async () => {
+      if (publicKey) {
+        const userEntryAddress = await getUserEntryAddress(publicKey);
+        setUserEntryAddress(userEntryAddress);
+      }
+    };
+    fetchUserEntryAddress();
+  }, [publicKey]);
+
+  // Use React Query to fetch user profile based on public key
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccount(publicKey);
+
+  // Handle profile data after fetching
+  useEffect(() => {
+    if (userProfile) {
+      setUserProjectCounter(userProfile.createdProjectCounter);
+    }
+  }, [userProfile]);
 
   // handle project input field modifications
   const handleProjectChange = (
@@ -99,8 +136,36 @@ const Launchproject = () => {
     }));
   };
 
+  //* project creation
+  const launchProjectCreation = async () => {
+    if (publicKey && userEntryAddress) {
+      setIsCreationLoading(true);
+      // data preparation for tx
+      const projectData = await handleProjectCreation(
+        projectToCreate,
+        projectImageUrl,
+        publicKey,
+        userProjectCounter
+      );
+      console.log('projectData :', projectData);
+
+      //creation transaction
+      if (projectData)
+        try {
+          await createProject.mutateAsync({
+            signer: userEntryAddress,
+            project: projectData,
+            userProjectCounter: new BN(userProjectCounter),
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      setIsCreationLoading(false);
+    }
+  };
+
   //* TEST
-  console.log('projectToCreate:', projectToCreate);
+  // console.log('projectToCreate:', projectToCreate);
 
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
@@ -157,9 +222,7 @@ const Launchproject = () => {
             projectToCreate={projectToCreate}
           />
         )}
-        {selectedStep === 5 && (
-          <ValidationBlock projectToCreate={projectToCreate} />
-        )}
+        {selectedStep === 5 && <ValidationBlock />}
       </div>
       {/* continue button */}
       <div className="w-full flex justify-end">
@@ -169,8 +232,12 @@ const Launchproject = () => {
           </button>
         )}
         {selectedStep === 5 && publicKey && (
-          <button onClick={() => {}}>
-            <MainButtonLabel label="Launch your project" />
+          <button onClick={() => launchProjectCreation()}>
+            <MainButtonLabelAsync
+              label="Launch your project"
+              isLoading={isCreationLoading}
+              loadingLabel={'Launching project'}
+            />
           </button>
         )}
         {selectedStep === 5 && !publicKey && <WalletButton />}

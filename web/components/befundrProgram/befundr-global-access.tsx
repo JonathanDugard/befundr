@@ -10,7 +10,7 @@ import { useTransactionToast } from '../ui/ui-layout';
 import { useRouter } from 'next/navigation';
 
 //* Global common setup for the Befundr program
-export function useBefundrGlobalAccess() {
+export function useBefundrProgramGlobal() {
   const router = useRouter();
   const { connection } = useConnection();
   const { cluster } = useCluster();

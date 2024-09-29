@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Divider from '../z-library/display elements/Divider';
 import RewardCardCreation from '../z-library/card/RewardCardCreation';
@@ -9,6 +9,7 @@ import InputField from '../z-library/button/InputField';
 import TextArea from '../z-library/button/TextArea';
 import ToggleButton from '../z-library/button/ToggleButton';
 import PicSelector from '../z-library/button/PicSelector';
+import AlertInfoLabel from '../z-library/display elements/AlertInfoLabel';
 
 type RewardsProps = {
   handleAddReward: (reward: Reward) => void;
@@ -28,8 +29,15 @@ export const RewardsBlock = (props: RewardsProps) => {
       </p>
       {!isAddReward && (
         <div className="flex flex-col items-start justify-start gap-4 w-full">
-          <button onClick={() => setIsAddReward(true)} className="mb-6">
-            <MainButtonLabel label="Add a reward level" />
+          <button
+            onClick={() => setIsAddReward(true)}
+            className="mb-6"
+            disabled={props.projectToCreate.rewards.length >= 10}
+          >
+            <MainButtonLabel
+              label="Add a reward level"
+              disabled={props.projectToCreate.rewards.length >= 10}
+            />
           </button>
           <Divider />
           {props.projectToCreate.rewards.map((reward: Reward, index) => (
@@ -97,9 +105,26 @@ export const AddRewardBlock = (props: AddRewardProps) => {
       setRewardToCreate((prevProject) => ({
         ...prevProject,
         imageUrl: imageUrl,
+        imageFile: file,
       }));
     }
   };
+
+  const allInfoSetted = useMemo(() => {
+    if (
+      !rewardToCreate.name ||
+      !rewardToCreate.description ||
+      !rewardToCreate.imageUrl ||
+      (!isIllimitedSupply &&
+        (rewardToCreate.maxSupply === null || rewardToCreate.maxSupply <= 0))
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }, [rewardToCreate]);
+
+  console.log(allInfoSetted);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-1/2">
@@ -111,6 +136,7 @@ export const AddRewardBlock = (props: AddRewardProps) => {
         handleChange={handleRewardChange}
         inputName="name"
         value={rewardToCreate.name}
+        max={64}
       />
       <InputField
         label="Required contribution amount in $"
@@ -127,6 +153,7 @@ export const AddRewardBlock = (props: AddRewardProps) => {
         value={rewardToCreate.description}
         handleChange={handleRewardChange}
         inputName="description"
+        max={100}
       />
       <InputField
         label="Supply"
@@ -159,14 +186,19 @@ export const AddRewardBlock = (props: AddRewardProps) => {
         objectFit="cover"
         defaultImage={rewardToCreate.imageUrl}
       />
-      <button
-        onClick={() => {
-          props.handleAddReward(rewardToCreate);
-          props.handleClose();
-        }}
-      >
-        <MainButtonLabel label="Add the reward" />
-      </button>
+      <div className="flex justify-start items-start gap-4">
+        <button
+          onClick={() => {
+            props.handleAddReward(rewardToCreate);
+            props.handleClose();
+          }}
+          disabled={!allInfoSetted}
+        >
+          <MainButtonLabel label="Add the reward" disabled={!allInfoSetted} />
+        </button>
+        {/* alert if missing info */}
+        {!allInfoSetted && <AlertInfoLabel label="Missing informations" />}
+      </div>
     </div>
   );
 };

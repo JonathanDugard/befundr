@@ -22,6 +22,8 @@ export const MainInfoBlock = (props: MainInfoProps) => {
         inputName="name"
         value={props.projectToCreate.name}
         handleChange={props.handleChange}
+        min={5}
+        max={64}
       />
       <Selector
         label="Category"

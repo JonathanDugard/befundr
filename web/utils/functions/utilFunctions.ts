@@ -1,3 +1,15 @@
+/**
+ * Returns a timestamp for the current time plus the given number of days.
+ *
+ * @param days - The number of days to add to the current time.
+ * @returns {number} - The timestamp representing the current time plus the specified number of days.
+ */
+export function getTimestampInFuture(days: number): number {
+  const millisecondsInDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+  const now = Date.now(); // Current timestamp in milliseconds
+  return now + days * millisecondsInDay; // Add the number of days in milliseconds to the current timestamp
+}
+
 export function calculateTimeRemaining(futureDate: number): number {
   const now = Date.now();
   const timeDiff = futureDate * 1000 - now;
@@ -59,4 +71,41 @@ export function concatFileName(fileName: string): string {
 
   // If the file name is short, return it as is
   return fileName;
+}
+
+/**
+ * Converts a string to camelCase format.
+ *
+ * @param input - The string to convert.
+ * @returns The input string in camelCase format.
+ */
+export function toCamelCase(input: string): string {
+  return input
+    .toLowerCase() // Convert the entire string to lowercase
+    .replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase()); // Replace spaces or special characters and capitalize the next character
+}
+
+/**
+ * For 0%, the function returns 75, and for 5%, it returns 100.
+ * The function interpolates linearly between these two points.
+ *
+ * @param percentage - The input percentage (from 0 to 5).
+ * @returns The calculated value based on the percentage.
+ */
+export function calculateTrustScore(percentage: number): number {
+  // Ensure the percentage is between 0 and 5
+  if (percentage < 0) {
+    percentage = 0;
+  } else if (percentage > 5) {
+    percentage = 5;
+  }
+
+  // Linear interpolation between 75 and 100
+  const valueAt0Percent = 75;
+  const valueAt5Percent = 100;
+
+  // Calculate the value based on the percentage
+  return (
+    valueAt0Percent + (valueAt5Percent - valueAt0Percent) * (percentage / 5)
+  );
 }

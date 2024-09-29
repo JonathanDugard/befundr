@@ -3,13 +3,15 @@ import React from 'react';
 import { ProjectsFilters } from './projects-ui';
 import { projects } from '@/data/localdata';
 import ProjectCard from '../z-library/card/ProjectCard';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 
 // type Props = {}
 
 const Projects = (/*props: Props*/) => {
-  // //* GLOBAL STATE
+  //* GLOBAL STATE
+  const { allProjectsAccounts } = useBefundrProgramProject();
 
-  // //* TEST
+  console.log(allProjectsAccounts.data);
 
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">

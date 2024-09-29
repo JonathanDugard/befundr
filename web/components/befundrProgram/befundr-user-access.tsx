@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
-import { useBefundrGlobalAccess } from './befundr-global-access';
+import { useBefundrProgramGlobal } from './befundr-global-access';
 
 //* TYPE
 interface CreateUserArgs {
@@ -15,8 +16,8 @@ interface CreateUserArgs {
 }
 
 export function useBefundrProgramUser() {
-  const { connection, program, programId, transactionToast, router } =
-    useBefundrGlobalAccess();
+  const { program, programId, transactionToast, router } =
+    useBefundrProgramGlobal();
 
   //* QUERIES
   //* Fetch all users --------------------
@@ -25,6 +26,17 @@ export function useBefundrProgramUser() {
     queryFn: () => program.account.user.all(),
     staleTime: 60000,
   });
+
+  //* get user entry address
+  const getUserEntryAddress = async (
+    publicKey: PublicKey
+  ): Promise<PublicKey> => {
+    const [userEntryAddress] = await PublicKey.findProgramAddress(
+      [Buffer.from('user'), publicKey.toBuffer()],
+      programId
+    );
+    return userEntryAddress;
+  };
 
   //* Fetch single user by public key --------------------
   const userAccount = (publicKey: PublicKey | null) => {
@@ -88,6 +100,7 @@ export function useBefundrProgramUser() {
 
   return {
     allUsersAccounts,
+    getUserEntryAddress,
     userAccount,
     createUser,
     updateUser,

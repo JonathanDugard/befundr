@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputField from '../z-library/button/InputField';
 import TextArea from '../z-library/button/TextArea';
 import PicSelector from '../z-library/button/PicSelector';
@@ -13,10 +13,9 @@ import {
 } from '@/utils/functions/firebaseFunctions';
 import { useRouter } from 'next/navigation';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { concatFileName } from '@/utils/functions/utilFunctions';
 
-type Props = {};
-
-const MyProfile = (props: Props) => {
+const MyProfile = () => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
   const router = useRouter();
@@ -77,8 +76,10 @@ const MyProfile = (props: Props) => {
     if (profileImageFile) {
       try {
         avatarUrl = await uploadImageToFirebase(
-          profileImageFile,
-          publicKey.toString()
+          `profiles/${publicKey.toString()}/${concatFileName(
+            profileImageFile.name
+          )}`,
+          profileImageFile
         );
       } catch (error) {
         console.error(error);
@@ -117,8 +118,10 @@ const MyProfile = (props: Props) => {
     if (profileImageFile) {
       try {
         avatarUrl = await uploadImageToFirebase(
-          profileImageFile,
-          publicKey.toString()
+          `profiles/${publicKey.toString()}/${concatFileName(
+            profileImageFile.name
+          )}`,
+          profileImageFile
         );
       } catch (error) {
         console.error(error);

@@ -291,18 +291,28 @@ export type Befundr = {
   "errors": [
     {
       "code": 6000,
-      "name": "unauthorized",
-      "msg": "Unauthorized: Only the admin can delete users."
+      "name": "nameTooLong",
+      "msg": "Name cannot exceed 64 characters."
     },
     {
       "code": 6001,
-      "name": "userHasActivity",
-      "msg": "User has associated projects or contributions."
+      "name": "descriptionTooLong",
+      "msg": "Description cannot exceed 100 characters."
     },
     {
       "code": 6002,
-      "name": "wrongOwnerAccount",
-      "msg": "Wrong owner account."
+      "name": "priceInvalid",
+      "msg": "Price must be greater than 0."
+    },
+    {
+      "code": 6003,
+      "name": "currentSupplyInvalid",
+      "msg": "Current supply must be greater than 0."
+    },
+    {
+      "code": 6004,
+      "name": "maxSupplyInvalid",
+      "msg": "Max supply must be greater than or equal to current supply."
     }
   ],
   "types": [

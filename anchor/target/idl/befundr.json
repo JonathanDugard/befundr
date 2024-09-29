@@ -285,18 +285,28 @@
   "errors": [
     {
       "code": 6000,
-      "name": "Unauthorized",
-      "msg": "Unauthorized: Only the admin can delete users."
+      "name": "NameTooLong",
+      "msg": "Name cannot exceed 64 characters."
     },
     {
       "code": 6001,
-      "name": "UserHasActivity",
-      "msg": "User has associated projects or contributions."
+      "name": "DescriptionTooLong",
+      "msg": "Description cannot exceed 100 characters."
     },
     {
       "code": 6002,
-      "name": "WrongOwnerAccount",
-      "msg": "Wrong owner account."
+      "name": "PriceInvalid",
+      "msg": "Price must be greater than 0."
+    },
+    {
+      "code": 6003,
+      "name": "CurrentSupplyInvalid",
+      "msg": "Current supply must be greater than 0."
+    },
+    {
+      "code": 6004,
+      "name": "MaxSupplyInvalid",
+      "msg": "Max supply must be greater than or equal to current supply."
     }
   ],
   "types": [

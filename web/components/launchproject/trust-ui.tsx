@@ -1,8 +1,12 @@
+'use client';
 import Image from 'next/image';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { FaRegIdCard } from 'react-icons/fa';
 import Slider from '../z-library/button/Slider';
 import TrustScore from '../z-library/display elements/TrustScore';
+import InputField from '../z-library/button/InputField';
+import { calculateTrustScore } from '@/utils/functions/utilFunctions';
+import { useMemo } from 'react';
 
 type TrustProps = {
   handleChange: (
@@ -14,6 +18,13 @@ type TrustProps = {
 };
 
 export const TrustBlock = (props: TrustProps) => {
+  const collateralRatio = useMemo(
+    () =>
+      (props.projectToCreate.safetyDeposit * 100) /
+      props.projectToCreate.goalAmount,
+    [props.projectToCreate.safetyDeposit, props.projectToCreate.goalAmount]
+  );
+
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       <h3 className="textStyle-headline">Step 5 : Trustworthiness elements</h3>
@@ -25,30 +36,24 @@ export const TrustBlock = (props: TrustProps) => {
         Befundr is based on confidance. The more informations you provide, the
         more contributors will trust you and your project.
       </p>
-      <div className="flex justify-start gap-2">
+      {/* <div className="flex justify-start gap-2 w-full">
         <Image
           alt="x"
           src={'/x.jpg'}
           width={30}
           height={30}
-          className="rounded-full"
+          className="rounded-full object-contain"
         />
-        <button>
-          <MainButtonLabel label="Verify" />
-        </button>
-      </div>
-      <div className="flex justify-start gap-2">
-        <FaRegIdCard size={30} className="text-textColor-main" />
-        <button>
-          <MainButtonLabel label="Verify" />
-        </button>
-      </div>
-      <div className="flex justify-start items-center gap-2">
-        <p className="textStyle-body !text-black">DID profile status</p>
-        <button>
-          <MainButtonLabel label="Verify" />
-        </button>
-      </div>
+        <InputField
+          handleChange={props.handleChange}
+          inputName="xAccountUrl"
+          label="Set the project X profile"
+          placeholder="The url of the project X account"
+          type="text"
+          value={props.projectToCreate.xAccountUrl}
+        />
+      </div> */}
+
       {/* safety deposit */}
       <p className="textStyle-subheadline !text-textColor-main mt-10">
         Safety deposit
@@ -63,26 +68,33 @@ export const TrustBlock = (props: TrustProps) => {
         In case of non delivery of the rewards expected for your project, these
         funds will be used to refund contributors.
         <br /> You can set an amount superior to 50$. It will insure
-        contributors of your engagement
+        contributors of your engagement.
+        <br /> A 5% ratio between your safety deposit and your fundraising goal
+        will dive you a 100% trust score. This trust score will evolve during
+        the project function of the community vote regarding your project.
       </p>
       <div className="flex justify-start items-center gap-2 w-full">
         <Slider
           initValue={50}
-          max={props.projectToCreate.goalAmount}
+          max={props.projectToCreate.goalAmount * 0.05}
           min={50}
-          step={1}
-          onChange={() => {}}
+          step={10}
+          handleChange={props.handleChange}
+          name="safetyDeposit"
+          value={props.projectToCreate.safetyDeposit}
         />
-        <p className="w-1/2">x % of your fundraising target.</p>
+        <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
       </div>
       {/* trust score */}
       <p className="textStyle-subheadline !text-textColor-main mt-10 mb-4">
-        Final trust score
+        Final trust score{' '}
       </p>
       <div className=" flex justify-center items-center gap-4 w-full">
         <div className="h-52 aspect-square flex flex-col justify-center items-center gap-2">
-          <TrustScore trustValue={70} />
-          <p className="textStyle-headline">Level X</p>
+          <TrustScore trustValue={calculateTrustScore(collateralRatio)} />
+          <p className="textStyle-headline">
+            Trust score : {calculateTrustScore(collateralRatio).toFixed(0)}
+          </p>
         </div>
         <p className="textStyle-body border border-accent rounded-md p-2">
           Aggregated trust level that will be displayed to contributors. An

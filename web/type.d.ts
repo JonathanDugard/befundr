@@ -24,12 +24,14 @@ type Project = {
   safetyDeposit: number;
   feed: Update[];
   fundsRequests: FundsRequest[];
+  // xAccountUrl: string;
 };
 
 type Reward = {
   id: string;
   name: string;
   imageUrl: string;
+  imageFile?: File; // only to handle creation process
   description: string;
   price: number;
   maxSupply: number | null;
