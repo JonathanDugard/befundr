@@ -7,7 +7,7 @@ pub mod state;
 pub mod utils;
 
 use instructions::*;
-use state::Reward;
+use state::{ProjectCategory, Reward};
 
 declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
 
@@ -54,6 +54,7 @@ pub mod befundr {
         rewards: Vec<Reward>,
         safety_deposit: u64,
         x_account_url: String,
+        category: ProjectCategory,
     ) -> Result<()> {
         instructions::create_project(
             ctx,
@@ -65,6 +66,7 @@ pub mod befundr {
             rewards,
             safety_deposit,
             x_account_url,
+            category,
         )
     }
 
