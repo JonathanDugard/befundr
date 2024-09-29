@@ -1,5 +1,5 @@
-pub mod add_contribution;
-pub use add_contribution::*;
+pub mod contribution;
+pub use contribution::*;
 
 pub mod project;
 pub use project::*;
