@@ -7,7 +7,7 @@ use crate::{
         MIN_REWARDS_NUMBER,
     },
     errors::CreateProjectError,
-    state::{Project, ProjectContributions, Reward, Status, User},
+    state::{Project, ProjectCategory, ProjectContributions, Reward, Status, User},
 };
 
 pub fn create_project(
@@ -20,6 +20,7 @@ pub fn create_project(
     rewards: Vec<Reward>,
     safety_deposit: u64,
     x_account_url: String,
+    category: ProjectCategory,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
@@ -68,6 +69,7 @@ pub fn create_project(
     ctx.accounts.project.end_time = end_time;
     ctx.accounts.project.status = Status::Fundraising;
     ctx.accounts.project.rewards = rewards;
+    ctx.accounts.project.category = category;
 
     if safety_deposit > 0 {
         //TODO Handle deposit in USDC
