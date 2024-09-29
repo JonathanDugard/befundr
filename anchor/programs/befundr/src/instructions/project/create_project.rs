@@ -7,7 +7,7 @@ use crate::{
         MIN_REWARDS_NUMBER,
     },
     errors::CreateProjectError,
-    state::{Project, Reward, Status, User},
+    state::{Project, ProjectCategory, ProjectContributions, Reward, ProjectStatus, User},
 };
 
 pub fn create_project(
@@ -19,6 +19,8 @@ pub fn create_project(
     end_time: i64,
     rewards: Vec<Reward>,
     safety_deposit: u64,
+    x_account_url: String,
+    category: ProjectCategory,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
@@ -37,6 +39,8 @@ pub fn create_project(
         description_length <= MAX_DESCRIPTION_LENGTH,
         CreateProjectError::DescriptionTooLong
     );
+
+    require!(x_account_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::UrlTooLong);
 
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
 
@@ -57,13 +61,15 @@ pub fn create_project(
     ctx.accounts.project.name = name;
     ctx.accounts.project.image_url = image_url;
     ctx.accounts.project.description = description;
+    ctx.accounts.project.x_account_url = x_account_url;
     ctx.accounts.project.goal_amount = goal_amount;
     ctx.accounts.project.raised_amount = 0;
     ctx.accounts.project.created_time = now;
 
     ctx.accounts.project.end_time = end_time;
-    ctx.accounts.project.status = Status::Fundraising;
+    ctx.accounts.project.status = ProjectStatus::Fundraising;
     ctx.accounts.project.rewards = rewards;
+    ctx.accounts.project.category = category;
 
     if safety_deposit > 0 {
         //TODO Handle deposit in USDC
@@ -87,8 +93,17 @@ pub struct CreateProject<'info> {
     space = 8 + Project::INIT_SPACE,
     seeds = [b"project", user.key().as_ref(), &(user.created_project_counter + 1).to_le_bytes()],
     bump
-  )]
+    )]
     pub project: Account<'info, Project>,
+
+    #[account(
+        init,
+        payer = signer,
+        space = 8 + ProjectContributions::INIT_SPACE,
+        seeds = [b"project_contributions", project.key().as_ref()],
+        bump
+    )]
+    pub project_contributions: Account<'info, ProjectContributions>,
 
     #[account(mut)]
     pub signer: Signer<'info>,

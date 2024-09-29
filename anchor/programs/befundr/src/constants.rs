@@ -18,6 +18,14 @@ pub mod project {
     pub const MAX_REWARDS_NUMBER: u16 = 10; //Max of 10 rewards
 }
 
+pub mod project_contributions {
+    pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 300;
+}
+
+pub mod user_contributions {
+    pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 100;
+}
+
 pub mod reward {
     pub const MAX_NAME_LENGTH: u64 = 64;
     pub const MAX_DESCRIPTION_LENGTH: u64 = 100;

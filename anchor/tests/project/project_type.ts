@@ -1,6 +1,7 @@
 import { BN } from '@coral-xyz/anchor';
 import { ProjectStatus } from "./project_status"
 import { Reward } from "./reward_type"
+import { ProjectCategory } from './category_type';
 
 // Some attributes are optional because they are set by the program at creation
 export type Project = {
@@ -16,5 +17,7 @@ export type Project = {
   status?: ProjectStatus
   contributionCounter?: BN
   rewards: Reward[],
-  safetyDeposit: BN
+  safetyDeposit: BN,
+  xAccountUrl: string,
+  category: ProjectCategory
 }
