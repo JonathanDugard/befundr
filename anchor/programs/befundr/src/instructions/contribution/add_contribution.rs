@@ -66,7 +66,7 @@ pub fn add_contribution(
     user_contributions.contributions.push(contribution.key());
 
     // Transfer the contribution amount in USDC to the project
-    // transfer_lamports_funds(&ctx, amount);
+    transfer_lamports_funds(&ctx, amount)?;
     // transfer_spl_funds(&ctx, amount);
 
     Ok(())
@@ -131,7 +131,13 @@ pub struct AddContribution<'info> {
 
     pub user: Account<'info, User>,
 
-    #[account(mut)]
+    #[account(
+        init_if_needed,
+        payer = signer,
+        space = 8 + UserContributions::INIT_SPACE,
+        seeds = [b"user_contributions", user.key().as_ref()],
+        bump
+    )]
     pub user_contributions: Account<'info, UserContributions>,
 
     #[account(

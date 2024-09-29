@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::constants::project_contributions::MAX_CONTRIBUTIONS_NUMBER;
+use crate::constants::user_contributions::MAX_CONTRIBUTIONS_NUMBER;
 
 #[account]
 #[derive(InitSpace)]
