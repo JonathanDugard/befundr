@@ -51,8 +51,6 @@ pub fn add_contribution(
     contribution.amount = amount;
     contribution.reward_id = reward_id;
     contribution.creation_timestamp = now;
-    contribution.is_for_sale = false;
-    contribution.selling_price = None;
     contribution.set_active();
 
     // Update project's datas

@@ -37,8 +37,7 @@ describe('createContribution', () => {
         expect(contributionPda.amount.toNumber()).toEqual(contributionAmount);
         expect(contributionPda.rewardId.toNumber()).toEqual(0);
         expect(contributionPda.creationTimestamp.toNumber()).toBeGreaterThan(0);
-        expect(contributionPda.isForSale).toEqual(false);
-        expect(contributionPda.sellingPrice).toBeNull();
+        expect(contributionPda.isClaimed).toBeNull();
         //expect(contributionPda.status).toEqual(ContributionStatus.Active);
 
     });

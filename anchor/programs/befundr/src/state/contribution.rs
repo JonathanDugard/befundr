@@ -16,8 +16,7 @@ pub struct Contribution {
     pub amount: u64,
     pub reward_id: Option<u64>,
     pub creation_timestamp: i64,
-    pub is_for_sale: bool,
-    pub selling_price: Option<u64>,
+    pub is_claimed: Option<bool>,
     status: ContributionStatus,
 }
 
