@@ -7,14 +7,12 @@ import {
 } from '@/utils/functions/utilFunctions';
 import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
-import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
-import { BN } from '@coral-xyz/anchor';
 
+// function to prepare the project object to use in the blockchain TX
 export const handleProjectCreation = async (
   project: Project,
   projectImage: File | null,
-  userPublicKey: PublicKey,
-  userProjectCounter: number
+  userPublicKey: PublicKey
 ) => {
   //* check data completion
   const validation = validateProjectToCreate(project);
@@ -26,11 +24,12 @@ export const handleProjectCreation = async (
   }
 
   //* upload project image
+  const timestamp = Date.now();
   let imageUrl = '';
   if (projectImage) {
     try {
       imageUrl = await uploadImageToFirebase(
-        `projects/${toCamelCase(project.name)}/mainImage`,
+        `projects/${toCamelCase(project.name)}_${timestamp}/mainImage`,
         projectImage
       );
     } catch (error) {
@@ -47,9 +46,9 @@ export const handleProjectCreation = async (
         try {
           // Upload reward image to Firebase
           const rewardImageUrl = await uploadImageToFirebase(
-            `projects/${toCamelCase(project.name)}/rewards/${toCamelCase(
-              reward.name
-            )}`,
+            `projects/${toCamelCase(
+              project.name
+            )}_${timestamp}/rewards/${toCamelCase(reward.name)}`,
             reward.imageFile
           );
           // convert stringify number to real number
@@ -83,6 +82,8 @@ export const handleProjectCreation = async (
   const convertedGoalAmount = Number(project.goalAmount);
   // convert endtime number to timestamp
   const convertedEndTime = getTimestampInFuture(project.endTime);
+  const convertedEndTimeInSecond = Math.floor(convertedEndTime / 1000); // convertion from millisecond to second for BE compatibility
+
   const projectData: Project = {
     ...project,
     imageUrl, // Replace with the uploaded project image URL
@@ -90,11 +91,9 @@ export const handleProjectCreation = async (
     ownerId: userPublicKey.toString(),
     timestamp: Date.now(), // Replace with current timestamp
     safetyDeposit: convertedSafetyDeposit,
-    endTime: convertedEndTime,
+    endTime: convertedEndTimeInSecond,
     goalAmount: convertedGoalAmount,
   };
-
-  console.log('Prepared project data for blockchain:', projectData);
 
   return projectData;
 };

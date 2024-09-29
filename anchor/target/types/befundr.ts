@@ -291,28 +291,53 @@ export type Befundr = {
   "errors": [
     {
       "code": 6000,
-      "name": "nameTooLong",
-      "msg": "Name cannot exceed 64 characters."
+      "name": "nameTooShort",
+      "msg": "Project name is too short (min 5 characters)."
     },
     {
       "code": 6001,
-      "name": "descriptionTooLong",
-      "msg": "Description cannot exceed 100 characters."
+      "name": "nameTooLong",
+      "msg": "Project name is too long (max 64 characters)."
     },
     {
       "code": 6002,
-      "name": "priceInvalid",
-      "msg": "Price must be greater than 0."
+      "name": "imageUrlTooLong",
+      "msg": "Image URL is too long (max 128 characters)."
     },
     {
       "code": 6003,
-      "name": "currentSupplyInvalid",
-      "msg": "Current supply must be greater than 0."
+      "name": "descriptionTooShort",
+      "msg": "Description is too short (min 10 characters)."
     },
     {
       "code": 6004,
-      "name": "maxSupplyInvalid",
-      "msg": "Max supply must be greater than or equal to current supply."
+      "name": "descriptionTooLong",
+      "msg": "Description is too long (max 500 characters)."
+    },
+    {
+      "code": 6005,
+      "name": "goalAmountBelowLimit",
+      "msg": "Goal amount is too low (min $1)."
+    },
+    {
+      "code": 6006,
+      "name": "endTimeInPast",
+      "msg": "End time is in the past."
+    },
+    {
+      "code": 6007,
+      "name": "exceedingEndTime",
+      "msg": "End time beyond the limit."
+    },
+    {
+      "code": 6008,
+      "name": "notEnoughRewards",
+      "msg": "Not enough rewards (min 1)."
+    },
+    {
+      "code": 6009,
+      "name": "tooManyRewards",
+      "msg": "Too many rewards (max 10)."
     }
   ],
   "types": [

@@ -26,7 +26,7 @@ pub fn create_project(
     require!(name_length >= MIN_NAME_LENGTH, CreateProjectError::NameTooShort);
     require!(name_length <= MAX_NAME_LENGTH, CreateProjectError::NameTooLong);
 
-    // require!(image_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::ImageUrlTooLong);
+    require!(image_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::ImageUrlTooLong);
 
     let description_length = description.len() as u64;
     require!(
@@ -41,10 +41,10 @@ pub fn create_project(
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
 
     require!(end_time > now, CreateProjectError::EndTimeInPast);
-    // require!(
-    //     end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
-    //     CreateProjectError::ExceedingEndTime
-    // );
+    require!(
+        end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
+        CreateProjectError::ExceedingEndTime
+    );
     require!(rewards.len() as u16 >= MIN_REWARDS_NUMBER, CreateProjectError::NotEnoughRewards);
     require!(rewards.len() as u16 <= MAX_REWARDS_NUMBER, CreateProjectError::TooManyRewards);
 

@@ -11,8 +11,6 @@ const Projects = (/*props: Props*/) => {
   //* GLOBAL STATE
   const { allProjectsAccounts } = useBefundrProgramProject();
 
-  console.log(allProjectsAccounts.data);
-
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
       <h1 className="textStyle-title">

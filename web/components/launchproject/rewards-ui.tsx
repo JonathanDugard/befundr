@@ -124,8 +124,6 @@ export const AddRewardBlock = (props: AddRewardProps) => {
     }
   }, [rewardToCreate]);
 
-  console.log(allInfoSetted);
-
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-1/2">
       <p className="textStyle-subheadline">Create a new reward level</p>

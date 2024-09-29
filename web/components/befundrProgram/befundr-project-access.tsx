@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 //* TYPE
 interface CreateProjectArgs {
-  signer: PublicKey;
+  userAccountPDA: PublicKey;
   project: Project;
   userProjectCounter: number;
 }
@@ -52,34 +52,25 @@ export function useBefundrProgramProject() {
   //* Create project --------------------
   const createProject = useMutation<string, Error, CreateProjectArgs>({
     mutationKey: ['befundr', 'createProject'],
-    mutationFn: async ({ signer, project, userProjectCounter }) => {
+    mutationFn: async ({ userAccountPDA, project, userProjectCounter }) => {
       // generation of the seeds for the PDA
-      console.log('start function');
-
       const [newProjectAddress] = await PublicKey.findProgramAddress(
         [
-          Buffer.from('project'), // seeds: "user"
-          signer.toBuffer(), // seeds: the user account PDA public key
+          Buffer.from('project'), // seeds: "project"
+          userAccountPDA.toBuffer(), // seeds: the user account PDA public key
           new BN(userProjectCounter + 1).toArray('le', 2), // seeds: the user project counter
         ],
         programId
       );
-
       setNewProjectAddress(newProjectAddress);
-      console.log('new project address :', newProjectAddress);
 
       // Rewards serialization
       const serializedRewards = project.rewards.map((reward) => ({
         name: reward.name,
         description: reward.description,
         price: new BN(reward.price),
-        maxSupply: new BN(reward.maxSupply),
+        maxSupply: reward.maxSupply ? new BN(reward.maxSupply) : null, // if unlimited supply, set to null
       }));
-
-      console.log('serailized reward:', serializedRewards);
-      console.log('project :', new BN(project.goalAmount));
-      console.log('project :', new BN(project.endTime));
-      console.log('project :', new BN(project.safetyDeposit));
 
       // call of the method
       return await program.methods
@@ -93,7 +84,7 @@ export function useBefundrProgramProject() {
           new BN(project.safetyDeposit)
         )
         .accountsPartial({
-          user: signer,
+          user: userAccountPDA,
           project: newProjectAddress,
         }) // definition of the PDA address with the seed generated
         .rpc(); // launch the transaction
@@ -101,9 +92,9 @@ export function useBefundrProgramProject() {
     onSuccess: async (signature) => {
       transactionToast(signature, 'Project created');
       allProjectsAccounts.refetch();
-      //   router.push(`/projects/${newProjectAddress}`);
+      router.push(`/`);
     },
-    onError: async () => toast.error("Erreur dans l'execution du programme"),
+    onError: async () => toast.error('Error creating project'),
   });
 
   return {

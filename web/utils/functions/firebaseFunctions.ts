@@ -26,7 +26,6 @@ export async function deleteImageFromFirebase(imageUrl: string) {
   try {
     // Delete the image
     await deleteObject(storageRef);
-    console.log('Old image deleted successfully');
   } catch (error) {
     console.error('Error deleting old image: ', error);
   }

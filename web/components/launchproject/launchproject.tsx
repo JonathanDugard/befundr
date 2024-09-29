@@ -30,6 +30,7 @@ const Launchproject = () => {
   //* LOCAL STATE
   const [selectedStep, setSelectedStep] = useState<number>(0);
   const [projectToCreate, setProjectToCreate] = useState<Project>({
+    // init with an empty project
     id: '',
     ownerId: '',
     name: '',
@@ -57,6 +58,7 @@ const Launchproject = () => {
   );
   const [userProjectCounter, setUserProjectCounter] = useState(0);
 
+  //* USER DATA MNGT
   // get the user entry address
   useEffect(() => {
     const fetchUserEntryAddress = async () => {
@@ -79,6 +81,7 @@ const Launchproject = () => {
     }
   }, [userProfile]);
 
+  //* PROJECT DATA MNGT
   // handle project input field modifications
   const handleProjectChange = (
     e: React.ChangeEvent<
@@ -144,18 +147,16 @@ const Launchproject = () => {
       const projectData = await handleProjectCreation(
         projectToCreate,
         projectImageUrl,
-        publicKey,
-        userProjectCounter
+        publicKey
       );
-      console.log('projectData :', projectData);
 
       //creation transaction
       if (projectData)
         try {
           await createProject.mutateAsync({
-            signer: userEntryAddress,
+            userAccountPDA: userEntryAddress,
             project: projectData,
-            userProjectCounter: new BN(userProjectCounter),
+            userProjectCounter: userProjectCounter,
           });
         } catch (error) {
           console.error(error);
@@ -163,9 +164,6 @@ const Launchproject = () => {
       setIsCreationLoading(false);
     }
   };
-
-  //* TEST
-  // console.log('projectToCreate:', projectToCreate);
 
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
