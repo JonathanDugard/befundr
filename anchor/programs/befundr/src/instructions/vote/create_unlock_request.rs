@@ -5,7 +5,7 @@ use crate::{
         MAX_REQUESTED_PERCENTAGE_AMOUNT, REJECTED_REQUEST_COOLDOWN, REQUEST_COOLDOWN, VOTING_PERIOD,
     },
     errors::CreateUnlockRequestError,
-    state::{Project, ProjectStatus, UnlockRequestVote, UnlockRequests, UnlockStatus, User},
+    state::{Project, ProjectStatus, UnlockRequest, UnlockRequests, UnlockStatus, User},
 };
 
 pub fn create_unlock_request(
@@ -67,10 +67,10 @@ pub fn create_unlock_request(
 
 #[derive(Accounts)]
 pub struct CreateUnlockRequest<'info> {
-    #[account(mut, has_one = owner)]
+    #[account(has_one = owner)]
     pub user: Account<'info, User>,
 
-    #[account(
+    #[account(mut,
     has_one = project,
     seeds = [b"project_unlock_requests", project.key().as_ref()],
     bump
@@ -79,21 +79,20 @@ pub struct CreateUnlockRequest<'info> {
 
     #[account(
     init,
-    has_one = project,
     payer = owner,
-    space = 8 + UnlockRequestVote::INIT_SPACE,
-    seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 2).to_le_bytes()],
+    space = 8 + UnlockRequest::INIT_SPACE,
+    seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 1).to_le_bytes()],
     bump
   )]
-    pub new_unlock_request: Account<'info, UnlockRequestVote>,
+    pub new_unlock_request: Account<'info, UnlockRequest>,
 
-    #[account(
-      seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 1).to_le_bytes()],
+    #[account(has_one = project,
+      seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 0).to_le_bytes()],
       bump
     )]
-    pub current_unlock_request: Option<Account<'info, UnlockRequestVote>>,
+    pub current_unlock_request: Option<Account<'info, UnlockRequest>>,
 
-    #[account(mut, has_one = user)]
+    #[account(has_one = user)]
     pub project: Account<'info, Project>,
 
     #[account(mut)]

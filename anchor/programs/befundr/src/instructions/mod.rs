@@ -19,3 +19,4 @@ pub use withdraw::*;
 pub mod marketplace;
 
 pub mod vote;
+pub use vote::*;

@@ -1,5 +1,5 @@
-pub mod unlock_request_vote;
-pub use unlock_request_vote::*;
+pub mod unlock_request;
+pub use unlock_request::*;
 
 pub mod unlock_requests;
 pub use unlock_requests::*;

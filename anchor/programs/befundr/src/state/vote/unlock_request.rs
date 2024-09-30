@@ -6,7 +6,7 @@ use super::UnlockStatus;
 
 #[account]
 #[derive(InitSpace)]
-pub struct UnlockRequestVote {
+pub struct UnlockRequest {
     pub project: Pubkey,
     pub amount_requested: u64,
     pub votes_against: u64,
@@ -19,4 +19,4 @@ pub struct UnlockRequestVote {
     pub votes: Vec<Pubkey>,
 }
 
-impl UnlockRequestVote {}
+impl UnlockRequest {}
