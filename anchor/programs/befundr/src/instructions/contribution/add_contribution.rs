@@ -5,8 +5,8 @@ use crate::{
     },
 };
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::{transfer, Transfer};
-// use anchor_spl::token::{self, SplTransfer, Token, TokenAccount};
+//use anchor_spl::mint::USDC;
+use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
 
 pub fn add_contribution(
     ctx: Context<AddContribution>,
@@ -64,46 +64,51 @@ pub fn add_contribution(
     user_contributions.contributions.push(contribution.key());
 
     // Transfer the contribution amount in USDC to the project
-    transfer_lamports_funds(&ctx, amount)?;
-    // transfer_spl_funds(&ctx, amount);
+    // Prepare SPL transfer call
+    let to_ata = &ctx.accounts.to_ata;
+    let from_ata = &ctx.accounts.from_ata;
+    let token_program = &ctx.accounts.token_program;
+    let authority = &ctx.accounts.signer;
+    transfer_spl_tokens(token_program, authority, from_ata, to_ata, amount)?;
 
     Ok(())
 }
 
-fn transfer_lamports_funds(ctx: &Context<AddContribution>, amount: u64) -> Result<()> {
-    let transfer_instruction = Transfer {
-        from: ctx.accounts.signer.to_account_info(),
-        to: ctx.accounts.project.to_account_info(),
-    };
-    let cpi_ctx =
-        CpiContext::new(ctx.accounts.system_program.to_account_info(), transfer_instruction);
-
-    match transfer(cpi_ctx, amount.into()) {
-        Ok(_) => Ok(()),
-        Err(error) => {
-            msg!("Error during the contribution transfer: {:?}", error);
-            Err(TransferError::TransferFailed.into())
-        },
-    }
-}
-
-// fn transfer_spl_tokens(ctx: Context<AddContribution>, amount: u64) -> Result<()> {
-//     let destination = &ctx.accounts.to_ata;
-//     let source = &ctx.accounts.from_ata;
-//     let token_program = &ctx.accounts.token_program;
-//     let authority = &ctx.accounts.from;
-
-//     // Transfer tokens from taker to initializer
-//     let cpi_accounts = SplTransfer {
-//         from: source.to_account_info().clone(),
-//         to: destination.to_account_info().clone(),
-//         authority: authority.to_account_info().clone(),
+// fn transfer_lamports_funds(ctx: &Context<AddContribution>, amount: u64) -> Result<()> {
+//     let transfer_instruction = Transfer {
+//         from: ctx.accounts.signer.to_account_info(),
+//         to: ctx.accounts.project.to_account_info(),
 //     };
-//     let cpi_program = token_program.to_account_info();
+//     let cpi_ctx =
+//         CpiContext::new(ctx.accounts.system_program.to_account_info(), transfer_instruction);
 
-//     token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
-//     Ok(())
+//     match transfer(cpi_ctx, amount.into()) {
+//         Ok(_) => Ok(()),
+//         Err(error) => {
+//             msg!("Error during the contribution transfer: {:?}", error);
+//             Err(TransferError::TransferFailed.into())
+//         },
+//     }
 // }
+
+fn transfer_spl_tokens<'info>(
+    token_program: &Program<'info, Token>,
+    authority: &Signer<'info>,
+    to_ata: &Account<'info, TokenAccount>,
+    from_ata: &Account<'info, TokenAccount>,
+    amount: u64,
+) -> Result<()> {
+    // Transfer tokens from taker to initializer
+    let cpi_accounts = SplTransfer {
+        from: from_ata.to_account_info().clone(),
+        to: to_ata.to_account_info().clone(),
+        authority: authority.to_account_info().clone(),
+    };
+    let cpi_program = token_program.to_account_info();
+
+    token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
+    Ok(())
+}
 
 pub fn reward_validation(project: &Project, amount: u64, reward_id: u64) -> Result<()> {
     // We need to ensure the selected reward exists in the project rewards list
@@ -148,7 +153,14 @@ pub struct AddContribution<'info> {
     pub contribution: Account<'info, Contribution>,
 
     #[account(mut)]
+    pub from_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
+    pub to_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
     pub signer: Signer<'info>,
 
+    pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
