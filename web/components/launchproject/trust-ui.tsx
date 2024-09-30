@@ -36,7 +36,7 @@ export const TrustBlock = (props: TrustProps) => {
         Befundr is based on confidance. The more informations you provide, the
         more contributors will trust you and your project.
       </p>
-      {/* <div className="flex justify-start gap-2 w-full">
+      <div className="flex justify-start gap-2 w-full">
         <Image
           alt="x"
           src={'/x.jpg'}
@@ -52,7 +52,7 @@ export const TrustBlock = (props: TrustProps) => {
           type="text"
           value={props.projectToCreate.xAccountUrl}
         />
-      </div> */}
+      </div>
 
       {/* safety deposit */}
       <p className="textStyle-subheadline !text-textColor-main mt-10">

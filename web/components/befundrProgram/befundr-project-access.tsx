@@ -81,7 +81,9 @@ export function useBefundrProgramProject() {
           new BN(project.goalAmount),
           new BN(project.endTime),
           serializedRewards,
-          new BN(project.safetyDeposit)
+          new BN(project.safetyDeposit),
+          project.xAccountUrl,
+          project.category
         )
         .accountsPartial({
           user: userAccountPDA,

@@ -21,6 +21,7 @@ export const handleProjectCreation = async (
     if (typeof validation === 'string') {
       toast.error(validation);
     }
+    return;
   }
 
   //* upload project image
@@ -117,6 +118,7 @@ const validateProjectToCreate = (
     'goalAmount',
     'timestamp',
     'endTime',
+    'xAccountUrl',
   ];
 
   // Check each required field
@@ -130,9 +132,30 @@ const validateProjectToCreate = (
     }
   }
 
+  // Project name length check
+  if (projectToCreate.name.length < 5 || projectToCreate.name.length > 64) {
+    return 'Project name must be between 5 to 64 characters';
+  }
+
+  // Project description length check
+  if (
+    projectToCreate.projectDescription.length < 10 ||
+    projectToCreate.projectDescription.length > 500
+  ) {
+    return 'Project description must be between 10 to 500 characters';
+  }
+
+  // Campain duration check
+  if (projectToCreate.endTime < 1 || projectToCreate.endTime > 90) {
+    return 'Campain duration must be between 1 to 90 days';
+  }
+
   // Additional check for rewards
-  if (projectToCreate.rewards.length === 0) {
-    return 'At least one reward must be added to the project.';
+  if (
+    projectToCreate.rewards.length === 0 ||
+    projectToCreate.rewards.length > 10
+  ) {
+    return 'Number of reward must be between 1 to 10';
   }
 
   // If everything is good, return true

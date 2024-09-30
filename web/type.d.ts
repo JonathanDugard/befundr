@@ -6,11 +6,23 @@ type ProjectStatus =
   | 'Abandoned'
   | 'Suspended';
 
+// type ProjectCategory =
+//   | 'Technology'
+//   | 'Art'
+//   | 'Education'
+//   | 'Health'
+//   | 'Environment'
+//   | 'SocialImpact'
+//   | 'Entertainment'
+//   | 'Science'
+//   | 'Finance'
+//   | 'Sports';
+
 type Project = {
   id: string;
   ownerId: string;
   name: string;
-  category: string;
+  category: ProjectCategory;
   imageUrl: string;
   projectDescription: string;
   goalAmount: number;
@@ -24,7 +36,7 @@ type Project = {
   safetyDeposit: number;
   feed: Update[];
   fundsRequests: FundsRequest[];
-  // xAccountUrl: string;
+  xAccountUrl: string;
 };
 
 type Reward = {

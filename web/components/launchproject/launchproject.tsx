@@ -19,6 +19,38 @@ import { useBefundrProgramProject } from '../befundrProgram/befundr-project-acce
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { BN } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
+import { ProjectCategoryEnum } from '@/data/category';
+import { Enum } from '@solana/web3.js';
+
+export class ProjectCategory extends Enum {
+  static Technology = new ProjectCategory({ technology: 'technology' });
+  static Art = new ProjectCategory({ art: 'art' });
+  static Education = new ProjectCategory({ education: 'education' });
+  static Health = new ProjectCategory({ health: 'health' });
+  static Environment = new ProjectCategory({ environment: 'environment' });
+  static SocialImpact = new ProjectCategory({
+    socialImpact: 'socialImpact',
+  });
+  static Entertainment = new ProjectCategory({
+    entertainment: 'entertainment',
+  });
+  static Science = new ProjectCategory({ science: 'science' });
+  static Finance = new ProjectCategory({ finance: 'finance' });
+  static Sports = new ProjectCategory({ sports: 'sports' });
+}
+
+const projectCategoryOptions = [
+  { label: 'Technology', value: ProjectCategory.Technology },
+  { label: 'Art', value: ProjectCategory.Art },
+  { label: 'Education', value: ProjectCategory.Education },
+  { label: 'Health', value: ProjectCategory.Health },
+  { label: 'Environment', value: ProjectCategory.Environment },
+  { label: 'Social Impact', value: ProjectCategory.SocialImpact },
+  { label: 'Entertainment', value: ProjectCategory.Entertainment },
+  { label: 'Science', value: ProjectCategory.Science },
+  { label: 'Finance', value: ProjectCategory.Finance },
+  { label: 'Sports', value: ProjectCategory.Sports },
+];
 
 const Launchproject = () => {
   //* GENERAL STATE
@@ -34,7 +66,7 @@ const Launchproject = () => {
     id: '',
     ownerId: '',
     name: '',
-    category: '',
+    category: ProjectCategory.Art,
     imageUrl: '',
     projectDescription: '',
     goalAmount: 0,
@@ -48,7 +80,7 @@ const Launchproject = () => {
     safetyDeposit: 0,
     feed: [],
     fundsRequests: [],
-    // xAccountUrl: '',
+    xAccountUrl: '',
   });
   const [projectImageUrl, setProjectImageUrl] = useState<File | null>(null);
   const [isCreationLoading, setIsCreationLoading] = useState(false);
@@ -112,6 +144,24 @@ const Launchproject = () => {
     }
   };
 
+  // handle category selection
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+
+    const selectedCategory = projectCategoryOptions.find(
+      (option) => option.label === selectedValue
+    )?.value;
+
+    if (selectedCategory) {
+      setProjectToCreate((prevProject) => ({
+        ...prevProject,
+        category: selectedCategory,
+      }));
+    }
+  };
+
   //* reward management
   // reward creation
   const handleAddReward = (newReward: Reward) => {
@@ -165,6 +215,8 @@ const Launchproject = () => {
     }
   };
 
+  console.log(projectToCreate);
+
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
       <button onClick={() => router.back()}>
@@ -190,6 +242,7 @@ const Launchproject = () => {
         {selectedStep === 0 && (
           <MainInfoBlock
             handleChange={handleProjectChange}
+            handleCategoryChange={handleCategoryChange}
             setSelectedPic={handleProjectPicChange}
             projectToCreate={projectToCreate}
           />

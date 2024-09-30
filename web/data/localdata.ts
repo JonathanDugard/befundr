@@ -129,7 +129,7 @@ export const project1: Project = {
   safetyDeposit: 5000,
   feed: [feed1, feed1, feed1],
   fundsRequests: [],
-  // xAccountUrl: 'https://x.com/befundr',
+  xAccountUrl: 'https://x.com/befundr',
 };
 
 export const project2: Project = {
@@ -151,7 +151,7 @@ export const project2: Project = {
   safetyDeposit: 5000,
   feed: [feed1, feed1, feed1],
   fundsRequests: [fundsRequest1, fundsRequest2],
-  // xAccountUrl: 'https://x.com/befundr',
+  xAccountUrl: 'https://x.com/befundr',
 };
 
 export const projects: Project[] = [

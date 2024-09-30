@@ -1,8 +1,13 @@
 'use client';
 import React from 'react';
 
+type Option = {
+  value: string;
+  label: string;
+};
+
 type Props = {
-  options: string[];
+  options: Option[];
   label: string;
   handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   inputName: string;
@@ -22,8 +27,8 @@ const Selector = (props: Props) => {
         name={props.inputName}
       >
         {props.options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
+          <option key={index} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>
