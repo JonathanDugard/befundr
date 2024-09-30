@@ -5,7 +5,7 @@ use crate::{
         MAX_REQUESTED_PERCENTAGE_AMOUNT, REJECTED_REQUEST_COOLDOWN, REQUEST_COOLDOWN, VOTING_PERIOD,
     },
     errors::CreateUnlockVoteError,
-    state::{Project, Status, UnlockRequestVote, UnlockRequests, UnlockStatus, User},
+    state::{Project, ProjectStatus, UnlockRequestVote, UnlockRequests, UnlockStatus, User},
 };
 
 pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64) -> Result<()> {
@@ -15,7 +15,10 @@ pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64)
     let unlock_requests = &mut ctx.accounts.unlock_requests;
     let new_unlock_request = &mut ctx.accounts.new_unlock_request;
 
-    require!(project.status == Status::Realising, CreateUnlockVoteError::WrongProjectStatus);
+    require!(
+        project.status == ProjectStatus::Realising,
+        CreateUnlockVoteError::WrongProjectStatus
+    );
 
     let max_allowed_amount = project.raised_amount * MAX_REQUESTED_PERCENTAGE_AMOUNT / 100;
 
