@@ -19,7 +19,11 @@ pub mod project {
 }
 
 pub mod project_contributions {
-    pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 10000;
+    pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 300;
+}
+
+pub mod user_contributions {
+    pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 100;
 }
 
 pub mod reward {

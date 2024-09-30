@@ -3,6 +3,7 @@ import { BN } from "@coral-xyz/anchor";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { ProjectStatus } from "./project_status";
 import { reward1, reward2, reward3 } from "./reward_dataset";
+import { ProjectCategory } from "./category_type";
 
 export const ONE_DAY_MILLISECONDS = 86_400_000;
 const now = Date.now();
@@ -19,7 +20,8 @@ export const projectData1: Project = {
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
   rewards: [reward1, reward2, reward3],
   xAccountUrl: "https://myURL.com/myXAccount",
-  safetyDeposit: new BN(0)
+  safetyDeposit: new BN(0),
+  category: ProjectCategory.SocialImpact
 }
 
 export const projectData2: Project = {
@@ -31,7 +33,8 @@ export const projectData2: Project = {
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
   rewards: [reward1, reward2, reward3],
   xAccountUrl: "https://myURL.com/myXAccount",
-  safetyDeposit: new BN(0)
+  safetyDeposit: new BN(0),
+  category: ProjectCategory.Technology
 }
 
 export const projectData3: Project = {
@@ -44,5 +47,7 @@ export const projectData3: Project = {
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
   rewards: [reward1, reward2, reward3],
   xAccountUrl: "https://myURL.com/myXAccount",
-  safetyDeposit: new BN(5000)
+  safetyDeposit: new BN(5000),
+  category: ProjectCategory.Art
+
 }

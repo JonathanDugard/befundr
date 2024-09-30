@@ -7,7 +7,7 @@ pub mod state;
 pub mod utils;
 
 use instructions::*;
-use state::Reward;
+use state::{ProjectCategory, Reward};
 
 declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
 
@@ -15,6 +15,8 @@ declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
 pub mod befundr {
 
     use super::*;
+
+    /* User */
 
     pub fn create_user(
         ctx: Context<CreateUser>,
@@ -36,6 +38,12 @@ pub mod befundr {
         instructions::update_user(ctx, name, avatar_url, bio, city)
     }
 
+    pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
+        instructions::delete_user(ctx)
+    }
+
+    /* Project */
+
     pub fn create_project(
         ctx: Context<CreateProject>,
         name: String,
@@ -46,6 +54,7 @@ pub mod befundr {
         rewards: Vec<Reward>,
         safety_deposit: u64,
         x_account_url: String,
+        category: ProjectCategory,
     ) -> Result<()> {
         instructions::create_project(
             ctx,
@@ -57,11 +66,22 @@ pub mod befundr {
             rewards,
             safety_deposit,
             x_account_url,
+            category,
         )
     }
 
-    pub fn delete_user(ctx: Context<DeleteUser>) -> Result<()> {
-        instructions::delete_user(ctx)
+    /* Contribution */
+
+    pub fn add_contribution(
+        ctx: Context<AddContribution>,
+        amount: u64,
+        reward_id: Option<u64>,
+    ) -> Result<()> {
+        instructions::add_contribution(ctx, amount, reward_id)
+    }
+
+    pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
+        instructions::cancel_contribution(ctx)
     }
 }
 
