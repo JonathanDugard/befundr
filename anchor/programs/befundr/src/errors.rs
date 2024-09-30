@@ -77,7 +77,7 @@ pub enum TransferError {
 }
 
 #[error_code]
-pub enum CreateUnlockVoteError {
+pub enum CreateUnlockRequestError {
     #[msg("Requested amount to unlock is too high")]
     RequestedAmountTooHigh,
     #[msg("Insufficient remaining funds")]

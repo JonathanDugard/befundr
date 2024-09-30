@@ -4,11 +4,14 @@ use crate::{
     constants::unlock_request::{
         MAX_REQUESTED_PERCENTAGE_AMOUNT, REJECTED_REQUEST_COOLDOWN, REQUEST_COOLDOWN, VOTING_PERIOD,
     },
-    errors::CreateUnlockVoteError,
+    errors::CreateUnlockRequestError,
     state::{Project, ProjectStatus, UnlockRequestVote, UnlockRequests, UnlockStatus, User},
 };
 
-pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64) -> Result<()> {
+pub fn create_unlock_request(
+    ctx: Context<CreateUnlockRequest>,
+    amount_requested: u64,
+) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
     let project = &ctx.accounts.project;
@@ -17,18 +20,18 @@ pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64)
 
     require!(
         project.status == ProjectStatus::Realising,
-        CreateUnlockVoteError::WrongProjectStatus
+        CreateUnlockRequestError::WrongProjectStatus
     );
 
     let max_allowed_amount = project.raised_amount * MAX_REQUESTED_PERCENTAGE_AMOUNT / 100;
 
     require!(
         amount_requested <= max_allowed_amount,
-        CreateUnlockVoteError::RequestedAmountTooHigh
+        CreateUnlockRequestError::RequestedAmountTooHigh
     );
     require!(
         project.raised_amount - unlock_requests.unlocked_amount >= amount_requested,
-        CreateUnlockVoteError::NotEnoughFunds
+        CreateUnlockRequestError::NotEnoughFunds
     );
 
     //If there is already an unlock request ongoing, do additional checks
@@ -37,7 +40,7 @@ pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64)
 
         require!(
             current_unlock_request_vote.end_time < now,
-            CreateUnlockVoteError::UnlockVoteAlreadyOngoing
+            CreateUnlockRequestError::UnlockVoteAlreadyOngoing
         );
         if current_unlock_request_vote.status == UnlockStatus::Rejected {
             vote_cooldown = REJECTED_REQUEST_COOLDOWN;
@@ -46,7 +49,7 @@ pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64)
         //Check that the cooldown is elapsed
         require!(
             current_unlock_request_vote.created_time + vote_cooldown <= now,
-            CreateUnlockVoteError::WaitBeforeNewRequest
+            CreateUnlockRequestError::WaitBeforeNewRequest
         );
     }
 
@@ -63,16 +66,13 @@ pub fn create_unlock_vote(ctx: Context<CreateUnlockVote>, amount_requested: u64)
 }
 
 #[derive(Accounts)]
-pub struct CreateUnlockVote<'info> {
-    #[account(mut)]
+pub struct CreateUnlockRequest<'info> {
+    #[account(mut, has_one = owner)]
     pub user: Account<'info, User>,
 
     #[account(
-    init_if_needed,
     has_one = project,
-    payer = owner,
-    space = 8 + UnlockRequests::INIT_SPACE,
-    seeds = [b"project_requests", project.key().as_ref()],
+    seeds = [b"project_unlock_requests", project.key().as_ref()],
     bump
   )]
     pub unlock_requests: Account<'info, UnlockRequests>,
@@ -82,18 +82,18 @@ pub struct CreateUnlockVote<'info> {
     has_one = project,
     payer = owner,
     space = 8 + UnlockRequestVote::INIT_SPACE,
-    seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 1).to_le_bytes()],
+    seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 2).to_le_bytes()],
     bump
   )]
     pub new_unlock_request: Account<'info, UnlockRequestVote>,
 
     #[account(
-    seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter).to_le_bytes()],
-    bump
-  )]
+      seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 1).to_le_bytes()],
+      bump
+    )]
     pub current_unlock_request: Option<Account<'info, UnlockRequestVote>>,
 
-    #[account(mut, has_one = owner)]
+    #[account(mut, has_one = user)]
     pub project: Account<'info, Project>,
 
     #[account(mut)]

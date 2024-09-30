@@ -81,6 +81,8 @@ pub fn create_project(
     // Increment project user counter
     ctx.accounts.user.created_project_counter += 1;
 
+    ctx.accounts.unlock_requests.project = ctx.accounts.project.key();
+
     Ok(())
 }
 
