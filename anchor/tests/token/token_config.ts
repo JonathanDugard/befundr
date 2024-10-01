@@ -20,7 +20,7 @@ import {
     Account, 
     mintTo, 
     getAssociatedTokenAddress,
-    getMint, 
+    getAccount,
     getOrCreateAssociatedTokenAccount, 
 } from '@solana/spl-token';
 import { PROGRAM_CONNECTION } from "../config";
@@ -156,7 +156,7 @@ const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: number)
         MINT_ADDRESS,
         toAccount,
         MINT_AUTHORITY,
-        convertAmountToDecimals(amount),
+        amount,
       );
 }
 
@@ -176,6 +176,13 @@ const getSplTransferAccounts = async(fromWallet: Keypair, toProject: PublicKey):
     return {fromAta, toAta};
 }
 
+const getTokenAccountBalance = async(address: PublicKey, isPda?: boolean): Promise<number> => {
+    const tokenAccount: PublicKey = await getAssociatedTokenAddress(MINT_ADDRESS, address, isPda ?? false);
+    const account = await getAccount(PROGRAM_CONNECTION, tokenAccount);
+
+    return Number(account.amount);
+}
+
 export {
     MINT_ADDRESS, 
     InitMint,
@@ -185,4 +192,5 @@ export {
     convertAmountToDecimals,
     convertFromDecimalsToAmount,
     getSplTransferAccounts,
+    getTokenAccountBalance,
 }

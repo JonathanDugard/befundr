@@ -6,7 +6,8 @@ import { BN } from "@coral-xyz/anchor";
 import { LAMPORTS_PER_SOL, Enum } from "@solana/web3.js";
 import { ContributionStatus } from "./contribution_status";
 import { 
-    convertAmountToDecimals, 
+    convertAmountToDecimals,
+    getTokenAccountBalance, 
 } from "../token/token_config";
 
 describe('createContribution', () => {
@@ -22,9 +23,9 @@ describe('createContribution', () => {
 
         const projectContributionCounter = projectPda.contributionCounter;
 
-        const mintAmount = 500;
-        const contributionAmount = 100; // Read it as 100 USDC
-        
+        const mintAmount = convertAmountToDecimals(5);
+        const contributionAmount = convertAmountToDecimals(2);
+
         const contributionPdaKey = await createContribution(
             projectPdaKey, 
             userPdaKey, 
@@ -36,11 +37,16 @@ describe('createContribution', () => {
         );
 
         const contributionPda = await program.account.contribution.fetch(contributionPdaKey);
+        const walletTokenAmount = await getTokenAccountBalance(userWallet.publicKey);
+        const projectTokenAmount = await getTokenAccountBalance(projectPdaKey, true);
+
+        expect(walletTokenAmount).toEqual(mintAmount - contributionAmount);
+        expect(projectTokenAmount).toEqual(contributionAmount);
 
         expect(contributionPda.initialOwner).toEqual(userPdaKey);
         expect(contributionPda.currentOwner).toEqual(userPdaKey);
         expect(contributionPda.project).toEqual(projectPdaKey);
-        expect(contributionPda.amount.toNumber()).toEqual(convertAmountToDecimals(contributionAmount));
+        expect(contributionPda.amount.toNumber()).toEqual(contributionAmount);
         expect(contributionPda.rewardId.toNumber()).toEqual(0);
         expect(contributionPda.creationTimestamp.toNumber()).toBeGreaterThan(0);
         expect(contributionPda.isClaimed).toBeFalsy();
@@ -65,7 +71,7 @@ describe('createContribution', () => {
 
         const projectPda = await program.account.project.fetch(projectPdaKey);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 1 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(5);
 
         // Create a different wallet to simulate the wrong signer
         const wrongWallet = await createUserWalletWithSol();
@@ -80,7 +86,6 @@ describe('createContribution', () => {
                 projectContributionCounter,
                 contributionAmount,
                 0,
-                null
             )
         ).rejects.toThrow(expectedErrorMessage);
     });

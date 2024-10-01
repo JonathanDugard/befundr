@@ -9,7 +9,8 @@ import {
     MintAmountTo,
     getSplTransferAccounts, 
     convertAmountToDecimals, 
-    newPdaAssociatedTokenAccount 
+    newPdaAssociatedTokenAccount,
+    getTokenAccountBalance
 } from "./token/token_config";
 
 export const INIT_BALANCE = 1000 * LAMPORTS_PER_SOL; // 1000 SOL per wallet
@@ -154,7 +155,7 @@ export const createContribution = async (
     projectContributionCounter: number,
     amount: number,
     rewardId: number | null,
-    mintAmount: number | null
+    mintAmount?: number | null
 ): Promise<PublicKey> => {
 
     const [contributionPdaPublicKey] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -185,30 +186,30 @@ export const createContribution = async (
 
     // Get SPL Token transfer accounts
     const { fromAta, toAta } = await getSplTransferAccounts(wallet, projectPubkey);
-    if (mintAmount) {
+    if (mintAmount && mintAmount !== undefined) {
         // Add 500 mocked up USDC to the wallet before sending contribution
         await MintAmountTo(wallet, fromAta, mintAmount);
     }
 
     // Call the addContribution method
     const createTx = await program.methods
-        .addContribution(
-            new BN(convertAmountToDecimals(amount)),
-            rewardId !== null ? new BN(rewardId) : null
-        )
-        .accountsPartial({
-            project: projectPubkey,
-            projectContributions: projectContributionsPubkey,
-            user: userPubkey,
-            userContributions: userContributionsPubkey,
-            contribution: contributionPdaPublicKey,
-            fromAta: fromAta,
-            toAta: toAta,
-            signer: wallet.publicKey,
-            tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .signers([wallet])
-        .rpc();
+    .addContribution(
+        new BN(amount),
+        rewardId !== null ? new BN(rewardId) : null
+    )
+    .accountsPartial({
+        project: projectPubkey,
+        projectContributions: projectContributionsPubkey,
+        user: userPubkey,
+        userContributions: userContributionsPubkey,
+        contribution: contributionPdaPublicKey,
+        fromAta: fromAta,
+        toAta: toAta,
+        signer: wallet.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+    })
+    .signers([wallet])
+    .rpc();
 
     await confirmTransaction(program, createTx);
 
