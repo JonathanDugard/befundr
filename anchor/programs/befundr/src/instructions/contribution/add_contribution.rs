@@ -1,5 +1,5 @@
 use crate::{
-    errors::{ContributionError, RewardError, TransferError},
+    errors::{ContributionError, RewardError},
     state::{
         Contribution, Project, ProjectContributions, ProjectStatus, Reward, User, UserContributions,
     },
@@ -7,7 +7,7 @@ use crate::{
 };
 use anchor_lang::prelude::*;
 //use anchor_spl::mint::USDC;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+use anchor_spl::token::{Token, TokenAccount};
 
 pub fn add_contribution(
     ctx: Context<AddContribution>,
@@ -72,33 +72,14 @@ pub fn add_contribution(
     let from_ata = &ctx.accounts.from_ata;
     let authority = &ctx.accounts.signer;
 
-    let result = SplTransferBuilder::new((*token_program).clone())
+    SplTransferBuilder::new((*token_program).clone())
         .send(amount)
         .from((*from_ata).clone())
         .to((*to_ata).clone())
-        .signed_by((*authority).clone());
+        .signed_by((*authority).clone())?;
 
     Ok(())
 }
-
-// fn transfer_spl_tokens<'info>(
-//     token_program: &Program<'info, Token>,
-//     authority: &Signer<'info>,
-//     to_ata: &Account<'info, TokenAccount>,
-//     from_ata: &Account<'info, TokenAccount>,
-//     amount: u64,
-// ) -> Result<()> {
-//     // Transfer tokens from taker to initializer
-//     let cpi_accounts = SplTransfer {
-//         from: from_ata.to_account_info().clone(),
-//         to: to_ata.to_account_info().clone(),
-//         authority: authority.to_account_info().clone(),
-//     };
-//     let cpi_program = token_program.to_account_info();
-
-//     token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
-//     Ok(())
-// }
 
 pub fn reward_validation(project: &Project, amount: u64, reward_id: u64) -> Result<()> {
     // We need to ensure the selected reward exists in the project rewards list
