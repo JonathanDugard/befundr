@@ -37,7 +37,7 @@ describe('createContribution', () => {
         expect(contributionPda.amount.toNumber()).toEqual(contributionAmount);
         expect(contributionPda.rewardId.toNumber()).toEqual(0);
         expect(contributionPda.creationTimestamp.toNumber()).toBeGreaterThan(0);
-        expect(contributionPda.isClaimed).toBeNull();
+        expect(contributionPda.isClaimed).toBeFalsy();
         expect(new Enum(contributionPda.status).enum).toBe(ContributionStatus.Active.enum);
     });
 
