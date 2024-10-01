@@ -56,8 +56,6 @@ const Project = (props: Props) => {
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromAccountPublicKey(new PublicKey(props.project.user));
 
-  console.log(props.project);
-
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       {/* header */}
