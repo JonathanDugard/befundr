@@ -16,7 +16,7 @@ pub enum CreateProjectError {
     NameTooShort,
     #[msg("Project name is too long (max 64 characters).")]
     NameTooLong,
-    #[msg("Image URL is too long (max 128 characters).")]
+    #[msg("Image URL is too long (max 256 characters).")]
     ImageUrlTooLong,
     #[msg("URL is too long (max 128 characters).")]
     UrlTooLong,
@@ -74,4 +74,18 @@ pub enum ContributionError {
 pub enum TransferError {
     #[msg("Funds transfer failed.")]
     TransferFailed,
+}
+
+#[error_code]
+pub enum CreateUnlockRequestError {
+    #[msg("Requested amount to unlock is too high")]
+    RequestedAmountTooHigh,
+    #[msg("Insufficient remaining funds")]
+    NotEnoughFunds,
+    #[msg("The project is not in realization")]
+    WrongProjectStatus,
+    #[msg("There is already a vote ongoing")]
+    UnlockVoteAlreadyOngoing,
+    #[msg("Request cooldown ongoing")]
+    WaitBeforeNewRequest,
 }
