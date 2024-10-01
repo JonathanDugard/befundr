@@ -3,7 +3,7 @@ import RewardCardDetailled from '../z-library/card/RewardCardDetailled';
 import FeedCard from '../z-library/card/FeedCard';
 import Divider from '../z-library/display elements/Divider';
 import FundsRequestCard from '../z-library/card/VoteCard';
-import FallbackImage from '../z-library/display elements/FallbackImage';
+import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
 
 export const AboutBlock = ({ description }: { description: string }) => {
@@ -22,7 +22,7 @@ export const RewardBlock = ({
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
-      {projectStatus === 'fundraising' && (
+      {projectStatus === ProjectStatus.Fundraising.enum && (
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col items-start justify-between gap-2 w-full ">
             <p className="textStyle-subheadline">Donation</p>
@@ -64,7 +64,7 @@ export const FounderBlock = ({
         {/* main info */}
         <div className="flex justify-start items-start gap-4">
           <div className="bg-neutral-400 w-40 h-40 ">
-            <FallbackImage
+            <ImageWithFallback
               alt="image"
               fallbackImageSrc="/images/default_project_image.jpg"
               classname=" aspect-square object-cover"

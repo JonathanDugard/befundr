@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import InfoLabel from '../display elements/InfoLabel';
-import FallbackImage from '../display elements/FallbackImage';
+import ImageWithFallback from '../display elements/ImageWithFallback';
 import { getProgressPercentage } from '@/utils/functions/projectsFunctions';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
@@ -37,7 +37,7 @@ const ProjectCard = (props: Props) => {
       w-[400px] h-[200px] bg-second"
       >
         {/* project image */}
-        <FallbackImage
+        <ImageWithFallback
           alt="image"
           classname="object-cover aspect-square"
           fallbackImageSrc="/images/default_project_image.jpg"

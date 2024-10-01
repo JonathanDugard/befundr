@@ -4,7 +4,8 @@ import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
 import MainButtonLabel from '../button/MainButtonLabel';
 import Link from 'next/link';
 import MakeContributionPopup from '../popup/MakeContributionPopup';
-import FallbackImage from '../display elements/FallbackImage';
+import ImageWithFallback from '../display elements/ImageWithFallback';
+import { ProjectStatus } from '@/data/projectStatus';
 
 type Props = {
   reward: Reward;
@@ -19,7 +20,7 @@ const RewardCardDetailled = (props: Props) => {
     <div className="flex justify-start items-start gap-6 w-full h-full ">
       {/* image */}
       <div className="bg-neutral-400 w-1/4 aspect-square">
-        <FallbackImage
+        <ImageWithFallback
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
           classname="w-1/2 md:w-1/3 aspect-square object-cover"
@@ -49,7 +50,7 @@ const RewardCardDetailled = (props: Props) => {
             {props.reward.currentSupply} contributors
           </p>
           {/* button if status fundraising */}
-          {props.projectStatus === 'fundraising' && (
+          {props.projectStatus === ProjectStatus.Fundraising.enum && (
             <div className="flex justify-end gap-4">
               <Link href={`/marketplace/${props.projectId}`}>
                 <SecondaryButtonLabel label="Go to marketplace" />
@@ -60,7 +61,7 @@ const RewardCardDetailled = (props: Props) => {
             </div>
           )}
           {/* button if status realizing */}
-          {props.projectStatus === 'Realising' && (
+          {props.projectStatus === ProjectStatus.Realising.enum && (
             <Link href={`/marketplace/${props.projectId}`}>
               <MainButtonLabel label="Go to marketplace" />
             </Link>
