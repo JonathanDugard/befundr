@@ -12,7 +12,7 @@ pub struct SplTransferBuilder<'info> {
 }
 
 // Usage example
-// let result = SplTransferBuilder::new(token_program)
+// SplTransferBuilder::new(token_program)
 //     .send(100)
 //     .from(signerKeypair, from_ata)
 //     .to(to_ata);
