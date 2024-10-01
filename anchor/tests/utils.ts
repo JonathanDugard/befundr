@@ -4,6 +4,13 @@ import { User } from "./user/user_type";
 import { anchor, program, systemProgram } from "./config";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Project } from "./project/project_type";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { 
+    MintAmountTo,
+    getSplTransferAccounts, 
+    convertAmountToDecimals, 
+    newPdaAssociatedTokenAccount 
+} from "./token/token_config";
 
 export const INIT_BALANCE = 1000 * LAMPORTS_PER_SOL; // 1000 SOL per wallet
 
@@ -124,6 +131,9 @@ export const createProject = async (
 
     await confirmTransaction(program, createTx);
 
+    // Create project ATA
+    await newPdaAssociatedTokenAccount(wallet, projectPdaPublicKey);
+
     return projectPdaPublicKey;
 }
 
@@ -143,8 +153,10 @@ export const createContribution = async (
     wallet: Keypair,
     projectContributionCounter: number,
     amount: number,
-    rewardId: number | null
+    rewardId: number | null,
+    mintAmount: number | null
 ): Promise<PublicKey> => {
+
     const [contributionPdaPublicKey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
             Buffer.from("contribution"),
@@ -162,7 +174,6 @@ export const createContribution = async (
         ],
         program.programId
     );
-
     // Get userContributions PDA Pubkey
     const [userContributionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
@@ -172,19 +183,29 @@ export const createContribution = async (
         program.programId
     );
 
+    // Get SPL Token transfer accounts
+    const { fromAta, toAta } = await getSplTransferAccounts(wallet, projectPubkey);
+    if (mintAmount) {
+        // Add 500 mocked up USDC to the wallet before sending contribution
+        await MintAmountTo(wallet, fromAta, mintAmount);
+    }
+
     // Call the addContribution method
     const createTx = await program.methods
         .addContribution(
-            new BN(amount),
+            new BN(convertAmountToDecimals(amount)),
             rewardId !== null ? new BN(rewardId) : null
         )
-        .accounts({
+        .accountsPartial({
             project: projectPubkey,
             projectContributions: projectContributionsPubkey,
             user: userPubkey,
             userContributions: userContributionsPubkey,
             contribution: contributionPdaPublicKey,
+            fromAta: fromAta,
+            toAta: toAta,
             signer: wallet.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
         })
         .signers([wallet])
         .rpc();
