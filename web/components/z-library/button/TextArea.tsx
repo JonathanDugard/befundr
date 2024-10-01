@@ -7,6 +7,8 @@ type Props = {
   value: string;
   inputName: string;
   handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  min?: number;
+  max?: number;
 };
 
 const TextArea = (props: Props) => {
@@ -22,6 +24,8 @@ const TextArea = (props: Props) => {
         value={props.value}
         name={props.inputName}
         onChange={props.handleChange}
+        minLength={props.min}
+        maxLength={props.max}
       />
     </div>
   );

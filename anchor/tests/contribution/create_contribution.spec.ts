@@ -43,15 +43,15 @@ describe('createContribution', () => {
         expect(contributionPda.amount.toNumber()).toEqual(convertAmountToDecimals(contributionAmount));
         expect(contributionPda.rewardId.toNumber()).toEqual(0);
         expect(contributionPda.creationTimestamp.toNumber()).toBeGreaterThan(0);
-        expect(contributionPda.isClaimed).toBeNull();
+        expect(contributionPda.isClaimed).toBeFalsy();
         expect(new Enum(contributionPda.status).enum).toBe(ContributionStatus.Active.enum);
     });
 
-    it.skip("should fail if the project is not in fundraising state", async () => {
+    it("should fail if the project is not in fundraising state", async () => {
         // no project state updates instruction exist at this time
     });
 
-    it.skip("should fail if the project is not in fundraising period", async () => {
+    it("should fail if the project is not in fundraising period", async () => {
         // unable to create a past project 
     });
 
@@ -124,4 +124,41 @@ describe('createContribution', () => {
     it("should handle errors during the contribution transfer", async () => {
         // empty
     });
+
+    it("should fail if the reward does not exist in the project rewards list", async () => {
+        // empty
+    });
+
+    it("should fail if the contribution amount is insufficient for the selected reward", async () => {
+        // empty
+    });
+
+    it("should fail if the reward supply has reached its maximum limit", async () => {
+        // empty
+    });
+
+    it("should update the reward supply if a valid reward is selected", async () => {
+        // empty
+    });
+
+    it("should update the project's raised amount and contribution counter", async () => {
+        // empty
+    });
+
+    it("should update the ProjectContributions list", async () => {
+        // empty
+    });
+
+    it("should update the UserContributions list", async () => {
+        // empty
+    });
+
+    it("should transfer the contribution amount in USDC to the project", async () => {
+        // empty
+    });
+
+    it("should handle errors during the contribution transfer", async () => {
+        // empty
+    });
+
 });

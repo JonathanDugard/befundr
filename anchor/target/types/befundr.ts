@@ -14,6 +14,128 @@ export type Befundr = {
   },
   "instructions": [
     {
+      "name": "addContribution",
+      "discriminator": [
+        115,
+        15,
+        193,
+        201,
+        25,
+        254,
+        227,
+        124
+      ],
+      "accounts": [
+        {
+          "name": "project",
+          "writable": true
+        },
+        {
+          "name": "projectContributions",
+          "writable": true
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "userContributions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contribution",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "rewardId",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancelContribution",
+      "discriminator": [
+        184,
+        238,
+        88,
+        63,
+        152,
+        103,
+        17,
+        123
+      ],
+      "accounts": [
+        {
+          "name": "project",
+          "writable": true
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "contribution",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "createProject",
       "discriminator": [
         148,
@@ -33,6 +155,44 @@ export type Befundr = {
         {
           "name": "project",
           "writable": true
+        },
+        {
+          "name": "projectContributions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
         },
         {
           "name": "signer",
@@ -78,6 +238,18 @@ export type Befundr = {
         {
           "name": "safetyDeposit",
           "type": "u64"
+        },
+        {
+          "name": "xAccountUrl",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "type": {
+            "defined": {
+              "name": "projectCategory"
+            }
+          }
         }
       ]
     },
@@ -262,6 +434,19 @@ export type Befundr = {
   ],
   "accounts": [
     {
+      "name": "contribution",
+      "discriminator": [
+        182,
+        187,
+        14,
+        111,
+        72,
+        167,
+        242,
+        212
+      ]
+    },
+    {
       "name": "project",
       "discriminator": [
         205,
@@ -272,6 +457,19 @@ export type Befundr = {
         247,
         142,
         19
+      ]
+    },
+    {
+      "name": "projectContributions",
+      "discriminator": [
+        83,
+        72,
+        156,
+        71,
+        194,
+        187,
+        160,
+        150
       ]
     },
     {
@@ -286,26 +484,91 @@ export type Befundr = {
         58,
         236
       ]
+    },
+    {
+      "name": "userContributions",
+      "discriminator": [
+        215,
+        150,
+        11,
+        243,
+        145,
+        49,
+        43,
+        66
+      ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "unauthorized",
-      "msg": "Unauthorized: Only the admin can delete users."
-    },
-    {
-      "code": 6001,
-      "name": "userHasActivity",
-      "msg": "User has associated projects or contributions."
-    },
-    {
-      "code": 6002,
-      "name": "wrongOwnerAccount",
-      "msg": "Wrong owner account."
+      "name": "transferFailed",
+      "msg": "Funds transfer failed."
     }
   ],
   "types": [
+    {
+      "name": "contribution",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initialOwner",
+            "type": "pubkey"
+          },
+          {
+            "name": "currentOwner",
+            "type": "pubkey"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "rewardId",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "creationTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "isClaimed",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "contributionStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "contributionStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "active"
+          },
+          {
+            "name": "cancelled"
+          }
+        ]
+      }
+    },
     {
       "name": "project",
       "type": {
@@ -332,6 +595,18 @@ export type Befundr = {
             "type": "string"
           },
           {
+            "name": "xAccountUrl",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "type": {
+              "defined": {
+                "name": "projectCategory"
+              }
+            }
+          },
+          {
             "name": "goalAmount",
             "type": "u64"
           },
@@ -351,7 +626,7 @@ export type Befundr = {
             "name": "status",
             "type": {
               "defined": {
-                "name": "status"
+                "name": "projectStatus"
               }
             }
           },
@@ -376,6 +651,88 @@ export type Befundr = {
           {
             "name": "safetyDeposit",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "projectCategory",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "technology"
+          },
+          {
+            "name": "art"
+          },
+          {
+            "name": "education"
+          },
+          {
+            "name": "health"
+          },
+          {
+            "name": "environment"
+          },
+          {
+            "name": "socialImpact"
+          },
+          {
+            "name": "entertainment"
+          },
+          {
+            "name": "science"
+          },
+          {
+            "name": "finance"
+          },
+          {
+            "name": "sports"
+          }
+        ]
+      }
+    },
+    {
+      "name": "projectContributions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "contributions",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "projectStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "draft"
+          },
+          {
+            "name": "fundraising"
+          },
+          {
+            "name": "realising"
+          },
+          {
+            "name": "completed"
+          },
+          {
+            "name": "abandoned"
+          },
+          {
+            "name": "suspended"
           }
         ]
       }
@@ -406,32 +763,6 @@ export type Befundr = {
           {
             "name": "currentSupply",
             "type": "u32"
-          }
-        ]
-      }
-    },
-    {
-      "name": "status",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "draft"
-          },
-          {
-            "name": "fundraising"
-          },
-          {
-            "name": "realising"
-          },
-          {
-            "name": "completed"
-          },
-          {
-            "name": "abandoned"
-          },
-          {
-            "name": "suspended"
           }
         ]
       }
@@ -472,6 +803,20 @@ export type Befundr = {
           {
             "name": "createdProjectCounter",
             "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "userContributions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "contributions",
+            "type": {
+              "vec": "pubkey"
+            }
           }
         ]
       }

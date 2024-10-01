@@ -214,3 +214,56 @@ export const createContribution = async (
 
     return contributionPdaPublicKey;
 }
+
+export const createUnlockRequest = async (
+    projectPubkey: PublicKey,
+    userPubkey: PublicKey,
+    wallet: Keypair,
+    unlockRequestsCounter: number,
+    amountRequested: number
+): Promise<PublicKey> => {
+    const [unlockRequestsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("project_unlock_requests"),
+            projectPubkey.toBuffer(),
+        ],
+        program.programId
+    );
+    const [newUnlockRequestPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("unlock_request"),
+            projectPubkey.toBuffer(),
+            new BN(unlockRequestsCounter + 1).toArray('le', 2),
+        ],
+        program.programId
+    );
+
+    const [currentUnlockRequestPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("unlock_request"),
+            projectPubkey.toBuffer(),
+            new BN(unlockRequestsCounter).toArray('le', 2),
+        ],
+        program.programId
+    );
+
+
+    const createTx = await program.methods
+        .createUnlockRequest(
+            new BN(amountRequested)
+        )
+        .accountsPartial({
+            user: userPubkey,
+            unlockRequests: unlockRequestsPubkey,
+            newUnlockRequest: newUnlockRequestPubkey,
+            currentUnlockRequest: unlockRequestsCounter && currentUnlockRequestPubkey || null, //null account if no requests yet
+            project: projectPubkey,
+            owner: wallet.publicKey,
+        })
+        .signers([wallet])
+        .rpc();
+
+    await confirmTransaction(program, createTx);
+
+    return newUnlockRequestPubkey;
+}

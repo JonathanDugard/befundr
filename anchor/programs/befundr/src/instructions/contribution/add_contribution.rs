@@ -43,6 +43,7 @@ pub fn add_contribution(
     // Update reward supply
     if let Some(reward) = reward {
         reward.add_supply()?;
+        contribution.is_claimed = Some(false);
     }
 
     // Initialize the Contribution PDA if all checks pass

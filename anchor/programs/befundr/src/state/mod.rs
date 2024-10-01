@@ -9,3 +9,6 @@ pub use project::*;
 
 pub mod marketplace;
 pub use marketplace::*;
+
+pub mod vote;
+pub use vote::*;

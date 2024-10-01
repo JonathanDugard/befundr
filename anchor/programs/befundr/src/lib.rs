@@ -83,6 +83,13 @@ pub mod befundr {
     pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
         instructions::cancel_contribution(ctx)
     }
+
+    pub fn create_unlock_request(
+        ctx: Context<CreateUnlockRequest>,
+        amount_requested: u64,
+    ) -> Result<()> {
+        instructions::create_unlock_request(ctx, amount_requested)
+    }
 }
 
 #[derive(Accounts)]
