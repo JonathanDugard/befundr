@@ -75,3 +75,17 @@ pub enum TransferError {
     #[msg("Funds transfer failed.")]
     TransferFailed,
 }
+
+#[error_code]
+pub enum CreateUnlockRequestError {
+    #[msg("Requested amount to unlock is too high")]
+    RequestedAmountTooHigh,
+    #[msg("Insufficient remaining funds")]
+    NotEnoughFunds,
+    #[msg("The project is not in realization")]
+    WrongProjectStatus,
+    #[msg("There is already a vote ongoing")]
+    UnlockVoteAlreadyOngoing,
+    #[msg("Request cooldown ongoing")]
+    WaitBeforeNewRequest,
+}
