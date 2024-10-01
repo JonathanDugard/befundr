@@ -10,5 +10,6 @@ const PROGRAM_CONNECTION = anchor.getProvider().connection;
 export {
     systemProgram,
     program,
-    anchor
+    anchor,
+    PROGRAM_CONNECTION
 }
