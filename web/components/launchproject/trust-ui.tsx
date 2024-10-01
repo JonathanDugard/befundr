@@ -6,7 +6,7 @@ import Slider from '../z-library/button/Slider';
 import TrustScore from '../z-library/display elements/TrustScore';
 import InputField from '../z-library/button/InputField';
 import { calculateTrustScore } from '@/utils/functions/utilFunctions';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type TrustProps = {
   handleChange: (
@@ -15,6 +15,7 @@ type TrustProps = {
     >
   ) => void;
   projectToCreate: Project;
+  handleTrustscoreChange: (trustscore: number) => void;
 };
 
 export const TrustBlock = (props: TrustProps) => {
@@ -24,6 +25,10 @@ export const TrustBlock = (props: TrustProps) => {
       props.projectToCreate.goalAmount,
     [props.projectToCreate.safetyDeposit, props.projectToCreate.goalAmount]
   );
+
+  useEffect(() => {
+    props.handleTrustscoreChange(calculateTrustScore(collateralRatio));
+  }, [collateralRatio]);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
