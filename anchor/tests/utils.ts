@@ -4,6 +4,13 @@ import { User } from "./user/user_type";
 import { anchor, program, systemProgram } from "./config";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Project } from "./project/project_type";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { 
+    MintAmountTo,
+    getSplTransferAccounts, 
+    convertAmountToDecimals, 
+    newPdaAssociatedTokenAccount 
+} from "./token/token_config";
 
 export const INIT_BALANCE = 1000 * LAMPORTS_PER_SOL; // 1000 SOL per wallet
 
@@ -123,6 +130,9 @@ export const createProject = async (
         .rpc();
 
     await confirmTransaction(program, createTx);
+
+    // Create project ATA
+    await newPdaAssociatedTokenAccount(wallet, projectPdaPublicKey);
 
     return projectPdaPublicKey;
 }
