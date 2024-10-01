@@ -11,9 +11,10 @@ type Props = {
   handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   inputName: string;
   value: string;
+  displayedSelectedCategory: string;
 };
 
-const Selector = (props: Props) => {
+const CategorySelector = (props: Props) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <label className="textStyle-subheadline !text-textColor-main !font-normal">
@@ -21,7 +22,7 @@ const Selector = (props: Props) => {
       </label>
       <select
         className="border border-gray-300 rounded-md p-2 textStyle-body"
-        value={props.value}
+        value={props.displayedSelectedCategory}
         onChange={props.handleChange}
         name={props.inputName}
       >
@@ -35,4 +36,4 @@ const Selector = (props: Props) => {
   );
 };
 
-export default Selector;
+export default CategorySelector;

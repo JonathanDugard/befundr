@@ -1,28 +1,17 @@
-import { categories } from '@/data/localdata';
 import InputField from '../z-library/button/InputField';
-import Selector from '../z-library/button/Selector';
 import PicSelector from '../z-library/button/PicSelector';
-import { ProjectCategoryEnum } from '@/data/category';
+import { projectCategoryOptions } from '@/data/category';
+import CategorySelector from '../z-library/button/CategorySelector';
 
 type MainInfoProps = {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   setSelectedPic: (file: File | null) => void;
   projectToCreate: Project;
+  displayedSelectedCategory: string;
 };
 
 export const MainInfoBlock = (props: MainInfoProps) => {
-  // Mapping to prepare option for selector component
-  const projectCategoryOptions = Object.values(ProjectCategoryEnum).map(
-    (category) => ({
-      value: category,
-      label:
-        category === ProjectCategoryEnum.SocialImpact
-          ? 'Social Impact'
-          : category,
-    })
-  );
-
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       <h3 className="textStyle-headline">Step 1 : main informations</h3>
@@ -36,12 +25,13 @@ export const MainInfoBlock = (props: MainInfoProps) => {
         min={5}
         max={64}
       />
-      <Selector
+      <CategorySelector
         label="Category"
         options={projectCategoryOptions}
         handleChange={props.handleCategoryChange}
         inputName="category"
         value={props.projectToCreate.category}
+        displayedSelectedCategory={props.displayedSelectedCategory}
       />
       <PicSelector
         label="Main image"

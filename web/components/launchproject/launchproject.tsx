@@ -17,40 +17,8 @@ import { handleProjectCreation } from './handleProjectCreation';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
-import { BN } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
-import { ProjectCategoryEnum } from '@/data/category';
-import { Enum } from '@solana/web3.js';
-
-export class ProjectCategory extends Enum {
-  static Technology = new ProjectCategory({ technology: 'technology' });
-  static Art = new ProjectCategory({ art: 'art' });
-  static Education = new ProjectCategory({ education: 'education' });
-  static Health = new ProjectCategory({ health: 'health' });
-  static Environment = new ProjectCategory({ environment: 'environment' });
-  static SocialImpact = new ProjectCategory({
-    socialImpact: 'socialImpact',
-  });
-  static Entertainment = new ProjectCategory({
-    entertainment: 'entertainment',
-  });
-  static Science = new ProjectCategory({ science: 'science' });
-  static Finance = new ProjectCategory({ finance: 'finance' });
-  static Sports = new ProjectCategory({ sports: 'sports' });
-}
-
-const projectCategoryOptions = [
-  { label: 'Technology', value: ProjectCategory.Technology },
-  { label: 'Art', value: ProjectCategory.Art },
-  { label: 'Education', value: ProjectCategory.Education },
-  { label: 'Health', value: ProjectCategory.Health },
-  { label: 'Environment', value: ProjectCategory.Environment },
-  { label: 'Social Impact', value: ProjectCategory.SocialImpact },
-  { label: 'Entertainment', value: ProjectCategory.Entertainment },
-  { label: 'Science', value: ProjectCategory.Science },
-  { label: 'Finance', value: ProjectCategory.Finance },
-  { label: 'Sports', value: ProjectCategory.Sports },
-];
+import { ProjectCategory } from '@/data/category';
 
 const Launchproject = () => {
   //* GENERAL STATE
@@ -66,7 +34,7 @@ const Launchproject = () => {
     id: '',
     ownerId: '',
     name: '',
-    category: ProjectCategory.Art,
+    category: ProjectCategory.Technology,
     imageUrl: '',
     projectDescription: '',
     goalAmount: 0,
@@ -83,6 +51,8 @@ const Launchproject = () => {
     xAccountUrl: '',
   });
   const [projectImageUrl, setProjectImageUrl] = useState<File | null>(null);
+  const [displayedSelectedCategory, setDisplayedSelectedCategory] =
+    useState('Technology');
   const [isCreationLoading, setIsCreationLoading] = useState(false);
 
   const [userEntryAddress, setUserEntryAddress] = useState<PublicKey | null>(
@@ -144,15 +114,50 @@ const Launchproject = () => {
     }
   };
 
-  // handle category selection
+  // Handle category change managing serialization and deserialization to allow manipulate Enum
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const selectedValue = event.target.value;
+    setDisplayedSelectedCategory(event.target.value);
 
-    const selectedCategory = projectCategoryOptions.find(
-      (option) => option.label === selectedValue
-    )?.value;
+    // Utilisez une fonction de mappage pour obtenir l'instance de ProjectCategory
+    let selectedCategory: ProjectCategory | undefined;
+
+    switch (selectedValue) {
+      case 'Technology':
+        selectedCategory = ProjectCategory.Technology;
+        break;
+      case 'Art':
+        selectedCategory = ProjectCategory.Art;
+        break;
+      case 'Education':
+        selectedCategory = ProjectCategory.Education;
+        break;
+      case 'Health':
+        selectedCategory = ProjectCategory.Health;
+        break;
+      case 'Environment':
+        selectedCategory = ProjectCategory.Environment;
+        break;
+      case 'SocialImpact':
+        selectedCategory = ProjectCategory.SocialImpact;
+        break;
+      case 'Entertainment':
+        selectedCategory = ProjectCategory.Entertainment;
+        break;
+      case 'Science':
+        selectedCategory = ProjectCategory.Science;
+        break;
+      case 'Finance':
+        selectedCategory = ProjectCategory.Finance;
+        break;
+      case 'Sports':
+        selectedCategory = ProjectCategory.Sports;
+        break;
+      default:
+        break;
+    }
 
     if (selectedCategory) {
       setProjectToCreate((prevProject) => ({
@@ -189,7 +194,7 @@ const Launchproject = () => {
     }));
   };
 
-  //* project creation
+  //* PROJECT CREATION
   const launchProjectCreation = async () => {
     if (publicKey && userEntryAddress) {
       setIsCreationLoading(true);
@@ -214,8 +219,6 @@ const Launchproject = () => {
       setIsCreationLoading(false);
     }
   };
-
-  console.log(projectToCreate);
 
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
@@ -245,6 +248,7 @@ const Launchproject = () => {
             handleCategoryChange={handleCategoryChange}
             setSelectedPic={handleProjectPicChange}
             projectToCreate={projectToCreate}
+            displayedSelectedCategory={displayedSelectedCategory}
           />
         )}
         {selectedStep === 1 && (
