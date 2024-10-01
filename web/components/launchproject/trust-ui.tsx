@@ -15,7 +15,7 @@ type TrustProps = {
     >
   ) => void;
   projectToCreate: Project;
-  handleTrustScoreChange: (trustScore: number) => void;
+  handleTrustscoreChange: (trustscore: number) => void;
 };
 
 export const TrustBlock = (props: TrustProps) => {
@@ -27,7 +27,7 @@ export const TrustBlock = (props: TrustProps) => {
   );
 
   useEffect(() => {
-    props.handleTrustScoreChange(calculateTrustScore(collateralRatio));
+    props.handleTrustscoreChange(calculateTrustScore(collateralRatio));
   }, [collateralRatio]);
 
   return (

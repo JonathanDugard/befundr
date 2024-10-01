@@ -282,7 +282,7 @@ const Launchproject = () => {
           <TrustBlock
             handleChange={handleProjectChange}
             projectToCreate={projectToCreate}
-            handleTrustScoreChange={handleTrustScoreChange}
+            handleTrustscoreChange={handleTrustScoreChange}
           />
         )}
         {selectedStep === 5 && <ValidationBlock />}

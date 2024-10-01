@@ -25,18 +25,18 @@ export const RewardsBlock = (props: RewardsProps) => {
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       <h3 className="textStyle-headline">Step 3 : Contribution rewards</h3>
       <p className="textStyle-subheadline -mt-4">
-        Define between one to ten rewards
+        Define between one to four rewards
       </p>
       {!isAddReward && (
         <div className="flex flex-col items-start justify-start gap-4 w-full">
           <button
             onClick={() => setIsAddReward(true)}
             className="mb-6"
-            disabled={props.projectToCreate.rewards.length >= 10}
+            disabled={props.projectToCreate.rewards.length >= 4}
           >
             <MainButtonLabel
               label="Add a reward level"
-              disabled={props.projectToCreate.rewards.length >= 10}
+              disabled={props.projectToCreate.rewards.length >= 4}
             />
           </button>
           <Divider />
