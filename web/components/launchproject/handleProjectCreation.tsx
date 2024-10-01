@@ -153,9 +153,9 @@ const validateProjectToCreate = (
   // Additional check for rewards
   if (
     projectToCreate.rewards.length === 0 ||
-    projectToCreate.rewards.length > 10
+    projectToCreate.rewards.length > 4
   ) {
-    return 'Number of reward must be between 1 to 10';
+    return 'Number of reward must be between 1 to 4';
   }
 
   // If everything is good, return true
