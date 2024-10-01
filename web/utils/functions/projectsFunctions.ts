@@ -37,8 +37,13 @@ export const isProjectHasVoteOngoing = (project: Project): boolean => {
   );
 };
 
+export const getProgressPercentage = (start: number, end: number) => {
+  return Math.floor((start / end) * 100);
+};
+
 //* SERIALIZATION
 import { ProjectCategory } from '@/data/category';
+import { ProjectStatus } from '@/data/projectStatus';
 import { BN, ProgramAccount } from '@coral-xyz/anchor';
 
 export const transformProgramAccountToProject = (
@@ -46,7 +51,9 @@ export const transformProgramAccountToProject = (
 ): AccountWrapper<Project> => {
   const account = programAccount.account;
 
+  // Transformation de la catégorie et du statut
   const category = getCategoryFromAccount(account.category);
+  const status = getStatusFromAccount(account.status);
 
   const project: Project = {
     user: account.owner.toString(),
@@ -54,11 +61,11 @@ export const transformProgramAccountToProject = (
     category: category.enum,
     imageUrl: account.imageUrl,
     projectDescription: account.description,
-    goalAmount: account.goalAmount.toNumber(),
+    goalAmount: new BN(account.goalAmount).toNumber(),
     raisedAmount: new BN(account.raisedAmount).toNumber(),
     timestamp: new BN(account.createdTime).toNumber(),
     endTime: new BN(account.endTime).toNumber(),
-    status: account.status,
+    status: status.enum,
     contributionCounter: account.contributionCounter,
     trustScore: account.trustScore,
     rewards: account.rewards.map((reward: any) => ({
@@ -75,7 +82,7 @@ export const transformProgramAccountToProject = (
         : undefined,
     })),
     safetyDeposit: new BN(account.safetyDeposit).toNumber(),
-    feed: account.feed || [], // Si c'est optionnel, assurez-vous qu'il est initialisé
+    feed: account.feed || [],
     fundsRequests: account.fundsRequests || [],
     xAccountUrl: account.xAccountUrl,
   };
@@ -101,5 +108,19 @@ const getCategoryFromAccount = (category: any): ProjectCategory => {
 
   throw new Error(
     `Unknown category received from account: ${JSON.stringify(category)}`
+  );
+};
+
+// Fonction pour obtenir le statut à partir des données du compte
+const getStatusFromAccount = (status: any): ProjectStatus => {
+  if (status.draft) return ProjectStatus.Draft;
+  if (status.fundraising) return ProjectStatus.Fundraising;
+  if (status.realising) return ProjectStatus.Realising;
+  if (status.completed) return ProjectStatus.Completed;
+  if (status.abandoned) return ProjectStatus.Abandoned;
+  if (status.suspended) return ProjectStatus.Suspended;
+
+  throw new Error(
+    `Unknown status received from account: ${JSON.stringify(status)}`
   );
 };

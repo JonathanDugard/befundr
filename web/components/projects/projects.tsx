@@ -26,6 +26,8 @@ const Projects = (/*props: Props*/) => {
     }
   }, [allProjectsAccounts.data]);
 
+  console.log(allProjects);
+
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
       <h1 className="textStyle-title">
@@ -34,10 +36,14 @@ const Projects = (/*props: Props*/) => {
       <ProjectsFilters />
       <div
         className="grid justify-center gap-6 w-full"
-        style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(320px,320px))' }}
+        style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(400px,400px))' }}
       >
-        {projects.map((project, index) => (
-          <ProjectCard key={index} project={project} />
+        {allProjects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            project={project.account}
+            projectAccountPublicKey={project.publicKey}
+          />
         ))}
       </div>
     </div>

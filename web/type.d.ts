@@ -3,14 +3,6 @@ type AccountWrapper<T> = {
   account: T;
 };
 
-type ProjectStatus =
-  | 'Draft'
-  | 'Fundraising'
-  | 'Realising'
-  | 'Completed'
-  | 'Abandoned'
-  | 'Suspended';
-
 type Project = {
   user: string;
   name: string;
