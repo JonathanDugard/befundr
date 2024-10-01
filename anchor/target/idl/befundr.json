@@ -9,16 +9,7 @@
   "instructions": [
     {
       "name": "add_contribution",
-      "discriminator": [
-        115,
-        15,
-        193,
-        201,
-        25,
-        254,
-        227,
-        124
-      ],
+      "discriminator": [115, 15, 193, 201, 25, 254, 227, 124],
       "accounts": [
         {
           "name": "project",
@@ -39,24 +30,8 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  115,
-                  101,
-                  114,
-                  95,
-                  99,
-                  111,
-                  110,
-                  116,
-                  114,
-                  105,
-                  98,
-                  117,
-                  116,
-                  105,
-                  111,
-                  110,
-                  115
+                  117, 115, 101, 114, 95, 99, 111, 110, 116, 114, 105, 98, 117,
+                  116, 105, 111, 110, 115
                 ]
               },
               {
@@ -95,16 +70,7 @@
     },
     {
       "name": "cancel_contribution",
-      "discriminator": [
-        184,
-        238,
-        88,
-        63,
-        152,
-        103,
-        17,
-        123
-      ],
+      "discriminator": [184, 238, 88, 63, 152, 103, 17, 123],
       "accounts": [
         {
           "name": "project",
@@ -131,16 +97,7 @@
     },
     {
       "name": "create_project",
-      "discriminator": [
-        148,
-        219,
-        181,
-        42,
-        221,
-        114,
-        145,
-        190
-      ],
+      "discriminator": [148, 219, 181, 42, 221, 114, 145, 190],
       "accounts": [
         {
           "name": "user",
@@ -158,27 +115,8 @@
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  114,
-                  111,
-                  106,
-                  101,
-                  99,
-                  116,
-                  95,
-                  99,
-                  111,
-                  110,
-                  116,
-                  114,
-                  105,
-                  98,
-                  117,
-                  116,
-                  105,
-                  111,
-                  110,
-                  115
+                  112, 114, 111, 106, 101, 99, 116, 95, 99, 111, 110, 116, 114,
+                  105, 98, 117, 116, 105, 111, 110, 115
                 ]
               },
               {
@@ -196,29 +134,8 @@
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  114,
-                  111,
-                  106,
-                  101,
-                  99,
-                  116,
-                  95,
-                  117,
-                  110,
-                  108,
-                  111,
-                  99,
-                  107,
-                  95,
-                  114,
-                  101,
-                  113,
-                  117,
-                  101,
-                  115,
-                  116,
-                  115
+                  112, 114, 111, 106, 101, 99, 116, 95, 117, 110, 108, 111, 99,
+                  107, 95, 114, 101, 113, 117, 101, 115, 116, 115
                 ]
               },
               {
@@ -289,22 +206,11 @@
     },
     {
       "name": "create_unlock_request",
-      "discriminator": [
-        134,
-        176,
-        114,
-        229,
-        42,
-        195,
-        78,
-        214
-      ],
+      "discriminator": [134, 176, 114, 229, 42, 195, 78, 214],
       "accounts": [
         {
           "name": "user",
-          "relations": [
-            "project"
-          ]
+          "relations": ["project"]
         },
         {
           "name": "unlock_requests",
@@ -314,29 +220,8 @@
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  114,
-                  111,
-                  106,
-                  101,
-                  99,
-                  116,
-                  95,
-                  117,
-                  110,
-                  108,
-                  111,
-                  99,
-                  107,
-                  95,
-                  114,
-                  101,
-                  113,
-                  117,
-                  101,
-                  115,
-                  116,
-                  115
+                  112, 114, 111, 106, 101, 99, 116, 95, 117, 110, 108, 111, 99,
+                  107, 95, 114, 101, 113, 117, 101, 115, 116, 115
                 ]
               },
               {
@@ -356,18 +241,13 @@
         },
         {
           "name": "project",
-          "relations": [
-            "unlock_requests",
-            "current_unlock_request"
-          ]
+          "relations": ["unlock_requests", "current_unlock_request"]
         },
         {
           "name": "owner",
           "writable": true,
           "signer": true,
-          "relations": [
-            "user"
-          ]
+          "relations": ["user"]
         },
         {
           "name": "system_program",
@@ -383,16 +263,7 @@
     },
     {
       "name": "create_user",
-      "discriminator": [
-        108,
-        227,
-        130,
-        130,
-        252,
-        109,
-        75,
-        218
-      ],
+      "discriminator": [108, 227, 130, 130, 252, 109, 75, 218],
       "accounts": [
         {
           "name": "user",
@@ -401,12 +272,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114
-                ]
+                "value": [117, 115, 101, 114]
               },
               {
                 "kind": "account",
@@ -454,16 +320,7 @@
     },
     {
       "name": "delete_user",
-      "discriminator": [
-        186,
-        85,
-        17,
-        249,
-        219,
-        231,
-        98,
-        251
-      ],
+      "discriminator": [186, 85, 17, 249, 219, 231, 98, 251],
       "accounts": [
         {
           "name": "user",
@@ -487,16 +344,7 @@
     },
     {
       "name": "update_user",
-      "discriminator": [
-        9,
-        2,
-        160,
-        169,
-        118,
-        12,
-        207,
-        84
-      ],
+      "discriminator": [9, 2, 160, 169, 118, 12, 207, 84],
       "accounts": [
         {
           "name": "user",
@@ -505,12 +353,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  117,
-                  115,
-                  101,
-                  114
-                ]
+                "value": [117, 115, 101, 114]
               },
               {
                 "kind": "account",
@@ -523,9 +366,7 @@
           "name": "owner",
           "writable": true,
           "signer": true,
-          "relations": [
-            "user"
-          ]
+          "relations": ["user"]
         },
         {
           "name": "system_program",
@@ -563,131 +404,88 @@
   "accounts": [
     {
       "name": "Contribution",
-      "discriminator": [
-        182,
-        187,
-        14,
-        111,
-        72,
-        167,
-        242,
-        212
-      ]
+      "discriminator": [182, 187, 14, 111, 72, 167, 242, 212]
     },
     {
       "name": "Project",
-      "discriminator": [
-        205,
-        168,
-        189,
-        202,
-        181,
-        247,
-        142,
-        19
-      ]
+      "discriminator": [205, 168, 189, 202, 181, 247, 142, 19]
     },
     {
       "name": "ProjectContributions",
-      "discriminator": [
-        83,
-        72,
-        156,
-        71,
-        194,
-        187,
-        160,
-        150
-      ]
+      "discriminator": [83, 72, 156, 71, 194, 187, 160, 150]
     },
     {
       "name": "UnlockRequest",
-      "discriminator": [
-        35,
-        145,
-        59,
-        13,
-        207,
-        180,
-        49,
-        24
-      ]
+      "discriminator": [35, 145, 59, 13, 207, 180, 49, 24]
     },
     {
       "name": "UnlockRequests",
-      "discriminator": [
-        225,
-        75,
-        162,
-        136,
-        240,
-        196,
-        185,
-        219
-      ]
+      "discriminator": [225, 75, 162, 136, 240, 196, 185, 219]
     },
     {
       "name": "User",
-      "discriminator": [
-        159,
-        117,
-        95,
-        227,
-        239,
-        151,
-        58,
-        236
-      ]
+      "discriminator": [159, 117, 95, 227, 239, 151, 58, 236]
     },
     {
       "name": "UserContributions",
-      "discriminator": [
-        215,
-        150,
-        11,
-        243,
-        145,
-        49,
-        43,
-        66
-      ]
+      "discriminator": [215, 150, 11, 243, 145, 49, 43, 66]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooLong",
-      "msg": "Name cannot exceed 64 characters."
+      "name": "NameTooShort",
+      "msg": "Project name is too short (min 5 characters)."
     },
     {
       "code": 6001,
-      "name": "DescriptionTooLong",
-      "msg": "Description cannot exceed 100 characters."
+      "name": "NameTooLong",
+      "msg": "Project name is too long (max 64 characters)."
     },
     {
       "code": 6002,
-      "name": "PriceInvalid",
-      "msg": "Price must be greater than 0."
+      "name": "ImageUrlTooLong",
+      "msg": "Image URL is too long (max 256 characters)."
     },
     {
       "code": 6003,
-      "name": "CurrentSupplyInvalid",
-      "msg": "Current supply must be greater than 0."
+      "name": "UrlTooLong",
+      "msg": "URL is too long (max 128 characters)."
     },
     {
       "code": 6004,
-      "name": "MaxSupplyInvalid",
-      "msg": "Max supply must be greater than or equal to current supply."
+      "name": "DescriptionTooShort",
+      "msg": "Description is too short (min 10 characters)."
     },
     {
       "code": 6005,
-      "name": "RewardSupplyReach",
-      "msg": "Reward maximum supply reached."
+      "name": "DescriptionTooLong",
+      "msg": "Description is too long (max 500 characters)."
     },
     {
       "code": 6006,
-      "name": "RewardSupplyEmpty",
-      "msg": "Supply is empty."
+      "name": "GoalAmountBelowLimit",
+      "msg": "Goal amount is too low (min $1)."
+    },
+    {
+      "code": 6007,
+      "name": "EndTimeInPast",
+      "msg": "End time is in the past."
+    },
+    {
+      "code": 6008,
+      "name": "ExceedingEndTime",
+      "msg": "End time beyond the limit."
+    },
+    {
+      "code": 6009,
+      "name": "NotEnoughRewards",
+      "msg": "Not enough rewards (min 1)."
+    },
+    {
+      "code": 6010,
+      "name": "TooManyRewards",
+      "msg": "Too many rewards (max 10)."
     }
   ],
   "types": [

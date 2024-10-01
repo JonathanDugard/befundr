@@ -10,7 +10,7 @@ type Props = {
   classname: string;
 };
 
-const FallbackImage = (props: Props) => {
+const ImageWithFallback = (props: Props) => {
   const [imgSrc, setImgSrc] = useState(props.src);
   const [hasError, setHasError] = useState(false);
 
@@ -38,4 +38,4 @@ const FallbackImage = (props: Props) => {
   );
 };
 
-export default FallbackImage;
+export default ImageWithFallback;

@@ -24,9 +24,10 @@ import Link from 'next/link';
 import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
-import FallbackImage from '../z-library/display elements/FallbackImage';
+import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
+import { ProjectStatus } from '@/data/projectStatus';
 
 type Props = {
   project: Project;
@@ -70,7 +71,7 @@ const Project = (props: Props) => {
       {/* main info */}
       <div className="w-full flex justify-start items-start gap-8 ">
         {/* image */}
-        <FallbackImage
+        <ImageWithFallback
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
           classname="w-1/2 md:w-1/3 aspect-square object-cover"
@@ -100,7 +101,7 @@ const Project = (props: Props) => {
                 </strong>{' '}
                 contributors
               </p>
-              {props.project.status === 'Fundraising' && (
+              {props.project.status === ProjectStatus.Fundraising.enum && (
                 <p className="textStyle-subheadline">
                   <strong className="textStyle-subtitle">
                     {calculateTimeRemaining(props.project.endTime)}
@@ -119,7 +120,7 @@ const Project = (props: Props) => {
           {/* spacer */}
           <div className="flex-grow "></div>
           {/* buttons if fundraising*/}
-          {props.project.status === 'Fundraising' && (
+          {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex flex-col gap-4 w-full">
               <button
                 className="w-full"
@@ -133,7 +134,7 @@ const Project = (props: Props) => {
             </div>
           )}
           {/* button if realizing status */}
-          {props.project.status === 'Realising' && (
+          {props.project.status === ProjectStatus.Realising.enum && (
             <Link href={`/marketplace/${props.projectId}`} className="w-full">
               <MainButtonLabelBig label="Look for rewards to buy" />
             </Link>
@@ -182,7 +183,7 @@ const Project = (props: Props) => {
         >
           Update
         </button>
-        {props.project.status === 'realising' && (
+        {props.project.status === ProjectStatus.Realising.enum && (
           <button
             className={`${
               selectedMenu === 'vote'
