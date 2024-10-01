@@ -16,7 +16,7 @@ pub enum CreateProjectError {
     NameTooShort,
     #[msg("Project name is too long (max 64 characters).")]
     NameTooLong,
-    #[msg("Image URL is too long (max 128 characters).")]
+    #[msg("Image URL is too long (max 256 characters).")]
     ImageUrlTooLong,
     #[msg("URL is too long (max 128 characters).")]
     UrlTooLong,
