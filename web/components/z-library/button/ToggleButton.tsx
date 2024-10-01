@@ -1,18 +1,16 @@
-'use client';
-import React, { useState } from 'react';
+import React from 'react';
 
-type Props = {};
+type Props = {
+  isSelected: boolean;
+};
 
 const ToggleButton = (props: Props) => {
-  const [isSelected, setIsSelected] = useState(false);
-
   return (
-    <button
+    <div
       className={`border border-gray-300 rounded-md ${
-        isSelected && 'bg-accent'
+        props.isSelected && 'bg-accent'
       } w-5 h-5 transition-all ease-in-out`}
-      onClick={() => setIsSelected(!isSelected)}
-    ></button>
+    ></div>
   );
 };
 

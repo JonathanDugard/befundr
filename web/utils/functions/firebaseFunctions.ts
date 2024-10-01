@@ -7,8 +7,8 @@ import {
 } from 'firebase/storage';
 
 // Upload an image to firebase
-export async function uploadImageToFirebase(file: File, userPublicKey: string) {
-  const storageRef = ref(storage, `profiles/${userPublicKey}/${file.name}`);
+export async function uploadImageToFirebase(storagePath: string, file: File) {
+  const storageRef = ref(storage, storagePath);
 
   // Upload the file
   const snapshot = await uploadBytes(storageRef, file);
@@ -26,7 +26,6 @@ export async function deleteImageFromFirebase(imageUrl: string) {
   try {
     // Delete the image
     await deleteObject(storageRef);
-    console.log('Old image deleted successfully');
   } catch (error) {
     console.error('Error deleting old image: ', error);
   }
