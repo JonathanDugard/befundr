@@ -195,6 +195,46 @@ export type Befundr = {
           }
         },
         {
+          "name": "unlockRequests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
           "name": "signer",
           "writable": true,
           "signer": true
@@ -250,6 +290,100 @@ export type Befundr = {
               "name": "projectCategory"
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "createUnlockRequest",
+      "discriminator": [
+        134,
+        176,
+        114,
+        229,
+        42,
+        195,
+        78,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "unlockRequests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "newUnlockRequest",
+          "writable": true
+        },
+        {
+          "name": "currentUnlockRequest",
+          "optional": true
+        },
+        {
+          "name": "project",
+          "relations": [
+            "unlockRequests",
+            "currentUnlockRequest"
+          ]
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amountRequested",
+          "type": "u64"
         }
       ]
     },
@@ -473,6 +607,32 @@ export type Befundr = {
       ]
     },
     {
+      "name": "unlockRequest",
+      "discriminator": [
+        35,
+        145,
+        59,
+        13,
+        207,
+        180,
+        49,
+        24
+      ]
+    },
+    {
+      "name": "unlockRequests",
+      "discriminator": [
+        225,
+        75,
+        162,
+        136,
+        240,
+        196,
+        185,
+        219
+      ]
+    },
+    {
       "name": "user",
       "discriminator": [
         159,
@@ -502,8 +662,38 @@ export type Befundr = {
   "errors": [
     {
       "code": 6000,
-      "name": "transferFailed",
-      "msg": "Funds transfer failed."
+      "name": "nameTooLong",
+      "msg": "Name cannot exceed 64 characters."
+    },
+    {
+      "code": 6001,
+      "name": "descriptionTooLong",
+      "msg": "Description cannot exceed 100 characters."
+    },
+    {
+      "code": 6002,
+      "name": "priceInvalid",
+      "msg": "Price must be greater than 0."
+    },
+    {
+      "code": 6003,
+      "name": "currentSupplyInvalid",
+      "msg": "Current supply must be greater than 0."
+    },
+    {
+      "code": 6004,
+      "name": "maxSupplyInvalid",
+      "msg": "Max supply must be greater than or equal to current supply."
+    },
+    {
+      "code": 6005,
+      "name": "rewardSupplyReach",
+      "msg": "Reward maximum supply reached."
+    },
+    {
+      "code": 6006,
+      "name": "rewardSupplyEmpty",
+      "msg": "Supply is empty."
     }
   ],
   "types": [
@@ -763,6 +953,92 @@ export type Befundr = {
           {
             "name": "currentSupply",
             "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unlockRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "amountRequested",
+            "type": "u64"
+          },
+          {
+            "name": "votesAgainst",
+            "type": "u64"
+          },
+          {
+            "name": "createdTime",
+            "type": "i64"
+          },
+          {
+            "name": "endTime",
+            "type": "i64"
+          },
+          {
+            "name": "unlockTime",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "unlockStatus"
+              }
+            }
+          },
+          {
+            "name": "votes",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "unlockRequests",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "requestCounter",
+            "type": "u16"
+          },
+          {
+            "name": "unlockedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "requests",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "unlockStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "approved"
+          },
+          {
+            "name": "rejected"
           }
         ]
       }

@@ -189,6 +189,46 @@
           }
         },
         {
+          "name": "unlock_requests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
           "name": "signer",
           "writable": true,
           "signer": true
@@ -244,6 +284,100 @@
               "name": "ProjectCategory"
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "create_unlock_request",
+      "discriminator": [
+        134,
+        176,
+        114,
+        229,
+        42,
+        195,
+        78,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "unlock_requests",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107,
+                  95,
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "new_unlock_request",
+          "writable": true
+        },
+        {
+          "name": "current_unlock_request",
+          "optional": true
+        },
+        {
+          "name": "project",
+          "relations": [
+            "unlock_requests",
+            "current_unlock_request"
+          ]
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_requested",
+          "type": "u64"
         }
       ]
     },
@@ -467,6 +601,32 @@
       ]
     },
     {
+      "name": "UnlockRequest",
+      "discriminator": [
+        35,
+        145,
+        59,
+        13,
+        207,
+        180,
+        49,
+        24
+      ]
+    },
+    {
+      "name": "UnlockRequests",
+      "discriminator": [
+        225,
+        75,
+        162,
+        136,
+        240,
+        196,
+        185,
+        219
+      ]
+    },
+    {
       "name": "User",
       "discriminator": [
         159,
@@ -496,8 +656,38 @@
   "errors": [
     {
       "code": 6000,
-      "name": "TransferFailed",
-      "msg": "Funds transfer failed."
+      "name": "NameTooLong",
+      "msg": "Name cannot exceed 64 characters."
+    },
+    {
+      "code": 6001,
+      "name": "DescriptionTooLong",
+      "msg": "Description cannot exceed 100 characters."
+    },
+    {
+      "code": 6002,
+      "name": "PriceInvalid",
+      "msg": "Price must be greater than 0."
+    },
+    {
+      "code": 6003,
+      "name": "CurrentSupplyInvalid",
+      "msg": "Current supply must be greater than 0."
+    },
+    {
+      "code": 6004,
+      "name": "MaxSupplyInvalid",
+      "msg": "Max supply must be greater than or equal to current supply."
+    },
+    {
+      "code": 6005,
+      "name": "RewardSupplyReach",
+      "msg": "Reward maximum supply reached."
+    },
+    {
+      "code": 6006,
+      "name": "RewardSupplyEmpty",
+      "msg": "Supply is empty."
     }
   ],
   "types": [
@@ -757,6 +947,92 @@
           {
             "name": "current_supply",
             "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_requested",
+            "type": "u64"
+          },
+          {
+            "name": "votes_against",
+            "type": "u64"
+          },
+          {
+            "name": "created_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "unlock_time",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "UnlockStatus"
+              }
+            }
+          },
+          {
+            "name": "votes",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockRequests",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "request_counter",
+            "type": "u16"
+          },
+          {
+            "name": "unlocked_amount",
+            "type": "u64"
+          },
+          {
+            "name": "requests",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Approved"
+          },
+          {
+            "name": "Rejected"
           }
         ]
       }
