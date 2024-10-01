@@ -42,9 +42,9 @@ const Launchproject = () => {
     endTime: 30, // expressed in nb of days in the UI. To be convert in timestamp before the creation tx
     status: 'Draft',
     contributionCounter: 0,
-    trustScore: 0, //between 0 to 100
+    trustScore: 75, //between 75 to 100
     rewards: [],
-    safetyDeposit: 0,
+    safetyDeposit: 50,
     feed: [],
     fundsRequests: [],
     xAccountUrl: '',
@@ -166,6 +166,14 @@ const Launchproject = () => {
     }
   };
 
+  // function to handle score score update in project to create
+  const handleTrustScoreChange = (trustScore: number) => {
+    setProjectToCreate((prevProject) => ({
+      ...prevProject,
+      trustScore: trustScore,
+    }));
+  };
+
   //* reward management
   // reward creation
   const handleAddReward = (newReward: Reward) => {
@@ -203,19 +211,18 @@ const Launchproject = () => {
         projectImageUrl,
         publicKey
       );
-      console.log(projectData);
 
-      //creation transaction
-      // if (projectData)
-      //   try {
-      //     await createProject.mutateAsync({
-      //       userAccountPDA: userEntryAddress,
-      //       project: projectData,
-      //       userProjectCounter: userProjectCounter,
-      //     });
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
+      // creation transaction
+      if (projectData)
+        try {
+          await createProject.mutateAsync({
+            userAccountPDA: userEntryAddress,
+            project: projectData,
+            userProjectCounter: userProjectCounter,
+          });
+        } catch (error) {
+          console.error(error);
+        }
       setIsCreationLoading(false);
     }
   };
@@ -275,6 +282,7 @@ const Launchproject = () => {
           <TrustBlock
             handleChange={handleProjectChange}
             projectToCreate={projectToCreate}
+            handleTrustScoreChange={handleTrustScoreChange}
           />
         )}
         {selectedStep === 5 && <ValidationBlock />}

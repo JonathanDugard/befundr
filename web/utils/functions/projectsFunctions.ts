@@ -46,11 +46,7 @@ export const transformProgramAccountToProject = (
 ): AccountWrapper<Project> => {
   const account = programAccount.account;
 
-  // console.log(account);
-
   const category = getCategoryFromAccount(account.category);
-
-  // console.log('category :', category.enum);
 
   const project: Project = {
     user: account.owner.toString(),
