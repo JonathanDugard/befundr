@@ -1,0 +1,188 @@
+/**
+ * How to use:
+ *
+ * import { getSplTransferAccounts, MintAmountTo } from "./token/token_config";
+ * 
+ * // Get SPL Token transfer accounts in order: first is an Account, second id a PdaAccount
+ * const { fromAta, toAta } = await getSplTransferAccounts(wallet, pdaPubkey);
+ * 
+ * // Add mocked up USDC to the wallet before sending transfers calls if needed
+ * await MintAmountTo(wallet, fromAta, 500);
+ * 
+ * // Create an ATA from a PDA, ex. project
+ * await newPdaAssociatedTokenAccount(wallet, PdaPublicKey);
+ *
+ */
+
+import { Keypair, PublicKey } from "@solana/web3.js";
+import { 
+    createMint, 
+    Account, 
+    mintTo, 
+    getAssociatedTokenAddress,
+    getMint, 
+    getOrCreateAssociatedTokenAccount, 
+} from '@solana/spl-token';
+import { PROGRAM_CONNECTION } from "../config";
+import { createUserWalletWithSol } from "../utils"
+
+const MINT_DECIMALS = 6;
+
+var MINT_ADDRESS: PublicKey;
+var MINT_AUTHORITY: Keypair;
+
+/**
+ * Initializes a new mint token account on the Solana blockchain.
+ * 
+ * This mint is a mockup USDC token used for tests purposes
+ * 
+ * This function performs the following steps:
+ * 1. Creates a new user wallet and funds it with SOL.
+ * 2. Generates a new keypair to act as the mint authority.
+ * 3. Creates a new mint with the specified parameters, including the connection to the Solana network,
+ *    the payer of the transaction fees, the public key of the mint authority, and the number of decimal places for the token.
+ * 4. Stores the mint address and authority in global variables for later use.
+ * 5. Logs the details of the new mint token account, including the mint address and mint authority public key.
+ * 
+ * @async
+ * @function InitMint
+ * @returns {Promise<void>} A promise that resolves when the mint token account has been successfully created.
+ */
+const InitMint = async() => {
+    // Create a new user wallet and fund it with SOL
+    const payer = await createUserWalletWithSol();
+    
+    // Generate a new keypair to act as the mint authority
+    const mintAuthority = Keypair.generate();
+
+    // Create a new mint with the specified parameters
+    const mintAddress = await createMint(
+        PROGRAM_CONNECTION, // Connection to the Solana network
+        payer,              // Payer of the transaction fees
+        mintAuthority.publicKey, // Public key of the mint authority
+        null,               // Freeze authority (null means no freeze authority)
+        MINT_DECIMALS,      // Number of decimal places for the token (6 to match USDC)
+    );
+      
+    // Store the mint address and authority in global variables
+    MINT_ADDRESS = mintAddress;
+    MINT_AUTHORITY = mintAuthority;
+
+    // Log the new mint token account details
+    console.info(
+        "New Mint Token Account created",
+        "\n-------------------------------",
+        "\nMint Address =>", 
+        MINT_ADDRESS.toBase58(),
+        "\nMint Authority =>",
+        MINT_AUTHORITY.publicKey.toBase58()
+    );    
+}
+
+/**
+ * Converts an amount to the token's decimal format.
+ * 
+ * @param {number} amount - The amount to convert.
+ * @returns {number} The amount in the token's decimal format.
+ */
+const convertAmountToDecimals = (amount: number): number => {
+    return amount * Math.pow(10, MINT_DECIMALS);
+}
+
+/**
+ * Convert an amount from the token's decimal format to the original format.
+ * 
+ * @param {number} amount - The amount in the token's decimal format.
+ * @returns {number} The original amount.
+ */
+const convertFromDecimalsToAmount = (amount: number): number => {
+    return amount / Math.pow(10, MINT_DECIMALS);
+}
+
+/**
+ * Creates a new associated token account for the given payer.
+ * 
+ * @param {Keypair} payer - The payer of the transaction fees.
+ * @returns {Promise<Account>} The created associated token account.
+ */
+const newAssociatedTokenAccount = async(payer: Keypair): Promise<Account> => {
+    const tokenAccount = await getOrCreateAssociatedTokenAccount(
+        PROGRAM_CONNECTION,
+        payer,
+        MINT_ADDRESS,
+        payer.publicKey
+      )
+
+      return tokenAccount;
+}
+
+/**
+ * Creates a new PDA associated token account for the given payer and project public key.
+ * 
+ * @param {Keypair} payer - The payer of the transaction fees.
+ * @param {PublicKey} projectPubkey - The project public key.
+ * @returns {Promise<PublicKey>} The created PDA associated token account public key.
+ */
+const newPdaAssociatedTokenAccount = async(payer: Keypair, projectPubkey: PublicKey): Promise<PublicKey> => {
+
+    // Create new mint account
+    if (typeof MINT_ADDRESS === 'undefined') {
+        await InitMint();
+    }
+
+    const pdaAta = await getOrCreateAssociatedTokenAccount(
+        PROGRAM_CONNECTION,
+        payer,
+        MINT_ADDRESS,
+        projectPubkey,
+        true,
+      )
+
+      return pdaAta.address;
+}
+
+/**
+ * Mints a specified amount of tokens to the given account.
+ * 
+ * @param {Keypair} payer - The payer of the transaction fees.
+ * @param {PublicKey} toAccount - The account to mint tokens to.
+ * @param {number} amount - The amount of tokens to mint.
+ */
+const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: number) => {
+    // Mint supply
+    await mintTo(
+        PROGRAM_CONNECTION,
+        payer,
+        MINT_ADDRESS,
+        toAccount,
+        MINT_AUTHORITY,
+        convertAmountToDecimals(amount),
+      );
+}
+
+const getSplTransferAccounts = async(fromWallet: Keypair, toProject: PublicKey): Promise<{fromAta: PublicKey, toAta: PublicKey}> => {
+
+    // Create new mint account
+    if (typeof MINT_ADDRESS === 'undefined') {
+        await InitMint();
+    }
+    // get or Create user Associated Token Account
+    const fromAtaAccount: Account = await newAssociatedTokenAccount(fromWallet);
+    const fromAta: PublicKey = fromAtaAccount.address;
+  
+    // Get existing project ATA
+    const toAta: PublicKey = await getAssociatedTokenAddress(MINT_ADDRESS, toProject, true);
+
+    return {fromAta, toAta};
+}
+
+export {
+    MINT_ADDRESS, 
+    InitMint,
+    newAssociatedTokenAccount,
+    newPdaAssociatedTokenAccount,
+    MintAmountTo,
+    convertAmountToDecimals,
+    convertFromDecimalsToAmount,
+    getSplTransferAccounts,
+}
