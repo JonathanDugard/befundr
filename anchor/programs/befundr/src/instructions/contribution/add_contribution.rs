@@ -3,6 +3,7 @@ use crate::{
     state::{
         Contribution, Project, ProjectContributions, ProjectStatus, Reward, User, UserContributions,
     },
+    utils::spl_transfer_builder::SplTransferBuilder,
 };
 use anchor_lang::prelude::*;
 //use anchor_spl::mint::USDC;
@@ -65,50 +66,38 @@ pub fn add_contribution(
 
     // Transfer the contribution amount in USDC to the project
     // Prepare SPL transfer call
+    let token_program = &ctx.accounts.token_program;
     let to_ata = &ctx.accounts.to_ata;
     let from_ata = &ctx.accounts.from_ata;
-    let token_program = &ctx.accounts.token_program;
     let authority = &ctx.accounts.signer;
-    transfer_spl_tokens(token_program, authority, from_ata, to_ata, amount)?;
+
+    let result = SplTransferBuilder::new((*token_program).clone())
+        .send(amount)
+        .from((*from_ata).clone())
+        .to((*to_ata).clone())
+        .signed_by((*authority).clone());
 
     Ok(())
 }
 
-// fn transfer_lamports_funds(ctx: &Context<AddContribution>, amount: u64) -> Result<()> {
-//     let transfer_instruction = Transfer {
-//         from: ctx.accounts.signer.to_account_info(),
-//         to: ctx.accounts.project.to_account_info(),
+// fn transfer_spl_tokens<'info>(
+//     token_program: &Program<'info, Token>,
+//     authority: &Signer<'info>,
+//     to_ata: &Account<'info, TokenAccount>,
+//     from_ata: &Account<'info, TokenAccount>,
+//     amount: u64,
+// ) -> Result<()> {
+//     // Transfer tokens from taker to initializer
+//     let cpi_accounts = SplTransfer {
+//         from: from_ata.to_account_info().clone(),
+//         to: to_ata.to_account_info().clone(),
+//         authority: authority.to_account_info().clone(),
 //     };
-//     let cpi_ctx =
-//         CpiContext::new(ctx.accounts.system_program.to_account_info(), transfer_instruction);
+//     let cpi_program = token_program.to_account_info();
 
-//     match transfer(cpi_ctx, amount.into()) {
-//         Ok(_) => Ok(()),
-//         Err(error) => {
-//             msg!("Error during the contribution transfer: {:?}", error);
-//             Err(TransferError::TransferFailed.into())
-//         },
-//     }
+//     token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
+//     Ok(())
 // }
-
-fn transfer_spl_tokens<'info>(
-    token_program: &Program<'info, Token>,
-    authority: &Signer<'info>,
-    to_ata: &Account<'info, TokenAccount>,
-    from_ata: &Account<'info, TokenAccount>,
-    amount: u64,
-) -> Result<()> {
-    // Transfer tokens from taker to initializer
-    let cpi_accounts = SplTransfer {
-        from: from_ata.to_account_info().clone(),
-        to: to_ata.to_account_info().clone(),
-        authority: authority.to_account_info().clone(),
-    };
-    let cpi_program = token_program.to_account_info();
-
-    token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
-    Ok(())
-}
 
 pub fn reward_validation(project: &Project, amount: u64, reward_id: u64) -> Result<()> {
     // We need to ensure the selected reward exists in the project rewards list
