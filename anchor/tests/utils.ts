@@ -246,3 +246,36 @@ export const createUnlockRequest = async (
 
     return newUnlockRequestPubkey;
 }
+
+export const createTransaction = async (
+    contributionPubkey: PublicKey,
+    userPubkey: PublicKey,
+    sellerWallet: Keypair,
+    sellingPrice: number
+): Promise<PublicKey> => {
+
+    const [saleTransactionPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("sale_transaction"),
+            contributionPubkey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    const createTx = await program.methods
+        .createTransaction(
+            new BN(sellingPrice)
+        )
+        .accountsPartial({
+            saleTransaction: saleTransactionPubkey,
+            user: userPubkey,
+            contribution: contributionPubkey,
+            owner: sellerWallet.publicKey,
+        })
+        .signers([sellerWallet])
+        .rpc();
+
+    await confirmTransaction(program, createTx);
+
+    return saleTransactionPubkey;
+}
