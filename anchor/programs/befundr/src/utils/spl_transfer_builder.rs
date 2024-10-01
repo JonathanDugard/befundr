@@ -14,8 +14,9 @@ pub struct SplTransferBuilder<'info> {
 // Usage example
 // SplTransferBuilder::new(token_program)
 //     .send(100)
-//     .from(signerKeypair, from_ata)
-//     .to(to_ata);
+//     .from(from_ata)
+//     .to(to_ata)
+//     .signed_by(payer)?;
 impl<'info> SplTransferBuilder<'info> {
     pub fn new(token_program: Program<'info, Token>) -> Self {
         Self {
