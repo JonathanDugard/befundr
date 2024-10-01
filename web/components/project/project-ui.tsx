@@ -102,6 +102,11 @@ export const UpdateBlock = ({ feeds }: { feeds: Feed[] }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* update list */}
+      {feeds.length === 0 && (
+        <p className="textStyle-body">
+          There is no update for this project yet.
+        </p>
+      )}
       {feeds.map((feed: Feed, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
           <FeedCard feed={feed} />

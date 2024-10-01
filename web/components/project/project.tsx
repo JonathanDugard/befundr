@@ -56,6 +56,8 @@ const Project = (props: Props) => {
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromAccountPublicKey(new PublicKey(props.project.user));
 
+  console.log(props.project);
+
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       {/* header */}
@@ -112,7 +114,7 @@ const Project = (props: Props) => {
             <div className="w-1/3 aspect-square flex flex-col justify-center items-center gap-2">
               <TrustScore trustValue={trustScore} />
               <p className="flex justify-center w-full textStyle-subheadline">
-                Trust level {trustScore}
+                Trust level {trustScore.toFixed(0)}
               </p>
             </div>
           </div>
@@ -182,7 +184,7 @@ const Project = (props: Props) => {
         >
           Update
         </button>
-        {props.project.status === 'Realising' && (
+        {props.project.status === 'realising' && (
           <button
             className={`${
               selectedMenu === 'vote'
@@ -226,10 +228,8 @@ const Project = (props: Props) => {
           safetyDeposit={props.project.safetyDeposit}
         />
       )}
-      {selectedMenu === 'update' && <UpdateBlock feeds={props.project.feed} />}
-      {selectedMenu === 'vote' && (
-        <FundsRequestBlock fundsRequests={props.project.fundsRequests} />
-      )}
+      {selectedMenu === 'update' && <UpdateBlock feeds={[]} />}
+      {selectedMenu === 'vote' && <FundsRequestBlock fundsRequests={[]} />}
     </div>
   );
 };
