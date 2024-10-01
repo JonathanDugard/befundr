@@ -153,8 +153,10 @@ export const createContribution = async (
     wallet: Keypair,
     projectContributionCounter: number,
     amount: number,
-    rewardId: number | null
+    rewardId: number | null,
+    mintAmount: number | null
 ): Promise<PublicKey> => {
+
     const [contributionPdaPublicKey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
             Buffer.from("contribution"),
@@ -172,7 +174,6 @@ export const createContribution = async (
         ],
         program.programId
     );
-
     // Get userContributions PDA Pubkey
     const [userContributionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
@@ -182,19 +183,29 @@ export const createContribution = async (
         program.programId
     );
 
+    // Get SPL Token transfer accounts
+    const { fromAta, toAta } = await getSplTransferAccounts(wallet, projectPubkey);
+    if (mintAmount) {
+        // Add 500 mocked up USDC to the wallet before sending contribution
+        await MintAmountTo(wallet, fromAta, mintAmount);
+    }
+
     // Call the addContribution method
     const createTx = await program.methods
         .addContribution(
-            new BN(amount),
+            new BN(convertAmountToDecimals(amount)),
             rewardId !== null ? new BN(rewardId) : null
         )
-        .accounts({
+        .accountsPartial({
             project: projectPubkey,
             projectContributions: projectContributionsPubkey,
             user: userPubkey,
             userContributions: userContributionsPubkey,
             contribution: contributionPdaPublicKey,
+            fromAta: fromAta,
+            toAta: toAta,
             signer: wallet.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
         })
         .signers([wallet])
         .rpc();
