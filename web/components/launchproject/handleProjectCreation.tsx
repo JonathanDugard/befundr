@@ -89,7 +89,7 @@ export const handleProjectCreation = async (
     ...project,
     imageUrl, // Replace with the uploaded project image URL
     rewards: updatedRewards, // Include the rewards with their uploaded images
-    ownerId: userPublicKey.toString(),
+    user: userPublicKey.toString(),
     timestamp: Date.now(), // Replace with current timestamp
     safetyDeposit: convertedSafetyDeposit,
     endTime: convertedEndTimeInSecond,

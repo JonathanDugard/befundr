@@ -31,8 +31,7 @@ const Launchproject = () => {
   const [selectedStep, setSelectedStep] = useState<number>(0);
   const [projectToCreate, setProjectToCreate] = useState<Project>({
     // init with an empty project
-    id: '',
-    ownerId: '',
+    user: '',
     name: '',
     category: ProjectCategory.Technology,
     imageUrl: '',
@@ -204,18 +203,19 @@ const Launchproject = () => {
         projectImageUrl,
         publicKey
       );
+      console.log(projectData);
 
       //creation transaction
-      if (projectData)
-        try {
-          await createProject.mutateAsync({
-            userAccountPDA: userEntryAddress,
-            project: projectData,
-            userProjectCounter: userProjectCounter,
-          });
-        } catch (error) {
-          console.error(error);
-        }
+      // if (projectData)
+      //   try {
+      //     await createProject.mutateAsync({
+      //       userAccountPDA: userEntryAddress,
+      //       project: projectData,
+      //       userProjectCounter: userProjectCounter,
+      //     });
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
       setIsCreationLoading(false);
     }
   };

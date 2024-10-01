@@ -1,3 +1,8 @@
+type AccountWrapper<T> = {
+  publicKey: PublicKey;
+  account: T;
+};
+
 type ProjectStatus =
   | 'Draft'
   | 'Fundraising'
@@ -6,21 +11,8 @@ type ProjectStatus =
   | 'Abandoned'
   | 'Suspended';
 
-// type ProjectCategory =
-//   | 'Technology'
-//   | 'Art'
-//   | 'Education'
-//   | 'Health'
-//   | 'Environment'
-//   | 'SocialImpact'
-//   | 'Entertainment'
-//   | 'Science'
-//   | 'Finance'
-//   | 'Sports';
-
 type Project = {
-  id: string;
-  ownerId: string;
+  user: string;
   name: string;
   category: ProjectCategory;
   imageUrl: string;

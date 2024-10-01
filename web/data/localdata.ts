@@ -111,8 +111,7 @@ export const fundsRequest2: FundsRequest = {
 
 //* PROJECT=================================
 export const project1: Project = {
-  id: '1',
-  ownerId: 'xxxx',
+  user: 'xxxx',
   name: 'First project',
   category: 'tech',
   imageUrl: '',
@@ -133,8 +132,7 @@ export const project1: Project = {
 };
 
 export const project2: Project = {
-  id: '2',
-  ownerId: '0',
+  user: '0',
   name: 'Second project',
   category: 'art',
   imageUrl: '',
