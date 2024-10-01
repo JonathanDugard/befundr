@@ -1,10 +1,3 @@
-export const getProjectById = (
-  projects: Project[],
-  projectId: string
-): Project | undefined => {
-  return projects.find((project) => project.id === projectId);
-};
-
 export const getProjectByRewardId = (
   projects: Project[],
   reward: Reward
@@ -51,16 +44,28 @@ export const transformProgramAccountToProject = (
 ): AccountWrapper<Project> => {
   const account = programAccount.account;
 
-  // Transformation de la catégorie et du statut
+  // Transform account data into a Project object
+  const project = transformAccountToProject(account);
+
+  return {
+    publicKey: programAccount.publicKey,
+    account: project,
+  };
+};
+
+// Helper function to transform an account into a Project object
+export const transformAccountToProject = (account: any): Project => {
+  // Transform category and status
   const category = getCategoryFromAccount(account.category);
   const status = getStatusFromAccount(account.status);
 
-  const project: Project = {
-    user: account.owner.toString(),
+  return {
+    owner: account.owner.toString(),
+    user: account.user.toString(),
     name: account.name,
     category: category.enum,
     imageUrl: account.imageUrl,
-    projectDescription: account.description,
+    description: account.description,
     goalAmount: new BN(account.goalAmount).toNumber(),
     raisedAmount: new BN(account.raisedAmount).toNumber(),
     timestamp: new BN(account.createdTime).toNumber(),
@@ -82,18 +87,11 @@ export const transformProgramAccountToProject = (
         : undefined,
     })),
     safetyDeposit: new BN(account.safetyDeposit).toNumber(),
-    feed: account.feed || [],
-    fundsRequests: account.fundsRequests || [],
     xAccountUrl: account.xAccountUrl,
-  };
-
-  return {
-    publicKey: programAccount.publicKey,
-    account: project,
   };
 };
 
-// Fonction pour obtenir la catégorie à partir des données du compte
+// Function to get the category from account data
 const getCategoryFromAccount = (category: any): ProjectCategory => {
   if (category.technology) return ProjectCategory.Technology;
   if (category.art) return ProjectCategory.Art;
@@ -111,7 +109,7 @@ const getCategoryFromAccount = (category: any): ProjectCategory => {
   );
 };
 
-// Fonction pour obtenir le statut à partir des données du compte
+// Function to get the status from account data
 const getStatusFromAccount = (status: any): ProjectStatus => {
   if (status.draft) return ProjectStatus.Draft;
   if (status.fundraising) return ProjectStatus.Fundraising;

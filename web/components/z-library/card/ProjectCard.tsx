@@ -1,12 +1,15 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import InfoLabel from '../display elements/InfoLabel';
 import FallbackImage from '../display elements/FallbackImage';
 import { getProgressPercentage } from '@/utils/functions/projectsFunctions';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
-import { calculateTimeRemaining } from '@/utils/functions/utilFunctions';
+import {
+  calculateTimeRemaining,
+  calculateTrustScore,
+} from '@/utils/functions/utilFunctions';
 import Divider from '../display elements/Divider';
 
 type Props = {
@@ -16,19 +19,13 @@ type Props = {
 
 const ProjectCard = (props: Props) => {
   //* GLOBAL STATE
-  const { userAccount } = useBefundrProgramUser();
+  const { userAccountFromAccountPublicKey } = useBefundrProgramUser();
 
   //* LOCAL STATE
-  const [projectOwner, setProjectOwner] = useState<User | null>(null);
-
   // Use React Query to fetch user profile based on public key
-  const { data: userProfile, isLoading: isFetchingUser } = userAccount(
-    new PublicKey(props.project.user)
-  );
-  // Handle profile data after fetching
-  useEffect(() => {
-    if (userProfile) setProjectOwner(userProfile as unknown as User); // Populate form with fetched user data
-  }, [userProfile]);
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromAccountPublicKey(new PublicKey(props.project.user));
+
   return (
     <Link
       href={`/projects/${props.projectAccountPublicKey}`}
@@ -81,7 +78,13 @@ const ProjectCard = (props: Props) => {
             {calculateTimeRemaining(props.project.endTime)} days remaining
           </p>
 
-          <p className="textStyle-subheadline">Trust score : xx</p>
+          <p className="textStyle-subheadline">
+            Trust score :{' '}
+            {calculateTrustScore(
+              props.project.safetyDeposit,
+              props.project.goalAmount
+            ).toFixed(0)}
+          </p>
           <div className="mt-auto">
             <InfoLabel label={props.project.status} />
           </div>

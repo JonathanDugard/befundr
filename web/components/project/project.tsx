@@ -1,12 +1,15 @@
 'use client';
 import { project1, user1 } from '@/data/localdata';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import Divider from '../z-library/display elements/Divider';
 import InfoLabel from '../z-library/display elements/InfoLabel';
 import ProgressBar from '../z-library/display elements/ProgressBar';
-import { calculateTimeRemaining } from '@/utils/functions/utilFunctions';
+import {
+  calculateTimeRemaining,
+  calculateTrustScore,
+} from '@/utils/functions/utilFunctions';
 import TrustScore from '../z-library/display elements/TrustScore';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
@@ -21,21 +24,40 @@ import Link from 'next/link';
 import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
+import FallbackImage from '../z-library/display elements/FallbackImage';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { PublicKey } from '@solana/web3.js';
 
 type Props = {
   project: Project;
+  projectId: string;
 };
 
 const Project = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
+  const { userAccountFromAccountPublicKey } = useBefundrProgramUser();
 
   //* LOCAL STATE
-  const pathname = usePathname();
-
   const [selectedMenu, setSelectedMenu] = useState<
     'about' | 'rewards' | 'funder' | 'update' | 'vote'
   >('about');
+
+  const trustScore = useMemo(
+    () =>
+      calculateTrustScore(
+        props.project.safetyDeposit,
+        props.project.goalAmount
+      ),
+    [props.project]
+  );
+
+  // Use React Query to fetch user profile based on public key
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromAccountPublicKey(new PublicKey(props.project.user));
+
+  console.log('project:', props.project);
+  console.log('founder:', userProfile);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -51,7 +73,14 @@ const Project = (props: Props) => {
       {/* main info */}
       <div className="w-full flex justify-start items-start gap-8 ">
         {/* image */}
-        <div className="bg-neutral-400 w-1/2 md:w-1/3 aspect-square"></div>
+        <FallbackImage
+          alt="image"
+          fallbackImageSrc="/images/default_project_image.jpg"
+          classname="w-1/2 md:w-1/3 aspect-square object-cover"
+          src={props.project.imageUrl}
+          height={400}
+          width={400}
+        />
         {/* info */}
         <div className="flex flex-col items-start justify-start gap-4 w-1/2  h-full">
           <p className="textStyle-subheadline">Contributions amount</p>
@@ -84,9 +113,9 @@ const Project = (props: Props) => {
               )}
             </div>
             <div className="w-1/3 aspect-square flex flex-col justify-center items-center gap-2">
-              <TrustScore trustValue={props.project.trustScore} />
+              <TrustScore trustValue={trustScore} />
               <p className="flex justify-center w-full textStyle-subheadline">
-                Trust level {props.project.trustScore}%
+                Trust level {trustScore}
               </p>
             </div>
           </div>
@@ -108,7 +137,7 @@ const Project = (props: Props) => {
           )}
           {/* button if realizing status */}
           {props.project.status === 'Realising' && (
-            <Link href={`/marketplace/${props.project.id}`} className="w-full">
+            <Link href={`/marketplace/${props.projectId}`} className="w-full">
               <MainButtonLabelBig label="Look for rewards to buy" />
             </Link>
           )}
@@ -185,18 +214,18 @@ const Project = (props: Props) => {
       )}
       {/* blocks to display */}
       {selectedMenu === 'about' && (
-        <AboutBlock description={props.project.projectDescription} />
+        <AboutBlock description={props.project.description} />
       )}
       {selectedMenu === 'rewards' && (
         <RewardBlock
           rewards={props.project.rewards}
           projectStatus={props.project.status}
-          projectId={props.project.id}
+          projectId={props.projectId}
         />
       )}
-      {selectedMenu === 'funder' && (
+      {selectedMenu === 'funder' && userProfile && (
         <FounderBlock
-          founder={user1}
+          founder={userProfile}
           safetyDeposit={props.project.safetyDeposit}
         />
       )}

@@ -19,7 +19,8 @@ const MyProfile = () => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
   const router = useRouter();
-  const { userAccount, createUser, updateUser } = useBefundrProgramUser();
+  const { userAccountFromWalletPublicKey, createUser, updateUser } =
+    useBefundrProgramUser();
 
   //* LOCAL STATE
   const [isUserHasAccount, setIsUserHasAccount] = useState(false);
@@ -36,7 +37,7 @@ const MyProfile = () => {
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
-    userAccount(publicKey);
+    userAccountFromWalletPublicKey(publicKey);
 
   // Handle profile data after fetching
   useEffect(() => {
@@ -92,9 +93,9 @@ const MyProfile = () => {
     try {
       await updateUser.mutateAsync({
         signer: publicKey,
-        name: userToDisplay.name,
-        avatarUrl: avatarUrl,
-        bio: userToDisplay.bio,
+        name: userToDisplay.name || '',
+        avatarUrl: avatarUrl || '',
+        bio: userToDisplay.bio || '',
         city: userToDisplay.city || '',
       });
 
@@ -134,9 +135,9 @@ const MyProfile = () => {
     try {
       await createUser.mutateAsync({
         signer: publicKey,
-        name: userToDisplay.name,
-        avatarUrl: avatarUrl,
-        bio: userToDisplay.bio,
+        name: userToDisplay.name || '',
+        avatarUrl: avatarUrl || '',
+        bio: userToDisplay.bio || '',
         city: userToDisplay.city || '',
       });
     } catch (error) {
@@ -186,7 +187,7 @@ const MyProfile = () => {
           label="Your complete name"
           placeholder="Type your firstname and lastname"
           type="text"
-          value={userToDisplay.name}
+          value={userToDisplay.name || ''}
           handleChange={handleChange}
           inputName="name"
         />
@@ -202,7 +203,7 @@ const MyProfile = () => {
           label="Quick presentation"
           placeholder="Bring as more details as possible (mainly for founder)"
           rows={5}
-          value={userToDisplay.bio}
+          value={userToDisplay.bio || ''}
           handleChange={handleChange}
           inputName="bio"
         />

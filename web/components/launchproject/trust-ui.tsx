@@ -27,7 +27,12 @@ export const TrustBlock = (props: TrustProps) => {
   );
 
   useEffect(() => {
-    props.handleTrustscoreChange(calculateTrustScore(collateralRatio));
+    props.handleTrustscoreChange(
+      calculateTrustScore(
+        props.projectToCreate.safetyDeposit,
+        props.projectToCreate.goalAmount
+      )
+    );
   }, [collateralRatio]);
 
   return (
@@ -96,9 +101,18 @@ export const TrustBlock = (props: TrustProps) => {
       </p>
       <div className=" flex justify-center items-center gap-4 w-full">
         <div className="h-52 aspect-square flex flex-col justify-center items-center gap-2">
-          <TrustScore trustValue={calculateTrustScore(collateralRatio)} />
+          <TrustScore
+            trustValue={calculateTrustScore(
+              props.projectToCreate.safetyDeposit,
+              props.projectToCreate.goalAmount
+            )}
+          />
           <p className="textStyle-headline">
-            Trust score : {calculateTrustScore(collateralRatio).toFixed(0)}
+            Trust score :{' '}
+            {calculateTrustScore(
+              props.projectToCreate.safetyDeposit,
+              props.projectToCreate.goalAmount
+            ).toFixed(0)}
           </p>
         </div>
         <p className="textStyle-body border border-accent rounded-md p-2">

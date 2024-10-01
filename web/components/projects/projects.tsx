@@ -26,8 +26,6 @@ const Projects = (/*props: Props*/) => {
     }
   }, [allProjectsAccounts.data]);
 
-  console.log(allProjects);
-
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
       <h1 className="textStyle-title">
