@@ -25,8 +25,11 @@ const Launchproject = () => {
   const router = useRouter();
   const { publicKey } = useWallet();
   const { createProject } = useBefundrProgramProject();
-  const { userAccountFromAccountPublicKey, getUserEntryAddress } =
-    useBefundrProgramUser();
+  const {
+    userAccountFromAccountPublicKey,
+    userAccountFromWalletPublicKey,
+    getUserEntryAddress,
+  } = useBefundrProgramUser();
 
   //* LOCAL STATE
   const [selectedStep, setSelectedStep] = useState<number>(0);
@@ -73,7 +76,7 @@ const Launchproject = () => {
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
-    userAccountFromAccountPublicKey(publicKey);
+    userAccountFromWalletPublicKey(publicKey);
 
   // Handle profile data after fetching
   useEffect(() => {
@@ -211,7 +214,6 @@ const Launchproject = () => {
         projectImageUrl,
         publicKey
       );
-      console.log(projectData);
 
       // creation transaction
       if (projectData)

@@ -57,8 +57,6 @@ export const FounderBlock = ({
   founder: User;
   safetyDeposit: number;
 }) => {
-  console.log('founder :', founder);
-
   return (
     <div className="flex justify-between items-start">
       {/* founder info bock */}
