@@ -1,41 +1,24 @@
-type ProjectStatus =
-  | 'Draft'
-  | 'Fundraising'
-  | 'Realising'
-  | 'Completed'
-  | 'Abandoned'
-  | 'Suspended';
-
-// type ProjectCategory =
-//   | 'Technology'
-//   | 'Art'
-//   | 'Education'
-//   | 'Health'
-//   | 'Environment'
-//   | 'SocialImpact'
-//   | 'Entertainment'
-//   | 'Science'
-//   | 'Finance'
-//   | 'Sports';
+type AccountWrapper<T> = {
+  publicKey: PublicKey;
+  account: T;
+};
 
 type Project = {
-  id: string;
-  ownerId: string;
+  owner: PublicKey;
+  user: string;
   name: string;
   category: ProjectCategory;
   imageUrl: string;
-  projectDescription: string;
+  description: string;
   goalAmount: number;
   raisedAmount: number;
   timestamp: number;
   endTime: number;
   status: ProjectStatus;
   contributionCounter: number;
-  trustScore: number; //between 0 to 100
+  trustScore: number; // init between 75 to 100
   rewards: Reward[];
   safetyDeposit: number;
-  feed: Update[];
-  fundsRequests: FundsRequest[];
   xAccountUrl: string;
 };
 
@@ -53,11 +36,11 @@ type Reward = {
 };
 
 type User = {
-  owner: string;
-  name: string;
-  city?: string;
-  avatarUrl: string;
-  bio: string;
+  owner: PublicKey;
+  name?: string | null;
+  city?: string | null;
+  avatarUrl?: string | null;
+  bio?: string | null;
   createdProjectCounter: number;
 };
 
