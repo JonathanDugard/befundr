@@ -1,6 +1,5 @@
 import { Project } from "./project_type";
 import { BN } from "@coral-xyz/anchor";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { ProjectStatus } from "./project_status";
 import { reward1, reward2, reward3 } from "./reward_dataset";
 import { ProjectCategory } from "./category_type";

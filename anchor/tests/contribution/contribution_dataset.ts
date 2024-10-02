@@ -1,6 +1,5 @@
 import { Contribution } from "./contribution_type";
 import { BN } from "@coral-xyz/anchor";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { ContributionStatus } from "./contribution_status";
 
 

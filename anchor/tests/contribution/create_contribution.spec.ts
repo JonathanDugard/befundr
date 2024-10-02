@@ -1,13 +1,12 @@
 import { program } from "../config";
 import { createContribution, createProject, createUser, createUserWalletWithSol } from "../utils";
-import { ONE_DAY_MILLISECONDS, projectData1 } from "../project/project_dataset";
-import { userData1, userData2} from "../user/user_dataset";
-import { BN } from "@coral-xyz/anchor";
-import { LAMPORTS_PER_SOL, Enum } from "@solana/web3.js";
+import { projectData1 } from "../project/project_dataset";
+import { userData1, userData2 } from "../user/user_dataset";
+import { Enum } from "@solana/web3.js";
 import { ContributionStatus } from "./contribution_status";
-import { 
+import {
     convertAmountToDecimals,
-    getTokenAccountBalance, 
+    getTokenAccountBalance,
 } from "../token/token_config";
 
 describe('createContribution', () => {
@@ -27,11 +26,11 @@ describe('createContribution', () => {
         const contributionAmount = convertAmountToDecimals(2);
 
         const contributionPdaKey = await createContribution(
-            projectPdaKey, 
-            userPdaKey, 
-            userWallet, 
-            projectContributionCounter, 
-            contributionAmount, 
+            projectPdaKey,
+            userPdaKey,
+            userWallet,
+            projectContributionCounter,
+            contributionAmount,
             0,
             mintAmount,
         );

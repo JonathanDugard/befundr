@@ -1,9 +1,8 @@
 import { program } from "../config";
 import { createContribution, createProject, createTransaction, createUser, createUserWalletWithSol } from "../utils";
 import { userData1, userData2 } from "../user/user_dataset";
-import { BN } from "@coral-xyz/anchor";
-import { ONE_DAY_MILLISECONDS, projectData1 } from "../project/project_dataset";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { projectData1 } from "../project/project_dataset";
+import { convertAmountToDecimals } from "../token/token_config";
 
 describe('create_transaction', () => {
     it.skip("should successfully create a sell transaction", async () => {
@@ -18,7 +17,7 @@ describe('create_transaction', () => {
 
         const projectContributionCounter = projectPda.contributionCounter;
 
-        const contributionAmount = 1 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);
         const contributionPdaKey = await createContribution(
             projectPdaKey,
             userPdaKey,
@@ -28,7 +27,7 @@ describe('create_transaction', () => {
             0
         );
 
-        const sellingPrice = 2 * LAMPORTS_PER_SOL;
+        const sellingPrice = convertAmountToDecimals(20);
 
         const saleTransactionPdaKey = await createTransaction(contributionPdaKey, userPdaKey, sellerWallet, sellingPrice);
 
@@ -48,7 +47,7 @@ describe('create_transaction', () => {
         const sellerWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData2, sellerWallet);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 1 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);
         const contributionPdaKey = await createContribution(
             projectPdaKey,
             userPdaKey,
@@ -57,8 +56,8 @@ describe('create_transaction', () => {
             contributionAmount,
             0
         );
-        const sellingPrice = 2 * LAMPORTS_PER_SOL;
-        const secondSellingPrice = 4 * LAMPORTS_PER_SOL;
+        const sellingPrice = convertAmountToDecimals(200);
+        const secondSellingPrice = convertAmountToDecimals(40);
 
         const saleTransactionPdaKey = await createTransaction(contributionPdaKey, userPdaKey, sellerWallet, sellingPrice);
 
@@ -78,7 +77,7 @@ describe('create_transaction', () => {
         const sellerWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData2, sellerWallet);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 1 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);;
         const contributionPdaKey = await createContribution(
             projectPdaKey,
             userPdaKey,
@@ -87,7 +86,7 @@ describe('create_transaction', () => {
             contributionAmount,
             null
         );
-        const sellingPrice = 2 * LAMPORTS_PER_SOL;
+        const sellingPrice = convertAmountToDecimals(200);;
         const expectedError = /Error Code: NoReward\. Error Number: .*\. Error Message: No reward associated to this contribution.*/;
 
         await expect(createTransaction(contributionPdaKey, userPdaKey, sellerWallet, sellingPrice)).rejects.toThrow(expectedError);
@@ -101,7 +100,7 @@ describe('create_transaction', () => {
         const sellerWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData2, sellerWallet);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 1 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);
         const contributionPdaKey = await createContribution(
             projectPdaKey,
             userPdaKey,
