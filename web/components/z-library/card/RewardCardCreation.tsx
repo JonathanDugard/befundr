@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
 import MainButtonLabel from '../button/MainButtonLabel';
 import Link from 'next/link';
-import MakeContributionPopup from '../popup/MakeContributionPopup';
+import MakeContributionPopup from '../../project/MakeContributionPopup';
 import Image from 'next/image';
 import CancelButtonLabel from '../button/CancelButtonLabel';
 

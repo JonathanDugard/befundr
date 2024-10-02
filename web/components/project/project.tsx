@@ -32,6 +32,7 @@ import { ProjectStatus } from '@/data/projectStatus';
 type Props = {
   project: Project;
   projectId: string;
+  refetchProject: () => void;
 };
 
 const Project = (props: Props) => {
@@ -219,6 +220,8 @@ const Project = (props: Props) => {
           rewards={props.project.rewards}
           projectStatus={props.project.status}
           projectId={props.projectId}
+          projectContributionCounter={props.project.contributionCounter}
+          refetchProject={props.refetchProject}
         />
       )}
       {selectedMenu === 'funder' && userProfile && (

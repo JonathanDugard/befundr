@@ -1,20 +1,46 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
 import MainButtonLabel from '../button/MainButtonLabel';
 import Link from 'next/link';
-import MakeContributionPopup from '../popup/MakeContributionPopup';
+import MakeContributionPopup from '../../project/MakeContributionPopup';
 import ImageWithFallback from '../display elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
+import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
+import { PublicKey } from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletButton } from '@/components/solana/solana-provider';
 
 type Props = {
   reward: Reward;
   projectStatus: string;
   projectId: string;
+  rewardId: number;
+  projectContributionCounter: number;
+  refetchProject: () => void;
 };
 
 const RewardCardDetailled = (props: Props) => {
+  //* GLOBAL STATE
+  const { getUserEntryAddress } = useBefundrProgramUser();
+  const { publicKey } = useWallet();
+
+  //* LOCAL STATE
   const [isShowPopup, setIsShowPopup] = useState(false);
+  const [userEntryAddress, setUserEntryAddress] = useState<PublicKey | null>(
+    null
+  );
+
+  // get the user entry address
+  useEffect(() => {
+    const fetchUserEntryAddress = async () => {
+      if (publicKey) {
+        const userEntryAddress = await getUserEntryAddress(publicKey);
+        setUserEntryAddress(userEntryAddress);
+      }
+    };
+    fetchUserEntryAddress();
+  }, [publicKey]);
 
   return (
     <div className="flex justify-start items-start gap-6 w-full h-full ">
@@ -35,7 +61,8 @@ const RewardCardDetailled = (props: Props) => {
         <p className="textStyle-subheadline">{props.reward.price}$</p>
         {props.reward.maxSupply ? (
           <p className="textStyle-body">
-            Limited supply : {props.reward.maxSupply}
+            Limited supply :{' '}
+            {props.reward.maxSupply - props.reward.currentSupply} availables
             {props.reward.currentSupply >= props.reward.maxSupply && (
               <strong className="ml-4 !text-custom-red">Supply reached</strong>
             )}
@@ -55,9 +82,13 @@ const RewardCardDetailled = (props: Props) => {
               <Link href={`/marketplace/${props.projectId}`}>
                 <SecondaryButtonLabel label="Go to marketplace" />
               </Link>
-              <button onClick={() => setIsShowPopup(true)}>
-                <MainButtonLabel label="Contribute" />
-              </button>
+              {publicKey ? (
+                <button onClick={() => setIsShowPopup(true)}>
+                  <MainButtonLabel label="Contribute" />
+                </button>
+              ) : (
+                <WalletButton />
+              )}
             </div>
           )}
           {/* button if status realizing */}
@@ -68,10 +99,16 @@ const RewardCardDetailled = (props: Props) => {
           )}
         </div>
       </div>
-      {isShowPopup && (
+      {isShowPopup && userEntryAddress && (
         <MakeContributionPopup
           reward={props.reward}
           handleClose={() => setIsShowPopup(false)}
+          projectId={props.projectId}
+          rewardId={props.rewardId}
+          amount={props.reward.price}
+          userEntryAddress={userEntryAddress}
+          projectContributionCounter={props.projectContributionCounter}
+          refetchProject={props.refetchProject}
         />
       )}
     </div>

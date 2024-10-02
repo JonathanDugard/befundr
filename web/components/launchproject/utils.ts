@@ -1,5 +1,3 @@
-'use client';
-
 import { uploadImageToFirebase } from '@/utils/functions/firebaseFunctions';
 import {
   getTimestampInFuture,

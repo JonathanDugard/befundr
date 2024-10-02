@@ -13,7 +13,7 @@ import { RewardsBlock } from './rewards-ui';
 import { DescriptionBLock } from './description-ui';
 import { TrustBlock } from './trust-ui';
 import { ValidationBlock } from './validation-ui';
-import { handleProjectCreation } from './handleProjectCreation';
+import { handleProjectCreation } from './utils';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';

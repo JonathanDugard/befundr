@@ -10,10 +10,11 @@ import { useState } from 'react';
 
 //* TYPE
 interface AddContributionArgs {
-  userAccountPDA: PublicKey;
-  projectPublicKey: PublicKey;
+  projectPubkey: PublicKey;
+  userPubkey: PublicKey;
+  projectContributionCounter: number;
   amount: number;
-  rewardId?: number; // Optional field for reward ID
+  rewardId: number | null;
 }
 
 export function useBefundrProgramContribution() {
@@ -21,52 +22,73 @@ export function useBefundrProgramContribution() {
     useBefundrProgramGlobal();
 
   //* QUERIES
-  //* Fetch all projects --------------------
+  //* Fetch all contributions --------------------
+  const allContributionsAccounts = useQuery({
+    queryKey: ['contribution', 'all'],
+    queryFn: () => program.account.contribution.all(),
+    staleTime: 60000,
+  });
 
   //* MUTATIONS
   //* Add a contribution --------------------
   const addContribution = useMutation<string, Error, AddContributionArgs>({
     mutationKey: ['befundr', 'addContribution'],
     mutationFn: async ({
-      userAccountPDA,
-      projectPublicKey,
+      projectPubkey,
+      userPubkey,
+      projectContributionCounter,
       amount,
       rewardId,
     }) => {
-      // Generate the seed for the new Contribution PDA
-      const [contributionPDA] = await PublicKey.findProgramAddress(
+      const [contributionPdaPublicKey] = await PublicKey.findProgramAddressSync(
         [
-          Buffer.from('contribution'), // Seed: "contribution"
-          projectPublicKey.toBuffer(), // Seed: Project public key
-          new BN(1).toArray('le', 8), // You can use the project contribution counter as well
+          Buffer.from('contribution'),
+          projectPubkey.toBuffer(),
+          new BN(projectContributionCounter + 1).toArray('le', 2),
         ],
         programId
       );
 
-      const [userContributionsPDA] = await PublicKey.findProgramAddress(
-        [Buffer.from('user_contributions'), userAccountPDA.toBuffer()],
+      // Get projectContributions PDA Pubkey
+      const [projectContributionsPubkey] =
+        await PublicKey.findProgramAddressSync(
+          [Buffer.from('project_contributions'), projectPubkey.toBuffer()],
+          program.programId
+        );
+      // Get userContributions PDA Pubkey
+      const [userContributionsPubkey] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('user_contributions'), userPubkey.toBuffer()],
         programId
       );
 
-      // Call the method for adding a contribution
+      // // Get SPL Token transfer accounts
+      // const { fromAta, toAta } = await getSplTransferAccounts(
+      //   wallet,
+      //   projectPubkey
+      // );
+      // if (mintAmount && mintAmount !== undefined) {
+      //   // Add 500 mocked up USDC to the wallet before sending contribution
+      //   await MintAmountTo(wallet, fromAta, mintAmount);
+      // }
+
+      // Call the addContribution method
       return await program.methods
         .addContribution(
-          new BN(amount), // Contribution amount
-          rewardId ? new BN(rewardId) : null // Reward ID (optional)
+          new BN(amount),
+          rewardId !== null ? new BN(rewardId) : null
         )
-        .accounts({
-          project: projectPublicKey,
-          projectContributions: projectPublicKey, // Assuming you have a PDA for contributions
-          user: userAccountPDA,
-          userContributions: userContributionsPDA,
-          contribution: contributionPDA,
-          signer: userAccountPDA,
-          systemProgram: PublicKey.default, // The System Program is usually passed this way
+        .accountsPartial({
+          project: projectPubkey,
+          projectContributions: projectContributionsPubkey,
+          user: userPubkey,
+          userContributions: userContributionsPubkey,
+          contribution: contributionPdaPublicKey,
         })
         .rpc(); // Launch the transaction
     },
-    onSuccess: async (signature) => {
-      toast.success(`Contribution made successfully! Signature: ${signature}`);
+    onSuccess: async () => {
+      toast.success('Contribution made successfully!');
+      allContributionsAccounts.refetch();
       // Optionally refetch any relevant queries or navigate to a different page
     },
     onError: async () => {

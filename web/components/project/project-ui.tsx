@@ -14,10 +14,14 @@ export const RewardBlock = ({
   rewards,
   projectStatus,
   projectId,
+  projectContributionCounter,
+  refetchProject,
 }: {
   rewards: Reward[];
   projectStatus: string;
   projectId: string;
+  projectContributionCounter: number;
+  refetchProject: () => void;
 }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
@@ -42,6 +46,9 @@ export const RewardBlock = ({
             reward={reward}
             projectStatus={projectStatus}
             projectId={projectId}
+            rewardId={index}
+            projectContributionCounter={projectContributionCounter}
+            refetchProject={refetchProject}
           />
           <Divider />
         </div>
