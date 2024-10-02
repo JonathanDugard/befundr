@@ -1,6 +1,5 @@
 'use client';
 import { useBefundrProgramProject } from '@/components/befundrProgram/befundr-project-access';
-import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import Project from '@/components/project/project';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { PublicKey } from '@solana/web3.js';

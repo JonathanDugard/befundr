@@ -67,6 +67,7 @@ const Project = (props: Props) => {
       <div className="flex items-center gap-10">
         <h1 className="textStyle-title">{props.project.name}</h1>
         <InfoLabel label={`${props.project.status}`} />
+        <InfoLabel label={`${props.project.category}`} />
       </div>
       <Divider />
       {/* main info */}
@@ -217,10 +218,8 @@ const Project = (props: Props) => {
       )}
       {selectedMenu === 'rewards' && (
         <RewardBlock
-          rewards={props.project.rewards}
-          projectStatus={props.project.status}
+          project={props.project}
           projectId={props.projectId}
-          projectContributionCounter={props.project.contributionCounter}
           refetchProject={props.refetchProject}
         />
       )}

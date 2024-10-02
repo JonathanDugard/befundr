@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import PopupLayout from '../z-library/popup/PopupLayout';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useBefundrProgramContribution } from '@/components/befundrProgram/befundr-contribution-access';
 import { PublicKey } from '@solana/web3.js';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
+import { requiresCheckBeforeAddContribution } from './utils';
+import toast from 'react-hot-toast';
 
 type Props = {
   reward: Reward;
@@ -14,7 +15,7 @@ type Props = {
   rewardId: number;
   amount: number;
   userEntryAddress: PublicKey;
-  projectContributionCounter: number;
+  project: Project;
   refetchProject: () => void;
 };
 
@@ -27,11 +28,26 @@ const MakeContributionPopup = (props: Props) => {
 
   const handleAddContribution = async () => {
     setIsLoading(true);
+    // require check
+    const check = requiresCheckBeforeAddContribution(
+      props.project,
+      props.amount
+    );
+    if (check !== true) {
+      console.error(check);
+      if (typeof check === 'string') {
+        toast.error(check);
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    // launch TX
     try {
       await addContribution.mutateAsync({
         projectPubkey: new PublicKey(props.projectId),
         userPubkey: props.userEntryAddress,
-        projectContributionCounter: props.projectContributionCounter,
+        projectContributionCounter: props.project.contributionCounter,
         amount: props.amount,
         rewardId: props.rewardId,
       });
@@ -42,8 +58,6 @@ const MakeContributionPopup = (props: Props) => {
     props.refetchProject();
     props.handleClose();
   };
-
-  console.log(props.projectId);
 
   return (
     <PopupLayout item="center" justify="center" padding="10">

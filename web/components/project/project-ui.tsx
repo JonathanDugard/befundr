@@ -11,22 +11,19 @@ export const AboutBlock = ({ description }: { description: string }) => {
 };
 
 export const RewardBlock = ({
-  rewards,
-  projectStatus,
+  project,
   projectId,
-  projectContributionCounter,
+
   refetchProject,
 }: {
-  rewards: Reward[];
-  projectStatus: string;
+  project: Project;
   projectId: string;
-  projectContributionCounter: number;
   refetchProject: () => void;
 }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
-      {projectStatus === ProjectStatus.Fundraising.enum && (
+      {project.status === ProjectStatus.Fundraising.enum && (
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col items-start justify-between gap-2 w-full ">
             <p className="textStyle-subheadline">Donation</p>
@@ -40,14 +37,13 @@ export const RewardBlock = ({
       )}
       <Divider />
       {/* rewars level */}
-      {rewards.map((reward: Reward, index) => (
+      {project.rewards.map((reward: Reward, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
           <RewardCardDetailled
+            project={project}
             reward={reward}
-            projectStatus={projectStatus}
             projectId={projectId}
             rewardId={index}
-            projectContributionCounter={projectContributionCounter}
             refetchProject={refetchProject}
           />
           <Divider />

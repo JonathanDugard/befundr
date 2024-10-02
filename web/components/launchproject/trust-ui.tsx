@@ -93,7 +93,9 @@ export const TrustBlock = (props: TrustProps) => {
           name="safetyDeposit"
           value={props.projectToCreate.safetyDeposit}
         />
-        <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
+        <p className="w-1/2">
+          {collateralRatio.toFixed(2)}% of your fundraising target.
+        </p>
       </div>
       {/* trust score */}
       <p className="textStyle-subheadline !text-textColor-main mt-10 mb-4">

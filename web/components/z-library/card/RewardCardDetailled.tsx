@@ -13,10 +13,9 @@ import { WalletButton } from '@/components/solana/solana-provider';
 
 type Props = {
   reward: Reward;
-  projectStatus: string;
+  project: Project;
   projectId: string;
   rewardId: number;
-  projectContributionCounter: number;
   refetchProject: () => void;
 };
 
@@ -77,7 +76,7 @@ const RewardCardDetailled = (props: Props) => {
             {props.reward.currentSupply} contributors
           </p>
           {/* button if status fundraising */}
-          {props.projectStatus === ProjectStatus.Fundraising.enum && (
+          {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex justify-end gap-4">
               <Link href={`/marketplace/${props.projectId}`}>
                 <SecondaryButtonLabel label="Go to marketplace" />
@@ -92,7 +91,7 @@ const RewardCardDetailled = (props: Props) => {
             </div>
           )}
           {/* button if status realizing */}
-          {props.projectStatus === ProjectStatus.Realising.enum && (
+          {props.project.status === ProjectStatus.Realising.enum && (
             <Link href={`/marketplace/${props.projectId}`}>
               <MainButtonLabel label="Go to marketplace" />
             </Link>
@@ -107,8 +106,8 @@ const RewardCardDetailled = (props: Props) => {
           rewardId={props.rewardId}
           amount={props.reward.price}
           userEntryAddress={userEntryAddress}
-          projectContributionCounter={props.projectContributionCounter}
           refetchProject={props.refetchProject}
+          project={props.project}
         />
       )}
     </div>
