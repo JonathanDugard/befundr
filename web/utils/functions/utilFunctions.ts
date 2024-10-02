@@ -92,7 +92,12 @@ export function toCamelCase(input: string): string {
  * @param percentage - The input percentage (from 0 to 5).
  * @returns The calculated value based on the percentage.
  */
-export function calculateTrustScore(percentage: number): number {
+export function calculateTrustScore(
+  safetyDeposit: number,
+  goalAmount: number
+): number {
+  // calculate collateral ratio
+  let percentage = (safetyDeposit * 100) / goalAmount;
   // Ensure the percentage is between 0 and 5
   if (percentage < 0) {
     percentage = 0;
