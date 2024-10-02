@@ -1,11 +1,10 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputField from '../z-library/button/InputField';
 import TextArea from '../z-library/button/TextArea';
 import PicSelector from '../z-library/button/PicSelector';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useBefundrProgram } from '../befundrProgram/befundr-data-access';
 import InfoLabel from '../z-library/display elements/InfoLabel';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import {
@@ -13,14 +12,14 @@ import {
   uploadImageToFirebase,
 } from '@/utils/functions/firebaseFunctions';
 import { useRouter } from 'next/navigation';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { concatFileName } from '@/utils/functions/utilFunctions';
 
-type Props = {};
-
-const MyProfile = (props: Props) => {
+const MyProfile = () => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
   const router = useRouter();
-  const { userAccount, createUser, updateUser } = useBefundrProgram();
+  const { userAccount, createUser, updateUser } = useBefundrProgramUser();
 
   //* LOCAL STATE
   const [isUserHasAccount, setIsUserHasAccount] = useState(false);
@@ -77,8 +76,10 @@ const MyProfile = (props: Props) => {
     if (profileImageFile) {
       try {
         avatarUrl = await uploadImageToFirebase(
-          profileImageFile,
-          publicKey.toString()
+          `profiles/${publicKey.toString()}/${concatFileName(
+            profileImageFile.name
+          )}`,
+          profileImageFile
         );
       } catch (error) {
         console.error(error);
@@ -117,8 +118,10 @@ const MyProfile = (props: Props) => {
     if (profileImageFile) {
       try {
         avatarUrl = await uploadImageToFirebase(
-          profileImageFile,
-          publicKey.toString()
+          `profiles/${publicKey.toString()}/${concatFileName(
+            profileImageFile.name
+          )}`,
+          profileImageFile
         );
       } catch (error) {
         console.error(error);

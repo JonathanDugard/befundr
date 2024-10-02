@@ -47,8 +47,8 @@ describe('createProject', () => {
     it("should throw an error if the image url is too long", async () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData1, userWallet);
-        const expectedError = /Error Code: ImageUrlTooLong\. Error Number: .*\. Error Message: Image URL is too long \(max 128 characters\).*/;
-        const MAX_URL_LENGTH = 128;
+        const expectedError = /Error Code: ImageUrlTooLong\. Error Number: .*\. Error Message: Image URL is too long \(max 256 characters\).*/;
+        const MAX_URL_LENGTH = 256;
         const projectData = { ...projectData1, imageUrl: "a".repeat(MAX_URL_LENGTH + 1) };
 
         await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
@@ -124,7 +124,7 @@ describe('createProject', () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData1, userWallet);
         const expectedError = /Error Code: TooManyRewards\. Error Number: .*\. Error Message: Too many rewards \(max 10\).*/;
-        const MAX_REWARDS_NUMBER = 10;
+        const MAX_REWARDS_NUMBER = 5;
         const projectData = { ...projectData1, rewards: Array(MAX_REWARDS_NUMBER + 1).fill(projectData1.rewards.at(0)) };
 
         await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
