@@ -19,10 +19,6 @@ export function useBefundrProgramProject() {
   const { program, programId, transactionToast, router } =
     useBefundrProgramGlobal();
 
-  const [newProjectAddress, setNewProjectAddress] = useState<PublicKey | null>(
-    null
-  );
-
   //* QUERIES
   //* Fetch all projects --------------------
   const allProjectsAccounts = useQuery({
@@ -32,21 +28,17 @@ export function useBefundrProgramProject() {
   });
 
   //* Fetch single project by public key --------------------
-  //   const projectAccount = (publicKey: PublicKey | null) => {
-  //     return useQuery({
-  //       queryKey: ['user', publicKey?.toString()],
-  //       queryFn: async () => {
-  //         if (!publicKey) throw new Error('PublicKey is required');
-  //         const [userEntryAddress] = await PublicKey.findProgramAddress(
-  //           [Buffer.from('user'), publicKey.toBuffer()],
-  //           programId
-  //         );
-  //         return program.account.user.fetch(userEntryAddress);
-  //       },
-  //       staleTime: 60000,
-  //       enabled: !!publicKey,
-  //     });
-  //   };
+  const projectAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+    return useQuery({
+      queryKey: ['project', publicKey?.toString()],
+      queryFn: async () => {
+        if (!publicKey) throw new Error('PublicKey is required');
+        return program.account.project.fetch(publicKey);
+      },
+      staleTime: 60000,
+      enabled: !!publicKey,
+    });
+  };
 
   //* MUTATIONS
   //* Create project --------------------
@@ -62,7 +54,6 @@ export function useBefundrProgramProject() {
         ],
         programId
       );
-      setNewProjectAddress(newProjectAddress);
 
       // Rewards serialization
       const serializedRewards = project.rewards.map((reward) => ({
@@ -77,7 +68,7 @@ export function useBefundrProgramProject() {
         .createProject(
           project.name,
           project.imageUrl,
-          project.projectDescription,
+          project.description,
           new BN(project.goalAmount),
           new BN(project.endTime),
           serializedRewards,
@@ -100,6 +91,7 @@ export function useBefundrProgramProject() {
   });
 
   return {
+    projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
   };

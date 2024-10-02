@@ -1,12 +1,15 @@
 'use client';
 import { project1, user1 } from '@/data/localdata';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import Divider from '../z-library/display elements/Divider';
 import InfoLabel from '../z-library/display elements/InfoLabel';
 import ProgressBar from '../z-library/display elements/ProgressBar';
-import { calculateTimeRemaining } from '@/utils/functions/utilFunctions';
+import {
+  calculateTimeRemaining,
+  calculateTrustScore,
+} from '@/utils/functions/utilFunctions';
 import TrustScore from '../z-library/display elements/TrustScore';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
@@ -21,21 +24,38 @@ import Link from 'next/link';
 import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
+import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { PublicKey } from '@solana/web3.js';
+import { ProjectStatus } from '@/data/projectStatus';
 
 type Props = {
   project: Project;
+  projectId: string;
 };
 
 const Project = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
+  const { userAccountFromAccountPublicKey } = useBefundrProgramUser();
 
   //* LOCAL STATE
-  const pathname = usePathname();
-
   const [selectedMenu, setSelectedMenu] = useState<
     'about' | 'rewards' | 'funder' | 'update' | 'vote'
   >('about');
+
+  const trustScore = useMemo(
+    () =>
+      calculateTrustScore(
+        props.project.safetyDeposit,
+        props.project.goalAmount
+      ),
+    [props.project]
+  );
+
+  // Use React Query to fetch user profile based on public key
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromAccountPublicKey(new PublicKey(props.project.user));
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -51,7 +71,14 @@ const Project = (props: Props) => {
       {/* main info */}
       <div className="w-full flex justify-start items-start gap-8 ">
         {/* image */}
-        <div className="bg-neutral-400 w-1/2 md:w-1/3 aspect-square"></div>
+        <ImageWithFallback
+          alt="image"
+          fallbackImageSrc="/images/default_project_image.jpg"
+          classname="w-1/2 md:w-1/3 aspect-square object-cover"
+          src={props.project.imageUrl}
+          height={400}
+          width={400}
+        />
         {/* info */}
         <div className="flex flex-col items-start justify-start gap-4 w-1/2  h-full">
           <p className="textStyle-subheadline">Contributions amount</p>
@@ -74,7 +101,7 @@ const Project = (props: Props) => {
                 </strong>{' '}
                 contributors
               </p>
-              {props.project.status === 'Fundraising' && (
+              {props.project.status === ProjectStatus.Fundraising.enum && (
                 <p className="textStyle-subheadline">
                   <strong className="textStyle-subtitle">
                     {calculateTimeRemaining(props.project.endTime)}
@@ -84,16 +111,16 @@ const Project = (props: Props) => {
               )}
             </div>
             <div className="w-1/3 aspect-square flex flex-col justify-center items-center gap-2">
-              <TrustScore trustValue={props.project.trustScore} />
+              <TrustScore trustValue={trustScore} />
               <p className="flex justify-center w-full textStyle-subheadline">
-                Trust level {props.project.trustScore}%
+                Trust level {trustScore.toFixed(0)}
               </p>
             </div>
           </div>
           {/* spacer */}
           <div className="flex-grow "></div>
           {/* buttons if fundraising*/}
-          {props.project.status === 'Fundraising' && (
+          {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex flex-col gap-4 w-full">
               <button
                 className="w-full"
@@ -107,8 +134,8 @@ const Project = (props: Props) => {
             </div>
           )}
           {/* button if realizing status */}
-          {props.project.status === 'Realising' && (
-            <Link href={`/marketplace/${props.project.id}`} className="w-full">
+          {props.project.status === ProjectStatus.Realising.enum && (
+            <Link href={`/marketplace/${props.projectId}`} className="w-full">
               <MainButtonLabelBig label="Look for rewards to buy" />
             </Link>
           )}
@@ -156,7 +183,7 @@ const Project = (props: Props) => {
         >
           Update
         </button>
-        {props.project.status === 'Realising' && (
+        {props.project.status === ProjectStatus.Realising.enum && (
           <button
             className={`${
               selectedMenu === 'vote'
@@ -169,7 +196,7 @@ const Project = (props: Props) => {
           </button>
         )}
       </div>
-      {props.project.ownerId === user1.owner && (
+      {props.project.user === user1.owner && (
         <div className="w-full h-10 bg-accent flex justify-center items-center px-4  -mt-14 mb-10">
           {selectedMenu === 'update' && (
             <button>
@@ -185,25 +212,23 @@ const Project = (props: Props) => {
       )}
       {/* blocks to display */}
       {selectedMenu === 'about' && (
-        <AboutBlock description={props.project.projectDescription} />
+        <AboutBlock description={props.project.description} />
       )}
       {selectedMenu === 'rewards' && (
         <RewardBlock
           rewards={props.project.rewards}
           projectStatus={props.project.status}
-          projectId={props.project.id}
+          projectId={props.projectId}
         />
       )}
-      {selectedMenu === 'funder' && (
+      {selectedMenu === 'funder' && userProfile && (
         <FounderBlock
-          founder={user1}
+          founder={userProfile}
           safetyDeposit={props.project.safetyDeposit}
         />
       )}
-      {selectedMenu === 'update' && <UpdateBlock feeds={props.project.feed} />}
-      {selectedMenu === 'vote' && (
-        <FundsRequestBlock fundsRequests={props.project.fundsRequests} />
-      )}
+      {selectedMenu === 'update' && <UpdateBlock feeds={[]} />}
+      {selectedMenu === 'vote' && <FundsRequestBlock fundsRequests={[]} />}
     </div>
   );
 };

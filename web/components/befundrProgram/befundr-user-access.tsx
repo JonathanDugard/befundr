@@ -38,8 +38,8 @@ export function useBefundrProgramUser() {
     return userEntryAddress;
   };
 
-  //* Fetch single user by public key --------------------
-  const userAccount = (publicKey: PublicKey | null) => {
+  //* Fetch single user by user wallet public key --------------------
+  const userAccountFromWalletPublicKey = (publicKey: PublicKey | null) => {
     return useQuery({
       queryKey: ['user', publicKey?.toString()],
       queryFn: async () => {
@@ -49,6 +49,19 @@ export function useBefundrProgramUser() {
           programId
         );
         return program.account.user.fetch(userEntryAddress);
+      },
+      staleTime: 60000,
+      enabled: !!publicKey,
+    });
+  };
+
+  //* Fetch single user by its PDA public key --------------------
+  const userAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+    return useQuery({
+      queryKey: ['user', publicKey?.toString()],
+      queryFn: async () => {
+        if (!publicKey) throw new Error('PublicKey is required');
+        return program.account.user.fetch(publicKey);
       },
       staleTime: 60000,
       enabled: !!publicKey,
@@ -101,7 +114,8 @@ export function useBefundrProgramUser() {
   return {
     allUsersAccounts,
     getUserEntryAddress,
-    userAccount,
+    userAccountFromWalletPublicKey,
+    userAccountFromAccountPublicKey,
     createUser,
     updateUser,
   };

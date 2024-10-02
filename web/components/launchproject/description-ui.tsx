@@ -18,8 +18,8 @@ export const DescriptionBLock = (props: DescriptionProps) => {
         placeholder="Bring as more detail as possible"
         rows={5}
         handleChange={props.handleChange}
-        inputName="projectDescription"
-        value={props.projectToCreate.projectDescription}
+        inputName="description"
+        value={props.projectToCreate.description}
         min={10}
         max={500}
       />

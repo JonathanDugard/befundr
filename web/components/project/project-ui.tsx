@@ -3,6 +3,8 @@ import RewardCardDetailled from '../z-library/card/RewardCardDetailled';
 import FeedCard from '../z-library/card/FeedCard';
 import Divider from '../z-library/display elements/Divider';
 import FundsRequestCard from '../z-library/card/VoteCard';
+import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
+import { ProjectStatus } from '@/data/projectStatus';
 
 export const AboutBlock = ({ description }: { description: string }) => {
   return <p className="textStyle-body">{description}</p>;
@@ -14,13 +16,13 @@ export const RewardBlock = ({
   projectId,
 }: {
   rewards: Reward[];
-  projectStatus: ProjectStatus;
+  projectStatus: string;
   projectId: string;
 }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
-      {projectStatus === 'Fundraising' && (
+      {projectStatus === ProjectStatus.Fundraising.enum && (
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col items-start justify-between gap-2 w-full ">
             <p className="textStyle-subheadline">Donation</p>
@@ -61,7 +63,16 @@ export const FounderBlock = ({
       <div className="flex flex-col items-start justify-start gap-8 w-1/2">
         {/* main info */}
         <div className="flex justify-start items-start gap-4">
-          <div className="bg-neutral-400 w-40 h-40 "></div>
+          <div className="bg-neutral-400 w-40 h-40 ">
+            <ImageWithFallback
+              alt="image"
+              fallbackImageSrc="/images/default_project_image.jpg"
+              classname=" aspect-square object-cover"
+              src={founder.avatarUrl ?? ''}
+              height={400}
+              width={400}
+            />
+          </div>
           <div className="flex flex-col items-start justify-start">
             <p className="textStyle-headline">{founder.name}</p>
             <p className="textStyle-subheadline">{founder.city}</p>
@@ -91,6 +102,11 @@ export const UpdateBlock = ({ feeds }: { feeds: Feed[] }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* update list */}
+      {feeds.length === 0 && (
+        <p className="textStyle-body">
+          There is no update for this project yet.
+        </p>
+      )}
       {feeds.map((feed: Feed, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
           <FeedCard feed={feed} />
