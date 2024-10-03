@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 // use anchor_spl::mint::USDC as mintUSDC;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
 pub fn transfer_spl_token<'info>(
     token_program: &Program<'info, Token>,
@@ -9,7 +9,7 @@ pub fn transfer_spl_token<'info>(
     authority: &Signer<'info>,
     amount: u64,
 ) -> Result<()> {
-    let cpi_accounts = SplTransfer {
+    let cpi_accounts = Transfer {
         from: from_ata.to_account_info(),
         to: to_ata.to_account_info(),
         authority: authority.to_account_info(),
