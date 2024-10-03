@@ -103,3 +103,9 @@ pub enum MarketplaceError {
     #[msg("Incorrect selling price")]
     IncorrectSellingPrice,
 }
+
+#[error_code]
+pub enum AtaError {
+    #[msg("Wrong owner for the given ATA")]
+    WrongAtaOwner,
+}
