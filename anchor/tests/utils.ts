@@ -187,7 +187,6 @@ export const createContribution = async (
     // Get SPL Token transfer accounts
     const { fromAta, toAta } = await getSplTransferAccounts(wallet, projectPubkey);
     if (mintAmount && mintAmount !== undefined) {
-        // Add 500 mocked up USDC to the wallet before sending contribution
         await MintAmountTo(wallet, fromAta, mintAmount);
     }
 
