@@ -5,7 +5,7 @@ use crate::{
     constants::project::{
         MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_REWARDS_NUMBER,
         MAX_URL_LENGTH, MIN_DESCRIPTION_LENGTH, MIN_NAME_LENGTH, MIN_PROJECT_GOAL_AMOUNT,
-        MIN_REWARDS_NUMBER,
+        MIN_REWARDS_NUMBER, MIN_SAFETY_DEPOSIT,
     },
     errors::{AtaError, CreateProjectError},
     state::{
@@ -43,11 +43,8 @@ pub fn create_project(
         description_length <= MAX_DESCRIPTION_LENGTH,
         CreateProjectError::DescriptionTooLong
     );
-
     require!(x_account_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::UrlTooLong);
-
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
-
     require!(end_time > now, CreateProjectError::EndTimeInPast);
     require!(
         end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
@@ -55,6 +52,10 @@ pub fn create_project(
     );
     require!(rewards.len() as u16 >= MIN_REWARDS_NUMBER, CreateProjectError::NotEnoughRewards);
     require!(rewards.len() as u16 <= MAX_REWARDS_NUMBER, CreateProjectError::TooManyRewards);
+    require!(
+        safety_deposit >= MIN_SAFETY_DEPOSIT,
+        CreateProjectError::InsufficientSafetyDeposit
+    );
 
     for reward in rewards.iter() {
         reward.validate()?;
@@ -77,16 +78,14 @@ pub fn create_project(
     project.rewards = rewards;
     project.category = category;
 
-    if safety_deposit > 0 {
-        let to_ata = &ctx.accounts.to_ata;
-        let from_ata = &ctx.accounts.from_ata;
-        let token_program = &ctx.accounts.token_program;
+    let to_ata = &ctx.accounts.to_ata;
+    let from_ata = &ctx.accounts.from_ata;
+    let token_program = &ctx.accounts.token_program;
 
-        require!(from_ata.owner == signer.key(), AtaError::WrongAtaOwner);
-        require!(to_ata.owner == project.key(), AtaError::WrongAtaOwner);
+    require!(from_ata.owner == signer.key(), AtaError::WrongAtaOwner);
+    require!(to_ata.owner == project.key(), AtaError::WrongAtaOwner);
 
-        transfer_spl_token(token_program, from_ata, to_ata, signer, project.safety_deposit)?;
-    }
+    transfer_spl_token(token_program, from_ata, to_ata, signer, project.safety_deposit)?;
     project.safety_deposit = safety_deposit;
 
     ctx.accounts.user.created_project_counter += 1;
