@@ -41,7 +41,7 @@ export function useBefundrProgramProject() {
   };
 
   //* fetch all project created by a user
-  const getAllCreatedProjectsByAUser = (
+  const getProjectsByCreator = (
     userPublicKey: PublicKey | undefined,
     createdProjectCounter: number | undefined
   ) => {
@@ -142,6 +142,6 @@ export function useBefundrProgramProject() {
     projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
-    getAllCreatedProjectsByAUser,
+    getProjectsByCreator,
   };
 }

@@ -12,7 +12,8 @@ type Props = {};
 
 const MyCreatedProjects = (props: Props) => {
   //* GLOBAL STATE
-  const { getAllCreatedProjectsByAUser } = useBefundrProgramProject();
+  const { getProjectsByCreator: getAllCreatedProjectsByAUser } =
+    useBefundrProgramProject();
   const { getUserEntryAddress, userAccountFromWalletPublicKey } =
     useBefundrProgramUser();
   const { publicKey } = useWallet();
