@@ -115,3 +115,9 @@ pub enum UserContributionsError {
     #[msg("Contribution not found")]
     ContributionNotFound,
 }
+
+#[error_code]
+pub enum AtaError {
+    #[msg("Wrong owner for the given ATA")]
+    WrongAtaOwner,
+}

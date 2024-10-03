@@ -1,17 +1,21 @@
 use crate::{
-    errors::MarketplaceError,
+    errors::{AtaError, MarketplaceError},
     state::{
         user::User, Contribution, HistoryTransaction, HistoryTransactions, SaleTransaction,
         UserContributions,
     },
+    utils::transfer_spl_token,
 };
 use anchor_lang::prelude::*;
+use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
 pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
     let buyer = &mut ctx.accounts.buyer;
+    let buyer_ata = &mut ctx.accounts.buyer_ata;
     let buyer_user = &mut ctx.accounts.buyer_user;
     let buyer_user_contributions = &mut ctx.accounts.buyer_user_contributions;
     let seller = &mut ctx.accounts.seller;
+    let seller_ata = &mut ctx.accounts.seller_ata;
     let seller_user = &mut ctx.accounts.seller_user;
     let seller_user_contributions = &mut ctx.accounts.seller_user_contributions;
     let contribution = &mut ctx.accounts.contribution;
@@ -25,6 +29,9 @@ pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
         MarketplaceError::SellerNotContributionOwner
     );
 
+    require!(buyer_ata.owner == buyer.key(), AtaError::WrongAtaOwner);
+    require!(seller_ata.owner == seller.key(), AtaError::WrongAtaOwner);
+
     let now: i64 = Clock::get()?.unix_timestamp;
 
     contribution.current_owner = buyer_user.key();
@@ -32,6 +39,8 @@ pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
     buyer_user_contributions
         .contributions
         .push(contribution.key());
+
+    //Move transaction in history
     history_transactions
         .transactions
         .push(HistoryTransaction::new(
@@ -43,7 +52,14 @@ pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
             now,
         ));
 
-    //TODO Add the SPL token transfer
+    transfer_spl_token(
+        &ctx.accounts.token_program,
+        &buyer_ata,
+        &seller_ata,
+        &buyer,
+        sale_transaction.selling_price,
+    )?;
+
     Ok(())
 }
 
@@ -67,10 +83,10 @@ pub struct CompleteTransaction<'info> {
     #[account(mut)]
     pub seller_user_contributions: Account<'info, UserContributions>,
 
-    #[account(mut)]
+    #[account()]
     pub buyer_user: Account<'info, User>,
 
-    #[account(mut)]
+    #[account()]
     pub seller_user: Account<'info, User>,
 
     #[account(mut)]
@@ -79,9 +95,17 @@ pub struct CompleteTransaction<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
 
+    #[account(mut)]
+    pub buyer_ata: Account<'info, TokenAccount>,
+
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account()]
     pub seller: AccountInfo<'info>,
+
+    #[account(mut)]
+    pub seller_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
 
     pub system_program: Program<'info, System>,
 }
