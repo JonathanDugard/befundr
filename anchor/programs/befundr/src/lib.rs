@@ -90,6 +90,10 @@ pub mod befundr {
     ) -> Result<()> {
         instructions::create_unlock_request(ctx, amount_requested)
     }
+
+    pub fn create_transaction(ctx: Context<CreateTransaction>, selling_price: u64) -> Result<()> {
+        instructions::create_transaction(ctx, selling_price)
+    }
 }
 
 #[derive(Accounts)]

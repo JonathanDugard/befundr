@@ -2,9 +2,8 @@ import { anchor, program } from "../config";
 import { createContribution, createProject, createUnlockRequest, createUser, createUserWalletWithSol } from "../utils";
 import { projectData2 } from "../project/project_dataset";
 import { userData1, userData2 } from "../user/user_dataset";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { BN } from "@coral-xyz/anchor";
 import { UnlockStatus } from "./unlock_status";
+import { convertAmountToDecimals } from "../token/token_config";
 
 describe('createUnlockRequest', () => {
     it.skip("should successfully create an unlock request", async () => {
@@ -16,8 +15,8 @@ describe('createUnlockRequest', () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData2, userWallet);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 100 * LAMPORTS_PER_SOL;
-        const expectedUnlockAmount = 10 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);
+        const expectedUnlockAmount = convertAmountToDecimals(10);
         const expectedCounterBefore = 0;
         const expectedCounterAfter = 1;
 
@@ -67,8 +66,8 @@ describe('createUnlockRequest', () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData2, userWallet);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 100 * LAMPORTS_PER_SOL;
-        const expectedUnlockAmount = 10 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);
+        const expectedUnlockAmount = convertAmountToDecimals(10);
         const expectedError = /Error Code: UnlockVoteAlreadyOngoing\. Error Number: .*\. Error Message: There is already a vote ongoing.*/;
 
         await createContribution(
@@ -105,8 +104,8 @@ describe('createUnlockRequest', () => {
         const userWallet = await createUserWalletWithSol();
         const userPdaKey = await createUser(userData2, userWallet);
         const projectContributionCounter = projectPda.contributionCounter;
-        const contributionAmount = 100 * LAMPORTS_PER_SOL;
-        const expectedUnlockAmount = 10 * LAMPORTS_PER_SOL;
+        const contributionAmount = convertAmountToDecimals(100);
+        const expectedUnlockAmount = convertAmountToDecimals(10);
         const expectedError = /Error Code: WrongProjectStatus\. Error Number: .*\. Error Message: The project is not in realization.*/;
 
         await createContribution(
@@ -115,7 +114,8 @@ describe('createUnlockRequest', () => {
             userWallet,
             projectContributionCounter,
             contributionAmount,
-            0
+            0,
+            contributionAmount
         );
 
         const [unlockRequestsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
