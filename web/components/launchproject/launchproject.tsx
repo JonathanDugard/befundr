@@ -59,22 +59,12 @@ const Launchproject = () => {
     useState('Technology');
   const [isCreationLoading, setIsCreationLoading] = useState(false);
 
-  const [userEntryAddress, setUserEntryAddress] = useState<PublicKey | null>(
-    null
-  );
   const [userProjectCounter, setUserProjectCounter] = useState(0);
 
   //* USER DATA MNGT
-  // get the user entry address
-  useEffect(() => {
-    const fetchUserEntryAddress = async () => {
-      if (publicKey) {
-        const userEntryAddress = await getUserEntryAddress(publicKey);
-        setUserEntryAddress(userEntryAddress);
-      }
-    };
-    fetchUserEntryAddress();
-  }, [publicKey]);
+  // Use React Query to fetch userPDA address based on public key
+  const { data: userEntryAddress, isLoading: isFetchingUserEntryAddress } =
+    getUserEntryAddress(publicKey);
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =

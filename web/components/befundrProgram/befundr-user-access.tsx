@@ -28,15 +28,19 @@ export function useBefundrProgramUser() {
   });
 
   //* get user entry address
-  const getUserEntryAddress = async (
-    publicKey: PublicKey | null
-  ): Promise<PublicKey> => {
-    if (!publicKey) throw new Error('PublicKey is required');
-    const [userEntryAddress] = await PublicKey.findProgramAddress(
-      [Buffer.from('user'), publicKey.toBuffer()],
-      programId
-    );
-    return userEntryAddress;
+  const getUserEntryAddress = (publicKey: PublicKey | null) => {
+    return useQuery({
+      queryKey: ['userEntryAddress', publicKey?.toString()],
+      queryFn: async () => {
+        if (!publicKey) throw new Error('PublicKey is required');
+        const [userEntryAddress] = await PublicKey.findProgramAddress(
+          [Buffer.from('user'), publicKey.toBuffer()],
+          programId
+        );
+        return userEntryAddress;
+      },
+      staleTime: 6000,
+    });
   };
 
   //* Fetch single user by user wallet public key --------------------

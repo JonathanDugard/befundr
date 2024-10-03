@@ -42,7 +42,7 @@ export function useBefundrProgramProject() {
 
   //* fetch all project created by a user
   const getAllCreatedProjectsByAUser = (
-    userPublicKey: PublicKey | null,
+    userPublicKey: PublicKey | undefined,
     createdProjectCounter: number | undefined
   ) => {
     return useQuery({
@@ -80,10 +80,9 @@ export function useBefundrProgramProject() {
           } catch (error) {
             console.error(`Error fetching project ${i}:`, error);
           }
-
-          // return the projects
-          return projects;
         }
+        // return the projects
+        return projects;
       },
       staleTime: 6000,
     });

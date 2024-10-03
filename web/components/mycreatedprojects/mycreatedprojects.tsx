@@ -22,24 +22,14 @@ const MyCreatedProjects = (props: Props) => {
   const [projectsToDisplay, setProjectsToDisplay] = useState<
     AccountWrapper<Project>[]
   >([]); // use the AccountWrapper type to handle the publicKey
-  const [userEntryAddress, setUserEntryAddress] = useState<PublicKey | null>(
-    null
-  );
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromWalletPublicKey(publicKey);
 
-  // get the user entry address
-  useEffect(() => {
-    const fetchUserEntryAddress = async () => {
-      if (publicKey) {
-        const userEntryAddress = await getUserEntryAddress(publicKey);
-        setUserEntryAddress(userEntryAddress);
-      }
-    };
-    fetchUserEntryAddress();
-  }, [publicKey]);
+  // Use React Query to fetch userPDA address based on public key
+  const { data: userEntryAddress, isLoading: isFetchingUserEntryAddress } =
+    getUserEntryAddress(publicKey);
 
   // get all user created projects
   const { data: projects, isLoading: isFetchingProjectsToDisplay } =
@@ -73,7 +63,7 @@ const MyCreatedProjects = (props: Props) => {
       <div
         className="grid justify-center gap-6 w-full"
         style={{
-          gridTemplateColumns: 'repeat(auto-fit,minmax(320px,320px))',
+          gridTemplateColumns: 'repeat(auto-fit,minmax(400px,400px))',
         }}
       >
         {projectsToDisplay &&
