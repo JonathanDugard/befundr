@@ -24,7 +24,7 @@ export const getATAAndMint = async (
 
   try {
     const { account: accountGot, associatedToken: associatedTokenGot } =
-      await getATA(walletPublicKey, connection, sendTransaction);
+      await getOrCreateATA(walletPublicKey, connection, sendTransaction);
 
     if (!accountGot || !associatedTokenGot) {
       throw new Error('Failed to get account or associated token');
@@ -48,8 +48,44 @@ export const getATAAndMint = async (
   return account;
 };
 
-// function to get ATA
+// function to get existing ATA
 export const getATA = async (
+  walletPublicKey: PublicKey,
+  connection: Connection,
+  sendTransaction: any
+): Promise<{ account: Account | null; associatedToken: PublicKey }> => {
+  // checks
+  if (!process.env.NEXT_PUBLIC_MINT_ACCOUNT) {
+    throw new Error('Environment variables for mint account are missing');
+  }
+
+  // get the token account publickey
+  const associatedToken = await getAssociatedTokenAddress(
+    new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT),
+    walletPublicKey,
+    true,
+    TOKEN_PROGRAM_ID, //programId
+    ASSOCIATED_TOKEN_PROGRAM_ID
+  );
+
+  // get the user wallet ATA
+  let account: Account | null = null;
+  try {
+    // check is ATA already exist
+    account = await getAccount(
+      connection, // connection — Connection to use
+      associatedToken, // address — Token account
+      /*commitment*/ 'single', // commitment — Desired level of commitment for querying the state
+      TOKEN_PROGRAM_ID // programId — SPL Token program account
+    );
+  } catch (error: unknown) {
+    console.error(error);
+  }
+  return { account, associatedToken };
+};
+
+// function to get ATA or create is needed
+export const getOrCreateATA = async (
   walletPublicKey: PublicKey,
   connection: Connection,
   sendTransaction: any

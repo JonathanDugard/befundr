@@ -5,8 +5,8 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
-import { getATA } from '@/utils/functions/claimFaucet';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { getATA } from '@/utils/functions/ATAAndFaucet';
 
 //* TYPE
 interface CreateUserArgs {

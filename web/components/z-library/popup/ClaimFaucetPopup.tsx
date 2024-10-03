@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import PopupLayout from './PopupLayout';
 import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
-import { getATAAndMint } from '@/utils/functions/claimFaucet';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
 import MainButtonLabelAsync from '../button/MainButtonLabelAsync';
 import toast from 'react-hot-toast';
 import ATAbalance from '../display elements/ATAbalance';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
+import { getATAAndMint } from '@/utils/functions/ATAAndFaucet';
 
 type Props = {
   handleClose: () => void;
