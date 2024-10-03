@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import PopupLayout from './PopupLayout';
 import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
-import MainButtonLabel from '../button/MainButtonLabel';
-import { getATA } from '@/utils/functions/claimFaucet';
+import { getATAAndMint } from '@/utils/functions/claimFaucet';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
+import MainButtonLabelAsync from '../button/MainButtonLabelAsync';
+import toast from 'react-hot-toast';
 
 type Props = {
   handleClose: () => void;
@@ -16,7 +17,8 @@ const ClaimFaucetPopup = (props: Props) => {
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useBefundrProgramGlobal();
   //* LOCAL STATE
-  const [selectedAmount, setSelectedAmount] = useState<number | ''>('');
+  const [selectedAmount, setSelectedAmount] = useState<number | ''>(50);
+  const [isLoading, setIsLoading] = useState(false);
 
   // HANDLERS
   const handleSelectAmount = (amount: number) => {
@@ -32,17 +34,27 @@ const ClaimFaucetPopup = (props: Props) => {
 
   const handleClaim = async () => {
     console.log('public key :', publicKey);
+    if (!publicKey || !selectedAmount) {
+      toast.error('Public key or amount missing');
+      return;
+    }
 
-    if (publicKey && selectedAmount) {
-      console.log('handle claim');
-
-      const account = await getATA(
+    try {
+      setIsLoading(true);
+      const account = await getATAAndMint(
         publicKey,
         connection,
         sendTransaction,
         selectedAmount
       );
-      console.log(account);
+      console.log('account :', account);
+      console.log('account owner :', account.owner.toString());
+      toast.success(`Successfully claimed ${selectedAmount}$`);
+    } catch (e) {
+      toast.error('Error claiming faucet...');
+      console.error(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,8 +97,12 @@ const ClaimFaucetPopup = (props: Props) => {
           <button onClick={props.handleClose}>
             <SecondaryButtonLabel label="Cancel" />
           </button>
-          <button onClick={handleClaim}>
-            <MainButtonLabel label={`Claim`} />
+          <button onClick={handleClaim} disabled={isLoading}>
+            <MainButtonLabelAsync
+              label={`Claim`}
+              isLoading={isLoading}
+              loadingLabel="Claiming..."
+            />
           </button>
         </div>
       </div>

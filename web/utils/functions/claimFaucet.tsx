@@ -11,24 +11,58 @@ import {
 } from '@solana/spl-token';
 import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 
-export const getATA = async (
+// function to get ATA and mint faucet
+export const getATAAndMint = async (
   walletPublicKey: PublicKey,
   connection: Connection,
   sendTransaction: any,
   amount: number
 ) => {
-  // get the keypair used as mint authority for the MINT_ACCOUNT
-  const secretKey = Uint8Array.from(
-    JSON.parse(process.env.NEXT_PUBLIC_LOCAL_KEY_PAIR!)
-  );
-  const keyPair = Keypair.fromSecretKey(secretKey);
+  // get ATA
+  let account: Account | null = null;
+  let associatedToken: PublicKey | null = null;
 
-  // convert base amount to take into account USDC 6 decimals
-  const convertedAmount = amount * Math.pow(10, 6);
+  try {
+    const { account: accountGot, associatedToken: associatedTokenGot } =
+      await getATA(walletPublicKey, connection, sendTransaction);
+
+    if (!accountGot || !associatedTokenGot) {
+      throw new Error('Failed to get account or associated token');
+    }
+
+    account = accountGot;
+    associatedToken = associatedTokenGot;
+  } catch (error) {
+    console.error('Error getting ATA:', error);
+    throw error;
+  }
+
+  // mint faucet
+  try {
+    const mintSignature = await mintFaucet(connection, associatedToken, amount);
+    console.log('Mint transaction signature:', mintSignature);
+  } catch (error) {
+    console.error('Error minting tokens:', error);
+    throw error;
+  }
+
+  return account;
+};
+
+// function to get ATA
+export const getATA = async (
+  walletPublicKey: PublicKey,
+  connection: Connection,
+  sendTransaction: any
+) => {
+  // checks
+  if (!process.env.NEXT_PUBLIC_MINT_ACCOUNT) {
+    throw new Error('Environment variables for mint account are missing');
+  }
 
   // get the token account publickey
   const associatedToken = await getAssociatedTokenAddress(
-    new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT!),
+    new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT),
     walletPublicKey,
     true,
     TOKEN_PROGRAM_ID, //programId
@@ -57,7 +91,7 @@ export const getATA = async (
             walletPublicKey, // payer
             associatedToken, // associated token
             walletPublicKey, // owner
-            new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT!), // token mint account
+            new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT), // token mint account
             TOKEN_PROGRAM_ID, // programId — SPL Token program account
             ASSOCIATED_TOKEN_PROGRAM_ID // associatedTokenProgramId — SPL Associated Token program account
           )
@@ -66,7 +100,9 @@ export const getATA = async (
         // wait for TX confirmation
         const signature = await sendTransaction(transaction, connection);
         await connection.confirmTransaction(signature, 'confirmed');
-      } catch (error: unknown) {}
+      } catch (error: unknown) {
+        /* empty */
+      }
       // try again to get the user wallet ATA
       account = await getAccount(
         connection, // connection — Connection to use
@@ -79,21 +115,51 @@ export const getATA = async (
     }
   }
 
-  // mint faucet
+  return { account, associatedToken };
+};
+
+// function to mint faucet
+const mintFaucet = async (
+  connection: Connection,
+  associatedToken: PublicKey,
+  amount: number
+): Promise<string> => {
+  // get the keypair used as mint authority for the MINT_ACCOUNT
+  if (
+    !process.env.NEXT_PUBLIC_LOCAL_KEY_PAIR ||
+    !process.env.NEXT_PUBLIC_MINT_ACCOUNT
+  ) {
+    throw new Error(
+      'Environment variables for key pair or mint account are missing'
+    );
+  }
+
+  // return if amount === 0
+  if (amount === 0) {
+    throw new Error('No mint amount provided');
+  }
+
+  // get the keypair used as mint authority for the MINT_ACCOUNT
+  const secretKey = Uint8Array.from(
+    JSON.parse(process.env.NEXT_PUBLIC_LOCAL_KEY_PAIR)
+  );
+  const keyPair = Keypair.fromSecretKey(secretKey);
+
+  // convert base amount to take into account USDC 6 decimals
+  const convertedAmount = amount * Math.pow(10, 6);
+
   try {
     const mintSignature = await mintTo(
       connection, // connection — Connection to use
       keyPair, // payer — Payer of the transaction fees
-      new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT!), // token account to mint from
+      new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT), // token account to mint from
       associatedToken, // Le compte de token associé vers lequel on veut mint
       keyPair, // authority — Minting authority
       convertedAmount // amount — Amount to mint
     );
-    console.log('Mint transaction signature:', mintSignature);
+    return mintSignature;
   } catch (error) {
     console.error('Error minting tokens:', error);
     throw error;
   }
-
-  return account;
 };
