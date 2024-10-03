@@ -3,7 +3,7 @@ use crate::{
     state::{
         Contribution, Project, ProjectContributions, ProjectStatus, Reward, User, UserContributions,
     },
-    utils::spl_transfer_builder::SplTransferBuilder,
+    utils::spl_token::transfer_spl_token,
 };
 use anchor_lang::prelude::*;
 //use anchor_spl::mint::USDC;
@@ -72,11 +72,10 @@ pub fn add_contribution(
     let from_ata = &ctx.accounts.from_ata;
     let authority = &ctx.accounts.signer;
 
-    SplTransferBuilder::new((*token_program).clone())
-        .send(amount)
-        .from((*from_ata).clone())
-        .to((*to_ata).clone())
-        .signed_by((*authority).clone())?;
+    require!(from_ata.owner == authority.key(), ContributionError::Unauthorized);
+    require!(to_ata.owner == project.key(), ContributionError::Unauthorized);
+
+    transfer_spl_token(token_program, from_ata, to_ata, authority, amount)?;
 
     Ok(())
 }
@@ -88,7 +87,7 @@ pub fn reward_validation(project: &Project, amount: u64, reward_id: u64) -> Resu
         require!(amount >= reward.price, ContributionError::RewardPriceError);
         // Validate and update the reward supply
         if let Some(max_supply) = reward.max_supply {
-            require!(reward.current_supply < max_supply as u32, RewardError::RewardSupplyReach);
+            require!(reward.current_supply < max_supply as u32, RewardError::RewardSupplyReached);
         }
     }
 
