@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 // use anchor_spl::mint::USDC as mintUSDC;
-use crate::errors::TransferError;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
 
 pub fn transfer_spl_token<'info>(
@@ -17,6 +16,7 @@ pub fn transfer_spl_token<'info>(
     };
     let cpi_program = token_program.to_account_info();
 
-    token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)
-        .map_err(|_| TransferError::TransferFailed.into())
+    token::transfer(CpiContext::new(cpi_program, cpi_accounts), amount)?;
+
+    Ok(())
 }
