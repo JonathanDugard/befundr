@@ -5,15 +5,13 @@ import { anchor, program, systemProgram } from "./config";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Project } from "./project/project_type";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { 
+import {
     MintAmountTo,
-    getSplTransferAccounts, 
-    convertAmountToDecimals, 
-    newPdaAssociatedTokenAccount,
-    getTokenAccountBalance
+    getSplTransferAccounts,
+    newPdaAssociatedTokenAccount
 } from "./token/token_config";
 
-export const INIT_BALANCE = 1000 * LAMPORTS_PER_SOL; // 1000 SOL per wallet
+export const LAMPORTS_INIT_BALANCE = 1000 * LAMPORTS_PER_SOL; // 1000 SOL per wallet
 
 export const confirmTransaction = async (program: Program<Befundr>, tx: TransactionSignature): Promise<RpcResponseAndContext<SignatureResult>> => {
     const latestBlockhash = await program.provider.connection.getLatestBlockhash();
@@ -35,7 +33,7 @@ export const confirmTransaction = async (program: Program<Befundr>, tx: Transact
  */
 export const createUserWalletWithSol = async (): Promise<Keypair> => {
     const wallet = new Keypair()
-    const tx = await program.provider.connection.requestAirdrop(wallet.publicKey, INIT_BALANCE);
+    const tx = await program.provider.connection.requestAirdrop(wallet.publicKey, LAMPORTS_INIT_BALANCE);
     await confirmTransaction(program, tx);
     return wallet
 }
@@ -192,23 +190,23 @@ export const createContribution = async (
 
     // Call the addContribution method
     const createTx = await program.methods
-    .addContribution(
-        new BN(amount),
-        rewardId !== null ? new BN(rewardId) : null
-    )
-    .accountsPartial({
-        project: projectPubkey,
-        projectContributions: projectContributionsPubkey,
-        user: userPubkey,
-        userContributions: userContributionsPubkey,
-        contribution: contributionPdaPublicKey,
-        fromAta: fromAta,
-        toAta: toAta,
-        signer: wallet.publicKey,
-        tokenProgram: TOKEN_PROGRAM_ID,
-    })
-    .signers([wallet])
-    .rpc();
+        .addContribution(
+            new BN(amount),
+            rewardId !== null ? new BN(rewardId) : null
+        )
+        .accountsPartial({
+            project: projectPubkey,
+            projectContributions: projectContributionsPubkey,
+            user: userPubkey,
+            userContributions: userContributionsPubkey,
+            contribution: contributionPdaPublicKey,
+            fromAta: fromAta,
+            toAta: toAta,
+            signer: wallet.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([wallet])
+        .rpc();
 
     await confirmTransaction(program, createTx);
 
