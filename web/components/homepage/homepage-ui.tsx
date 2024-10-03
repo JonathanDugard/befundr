@@ -1,9 +1,13 @@
+'use client';
 import { projects } from '@/data/localdata';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Divider from '../z-library/display elements/Divider';
 import WhiteBlock from '../z-library/display elements/WhiteBlock';
 import Link from 'next/link';
 import ProjectCard from '../z-library/card/ProjectCard';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
+import { useEffect, useState } from 'react';
+import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
 
 export const KeyFigures = () => {
   return (
@@ -28,14 +32,35 @@ export const KeyFigures = () => {
 };
 
 export const HighlightSelection = ({ title }: { title: string }) => {
-  const projectsSelection = projects.slice(0, 3);
+  //* GLOBAL STATE
+  const { allProjectsAccounts } = useBefundrProgramProject();
+
+  //* LOCAL STATE
+  const [projectsSelection, setProjectsSelection] = useState<
+    AccountWrapper<Project>[]
+  >([]); // use the AccountWrapper type to handle the publicKey
+
+  //extract all the projects from the accounts
+  useEffect(() => {
+    if (allProjectsAccounts.data) {
+      const transformedProjects = allProjectsAccounts.data.map(
+        (programAccount) => transformProgramAccountToProject(programAccount)
+      );
+
+      setProjectsSelection(transformedProjects.slice(0, 3));
+    }
+  }, [allProjectsAccounts.data]);
 
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
       <h2 className="textStyle-subtitle">{title}</h2>
-      <div className="flex justify-between gap-4 w-full overflow-x-auto">
-        {projectsSelection.map((project: Project, index) => (
-          <ProjectCard key={index} project={project} />
+      <div className="flex justify-between gap-8 w-full overflow-x-auto">
+        {projectsSelection.map((project: AccountWrapper<Project>, index) => (
+          <ProjectCard
+            key={index}
+            project={project.account}
+            projectAccountPublicKey={project.publicKey}
+          />
         ))}
       </div>
       <div className="flex justify-end w-full mb-10">

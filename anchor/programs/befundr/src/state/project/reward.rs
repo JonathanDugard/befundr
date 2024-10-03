@@ -44,10 +44,13 @@ impl Reward {
     /// Adds one to the current supply of the reward.
     /// Ensures that the current supply does not exceed the maximum supply.
     pub fn add_supply(&mut self) -> Result<()> {
-        if self.current_supply < self.max_supply.unwrap().into() {
+        if self
+            .max_supply
+            .map_or(true, |max_supply| self.current_supply < max_supply.into())
+        {
             self.current_supply += 1;
         } else {
-            return Err(RewardError::RewardSupplyReach.into());
+            return Err(RewardError::RewardSupplyReached.into());
         }
 
         Ok(())

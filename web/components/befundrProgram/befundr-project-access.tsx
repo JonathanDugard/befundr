@@ -19,10 +19,6 @@ export function useBefundrProgramProject() {
   const { program, programId, transactionToast, router } =
     useBefundrProgramGlobal();
 
-  const [newProjectAddress, setNewProjectAddress] = useState<PublicKey | null>(
-    null
-  );
-
   //* QUERIES
   //* Fetch all projects --------------------
   const allProjectsAccounts = useQuery({
@@ -32,21 +28,65 @@ export function useBefundrProgramProject() {
   });
 
   //* Fetch single project by public key --------------------
-  //   const projectAccount = (publicKey: PublicKey | null) => {
-  //     return useQuery({
-  //       queryKey: ['user', publicKey?.toString()],
-  //       queryFn: async () => {
-  //         if (!publicKey) throw new Error('PublicKey is required');
-  //         const [userEntryAddress] = await PublicKey.findProgramAddress(
-  //           [Buffer.from('user'), publicKey.toBuffer()],
-  //           programId
-  //         );
-  //         return program.account.user.fetch(userEntryAddress);
-  //       },
-  //       staleTime: 60000,
-  //       enabled: !!publicKey,
-  //     });
-  //   };
+  const projectAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+    return useQuery({
+      queryKey: ['project', publicKey?.toString()],
+      queryFn: async () => {
+        if (!publicKey) throw new Error('PublicKey is required');
+        return program.account.project.fetch(publicKey);
+      },
+      staleTime: 60000,
+      enabled: !!publicKey,
+    });
+  };
+
+  //* fetch all project created by a user
+  const getProjectsByCreator = (
+    userPublicKey: PublicKey | undefined,
+    createdProjectCounter: number | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['createdProjects', userPublicKey?.toString()],
+      queryFn: async () => {
+        // security check
+        if (!userPublicKey) throw new Error('PublicKey is required');
+        if (!createdProjectCounter)
+          throw new Error('Created project counter is required');
+
+        const projects = [];
+        // loop to get all project
+        for (let i = 0; i < createdProjectCounter; i++) {
+          try {
+            // Generate the seed
+            const [projectPDA] = await PublicKey.findProgramAddress(
+              [
+                Buffer.from('project'),
+                userPublicKey.toBuffer(),
+                new BN(i + 1).toArray('le', 2),
+              ],
+              programId
+            );
+
+            // fetch the project
+            const projectData = await program.account.project.fetch(projectPDA);
+
+            // push the projects to projects
+            if (projectData) {
+              projects.push({
+                publicKey: projectPDA,
+                account: projectData,
+              });
+            }
+          } catch (error) {
+            console.error(`Error fetching project ${i}:`, error);
+          }
+        }
+        // return the projects
+        return projects;
+      },
+      staleTime: 6000,
+    });
+  };
 
   //* MUTATIONS
   //* Create project --------------------
@@ -62,7 +102,6 @@ export function useBefundrProgramProject() {
         ],
         programId
       );
-      setNewProjectAddress(newProjectAddress);
 
       // Rewards serialization
       const serializedRewards = project.rewards.map((reward) => ({
@@ -77,7 +116,7 @@ export function useBefundrProgramProject() {
         .createProject(
           project.name,
           project.imageUrl,
-          project.projectDescription,
+          project.description,
           new BN(project.goalAmount),
           new BN(project.endTime),
           serializedRewards,
@@ -100,7 +139,9 @@ export function useBefundrProgramProject() {
   });
 
   return {
+    projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
+    getProjectsByCreator,
   };
 }

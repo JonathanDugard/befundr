@@ -89,7 +89,7 @@ export const handleProjectCreation = async (
     ...project,
     imageUrl, // Replace with the uploaded project image URL
     rewards: updatedRewards, // Include the rewards with their uploaded images
-    ownerId: userPublicKey.toString(),
+    user: userPublicKey.toString(),
     timestamp: Date.now(), // Replace with current timestamp
     safetyDeposit: convertedSafetyDeposit,
     endTime: convertedEndTimeInSecond,
@@ -114,7 +114,7 @@ const validateProjectToCreate = (
     'name',
     'category',
     'imageUrl',
-    'projectDescription',
+    'description',
     'goalAmount',
     'timestamp',
     'endTime',
@@ -139,8 +139,8 @@ const validateProjectToCreate = (
 
   // Project description length check
   if (
-    projectToCreate.projectDescription.length < 10 ||
-    projectToCreate.projectDescription.length > 500
+    projectToCreate.description.length < 10 ||
+    projectToCreate.description.length > 500
   ) {
     return 'Project description must be between 10 to 500 characters';
   }
