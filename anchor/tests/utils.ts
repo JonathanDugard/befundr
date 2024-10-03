@@ -68,6 +68,10 @@ export const createUser = async (userData: User, wallet: Keypair): Promise<Publi
         .signers([wallet])
         .rpc();
     await confirmTransaction(program, createUserTx);
+
+    // Create user Wallet's ATA
+    await newAssociatedTokenAccount(wallet);
+
     return userPdaPublicKey;
 }
 // Create a new project
@@ -153,9 +157,9 @@ export const createContribution = async (
     userPubkey: PublicKey,
     wallet: Keypair,
     projectContributionCounter: number,
-    amount: number,
+    amount: number | bigint,
     rewardId: number | null,
-    mintAmount?: number | null
+    mintAmount?: bigint | null
 ): Promise<PublicKey> => {
 
     const [contributionPdaPublicKey] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -185,7 +189,9 @@ export const createContribution = async (
     );
 
     // Get SPL Token transfer accounts
-    const { fromAta, toAta } = await getSplTransferAccounts(wallet, projectPubkey);
+    const fromAta = await getAssociatedTokenAddress(MINT_ADDRESS, wallet.publicKey);
+    const toAta = await getAssociatedTokenAddress(MINT_ADDRESS, projectPubkey, true);
+
     if (mintAmount && mintAmount !== undefined) {
         await MintAmountTo(wallet, fromAta, mintAmount);
     }

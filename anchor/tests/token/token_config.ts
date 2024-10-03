@@ -85,8 +85,8 @@ const InitMint = async() => {
  * @param {number} amount - The amount to convert.
  * @returns {number} The amount in the token's decimal format.
  */
-const convertAmountToDecimals = (amount: number): number => {
-    return amount * Math.pow(10, MINT_DECIMALS);
+const convertAmountToDecimals = (amount: number): bigint => {
+    return BigInt(amount * Math.pow(10, MINT_DECIMALS));
 }
 
 /**
@@ -95,8 +95,8 @@ const convertAmountToDecimals = (amount: number): number => {
  * @param {number} amount - The amount in the token's decimal format.
  * @returns {number} The original amount.
  */
-const convertFromDecimalsToAmount = (amount: number): number => {
-    return amount / Math.pow(10, MINT_DECIMALS);
+const convertFromDecimalsToAmount = (amount: number): bigint => {
+    return BigInt(amount / Math.pow(10, MINT_DECIMALS));
 }
 
 /**
@@ -106,6 +106,12 @@ const convertFromDecimalsToAmount = (amount: number): number => {
  * @returns {Promise<Account>} The created associated token account.
  */
 const newAssociatedTokenAccount = async(payer: Keypair): Promise<Account> => {
+
+    // Create new mint account
+    if (typeof MINT_ADDRESS === 'undefined') {
+        await InitMint();
+    }
+    
     const tokenAccount = await getOrCreateAssociatedTokenAccount(
         PROGRAM_CONNECTION,
         payer,
@@ -148,7 +154,7 @@ const newPdaAssociatedTokenAccount = async(payer: Keypair, projectPubkey: Public
  * @param {PublicKey} toAccount - The account to mint tokens to.
  * @param {number} amount - The amount of tokens to mint.
  */
-const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: number) => {
+const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: bigint) => {
     // Mint supply
     await mintTo(
         PROGRAM_CONNECTION,
