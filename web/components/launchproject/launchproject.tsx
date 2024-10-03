@@ -19,6 +19,8 @@ import { useBefundrProgramProject } from '../befundrProgram/befundr-project-acce
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
 import { ProjectCategory } from '@/data/category';
+import Link from 'next/link';
+import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 
 const Launchproject = () => {
   //* GENERAL STATE
@@ -297,7 +299,7 @@ const Launchproject = () => {
             <MainButtonLabel label="Contrinue" />
           </button>
         )}
-        {selectedStep === 5 && publicKey && (
+        {selectedStep === 5 && publicKey && userEntryAddress && (
           <button onClick={() => launchProjectCreation()}>
             <MainButtonLabelAsync
               label="Launch your project"
@@ -307,6 +309,12 @@ const Launchproject = () => {
           </button>
         )}
         {selectedStep === 5 && !publicKey && <WalletButton />}
+        {/* need to check if userAccount already init */}
+        {selectedStep === 5 && publicKey && !userEntryAddress && (
+          <Link href={'/profile/myprofile'}>
+            <SecondaryButtonLabel label="Create your profile first" />
+          </Link>
+        )}
       </div>
     </div>
   );

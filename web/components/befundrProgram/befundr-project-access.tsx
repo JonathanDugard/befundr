@@ -40,6 +40,55 @@ export function useBefundrProgramProject() {
     });
   };
 
+  //* fetch all project created by a user
+  const getAllCreatedProjectsByAUser = (
+    userPublicKey: PublicKey | null,
+    createdProjectCounter: number | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['createdProjects', userPublicKey?.toString()],
+      queryFn: async () => {
+        // security check
+        if (!userPublicKey) throw new Error('PublicKey is required');
+        if (!createdProjectCounter)
+          throw new Error('Created project counter is required');
+
+        const projects = [];
+        // loop to get all project
+        for (let i = 0; i < createdProjectCounter; i++) {
+          try {
+            // Generate the seed
+            const [projectPDA] = await PublicKey.findProgramAddress(
+              [
+                Buffer.from('project'),
+                userPublicKey.toBuffer(),
+                new BN(i + 1).toArray('le', 2),
+              ],
+              programId
+            );
+
+            // fetch the project
+            const projectData = await program.account.project.fetch(projectPDA);
+
+            // push the projects to projects
+            if (projectData) {
+              projects.push({
+                publicKey: projectPDA,
+                account: projectData,
+              });
+            }
+          } catch (error) {
+            console.error(`Error fetching project ${i}:`, error);
+          }
+
+          // return the projects
+          return projects;
+        }
+      },
+      staleTime: 6000,
+    });
+  };
+
   //* MUTATIONS
   //* Create project --------------------
   const createProject = useMutation<string, Error, CreateProjectArgs>({
@@ -94,5 +143,6 @@ export function useBefundrProgramProject() {
     projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
+    getAllCreatedProjectsByAUser,
   };
 }

@@ -29,8 +29,9 @@ export function useBefundrProgramUser() {
 
   //* get user entry address
   const getUserEntryAddress = async (
-    publicKey: PublicKey
+    publicKey: PublicKey | null
   ): Promise<PublicKey> => {
+    if (!publicKey) throw new Error('PublicKey is required');
     const [userEntryAddress] = await PublicKey.findProgramAddress(
       [Buffer.from('user'), publicKey.toBuffer()],
       programId

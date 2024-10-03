@@ -1,27 +1,63 @@
 'use client';
-import { projects, user1 } from '@/data/localdata';
-import { getProjectsByOwnerId } from '@/utils/functions/projectsFunctions';
+import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
 import React, { useEffect, useState } from 'react';
 import ProjectCard from '../z-library/card/ProjectCard';
-import CreatedProjectCard from '../z-library/card/CreatedProjectCard';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useRouter } from 'next/router';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
+import { useRouter } from 'next/navigation';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { PublicKey } from '@solana/web3.js';
 
 type Props = {};
 
 const MyCreatedProjects = (props: Props) => {
   //* GLOBAL STATE
+  const { getAllCreatedProjectsByAUser } = useBefundrProgramProject();
+  const { getUserEntryAddress, userAccountFromWalletPublicKey } =
+    useBefundrProgramUser();
   const { publicKey } = useWallet();
   const router = useRouter();
 
   //* LOCAL STATE
   const [projectsToDisplay, setProjectsToDisplay] = useState<
-    Project[] | null | undefined
-  >(null);
+    AccountWrapper<Project>[]
+  >([]); // use the AccountWrapper type to handle the publicKey
+  const [userEntryAddress, setUserEntryAddress] = useState<PublicKey | null>(
+    null
+  );
 
+  // Use React Query to fetch user profile based on public key
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromWalletPublicKey(publicKey);
+
+  // get the user entry address
   useEffect(() => {
-    setProjectsToDisplay(getProjectsByOwnerId(projects, user1.owner));
-  }, [user1]);
+    const fetchUserEntryAddress = async () => {
+      if (publicKey) {
+        const userEntryAddress = await getUserEntryAddress(publicKey);
+        setUserEntryAddress(userEntryAddress);
+      }
+    };
+    fetchUserEntryAddress();
+  }, [publicKey]);
+
+  // get all user created projects
+  const { data: projects, isLoading: isFetchingProjectsToDisplay } =
+    getAllCreatedProjectsByAUser(
+      userEntryAddress,
+      userProfile?.createdProjectCounter
+    );
+
+  // handle project data transformation
+  useEffect(() => {
+    if (projects && projects.length > 0) {
+      const transformedProjects: AccountWrapper<Project>[] = projects.map(
+        (project) => transformProgramAccountToProject(project)
+      );
+
+      setProjectsToDisplay(transformedProjects);
+    }
+  }, [projects]);
 
   // nagiguate to homepage is user disconnected
   if (!publicKey) router.push('/');
@@ -42,7 +78,11 @@ const MyCreatedProjects = (props: Props) => {
       >
         {projectsToDisplay &&
           projectsToDisplay.map((project, index) => (
-            <CreatedProjectCard key={index} project={project} />
+            <ProjectCard
+              key={index}
+              project={project.account}
+              projectAccountPublicKey={project.publicKey}
+            />
           ))}
       </div>
     </div>
