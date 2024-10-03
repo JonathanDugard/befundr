@@ -5,6 +5,8 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
+import { getATA } from '@/utils/functions/claimFaucet';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 //* TYPE
 interface CreateUserArgs {
@@ -16,8 +18,9 @@ interface CreateUserArgs {
 }
 
 export function useBefundrProgramUser() {
-  const { program, programId, transactionToast, router } =
+  const { program, programId, transactionToast, router, connection } =
     useBefundrProgramGlobal();
+  const { sendTransaction } = useWallet();
 
   //* QUERIES
   //* Fetch all users --------------------
@@ -38,6 +41,23 @@ export function useBefundrProgramUser() {
           programId
         );
         return userEntryAddress;
+      },
+      staleTime: 6000,
+    });
+  };
+
+  //* get user wallet ATA balance
+  const getUserWalletATABalance = (walletPublicKey: PublicKey | null) => {
+    return useQuery({
+      queryKey: ['userATABalance', walletPublicKey?.toString()],
+      queryFn: async () => {
+        if (!walletPublicKey) throw new Error('PublicKey is required');
+        const { account } = await getATA(
+          walletPublicKey,
+          connection,
+          sendTransaction
+        );
+        return account;
       },
       staleTime: 6000,
     });
@@ -119,6 +139,7 @@ export function useBefundrProgramUser() {
   return {
     allUsersAccounts,
     getUserEntryAddress,
+    getUserWalletATABalance,
     userAccountFromWalletPublicKey,
     userAccountFromAccountPublicKey,
     createUser,

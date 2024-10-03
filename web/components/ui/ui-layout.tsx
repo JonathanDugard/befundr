@@ -21,6 +21,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
 import ClaimFaucetPopup from '../z-library/popup/ClaimFaucetPopup';
+import ATAbalance from '../z-library/display elements/ATAbalance';
 
 export function UiLayout({
   children,
@@ -42,7 +43,7 @@ export function UiLayout({
     <div className="h-full flex flex-col ">
       {/* top navbar */}
       <div className="navbar h-20 bg-main text-textColor-main flex-col md:flex-row space-y-2 md:space-y-0">
-        <div className="flex-1 pr-2">
+        <div className="flex-1 pr-2 ">
           <Link className="btn btn-ghost normal-case text-xl" href="/">
             <Image
               className="h-4 md:h-10"

@@ -39,8 +39,7 @@ export const getATAAndMint = async (
 
   // mint faucet
   try {
-    const mintSignature = await mintFaucet(connection, associatedToken, amount);
-    console.log('Mint transaction signature:', mintSignature);
+    await mintFaucet(connection, associatedToken, amount);
   } catch (error) {
     console.error('Error minting tokens:', error);
     throw error;

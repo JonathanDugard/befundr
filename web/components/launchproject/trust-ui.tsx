@@ -5,8 +5,15 @@ import { FaRegIdCard } from 'react-icons/fa';
 import Slider from '../z-library/button/Slider';
 import TrustScore from '../z-library/display elements/TrustScore';
 import InputField from '../z-library/button/InputField';
-import { calculateTrustScore } from '@/utils/functions/utilFunctions';
+import {
+  calculateTrustScore,
+  convertATAAmount,
+} from '@/utils/functions/utilFunctions';
 import { useEffect, useMemo } from 'react';
+import ATAbalance from '../z-library/display elements/ATAbalance';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useWallet } from '@solana/wallet-adapter-react';
+import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
 
 type TrustProps = {
   handleChange: (
@@ -34,6 +41,21 @@ export const TrustBlock = (props: TrustProps) => {
       )
     );
   }, [collateralRatio]);
+
+  // get user wallet ATA balance ----
+  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { publicKey } = useWallet();
+
+  const { data: userWalletATABalance } = getUserWalletATABalance(publicKey);
+
+  const ATABalance = useMemo(() => {
+    if (userWalletATABalance) {
+      return convertATAAmount(userWalletATABalance.amount);
+    } else {
+      return 0;
+    }
+  }, [userWalletATABalance]);
+  // ---- get user wallet ATA balance
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -95,6 +117,18 @@ export const TrustBlock = (props: TrustProps) => {
         />
         <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
       </div>
+      <div className="flex justify-start items-center gap-2 w-full">
+        <ATAbalance />
+        {ATABalance < props.projectToCreate.safetyDeposit && (
+          <>
+            <p className="textStyle-body !text-custom-red">
+              you don&apos;t have enough faucet $
+            </p>
+            <ClaimUSDCButton />
+          </>
+        )}
+      </div>
+
       {/* trust score */}
       <p className="textStyle-subheadline !text-textColor-main mt-10 mb-4">
         Final trust score{' '}

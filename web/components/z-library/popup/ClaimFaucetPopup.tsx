@@ -7,6 +7,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
 import MainButtonLabelAsync from '../button/MainButtonLabelAsync';
 import toast from 'react-hot-toast';
+import ATAbalance from '../display elements/ATAbalance';
+import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 
 type Props = {
   handleClose: () => void;
@@ -16,6 +18,7 @@ const ClaimFaucetPopup = (props: Props) => {
   //* GLOBAL STATE
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useBefundrProgramGlobal();
+  const { getUserWalletATABalance } = useBefundrProgramUser();
   //* LOCAL STATE
   const [selectedAmount, setSelectedAmount] = useState<number | ''>(50);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,8 +35,9 @@ const ClaimFaucetPopup = (props: Props) => {
 
   const amountChoices = [50, 100, 500];
 
+  const { refetch } = getUserWalletATABalance(publicKey);
+
   const handleClaim = async () => {
-    console.log('public key :', publicKey);
     if (!publicKey || !selectedAmount) {
       toast.error('Public key or amount missing');
       return;
@@ -41,15 +45,14 @@ const ClaimFaucetPopup = (props: Props) => {
 
     try {
       setIsLoading(true);
-      const account = await getATAAndMint(
+      await getATAAndMint(
         publicKey,
         connection,
         sendTransaction,
         selectedAmount
       );
-      console.log('account :', account);
-      console.log('account owner :', account.owner.toString());
       toast.success(`Successfully claimed ${selectedAmount}$`);
+      refetch();
     } catch (e) {
       toast.error('Error claiming faucet...');
       console.error(e);
@@ -60,15 +63,16 @@ const ClaimFaucetPopup = (props: Props) => {
 
   return (
     <PopupLayout item="center" justify="center" padding="10">
-      <div className="flex flex-col justify-center items-center gap-10 w-full">
+      <div className="flex flex-col justify-center items-center gap-10 w-full ">
         {/* title */}
-        <p className="textStyle-title w-full text-left">Claim $ faucet</p>
+        <p className="textStyle-title w-full text-center -mb-10">
+          Claim $ faucet
+        </p>
+        <ATAbalance />
         {/* description */}
-        <div className="flex justify-start items-center gap-4 w-full">
-          <p className="textStyle-body">
-            Select the amount to claim or enter a custom one
-          </p>
-        </div>
+        <p className="textStyle-body">
+          Select the amount to claim or enter a custom one
+        </p>
         {/* selection amount button */}
         <div className="flex gap-4 justify-start items-center w-full">
           {amountChoices.map((amount) => (
@@ -95,7 +99,7 @@ const ClaimFaucetPopup = (props: Props) => {
         {/* buttons */}
         <div className="flex justify-center items-center gap-10 w-full">
           <button onClick={props.handleClose}>
-            <SecondaryButtonLabel label="Cancel" />
+            <SecondaryButtonLabel label="Close" />
           </button>
           <button onClick={handleClaim} disabled={isLoading}>
             <MainButtonLabelAsync
