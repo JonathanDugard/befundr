@@ -19,6 +19,8 @@ import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Image from 'next/image';
 import { useWallet } from '@solana/wallet-adapter-react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
+import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
+import ClaimFaucetPopup from '../z-library/popup/ClaimFaucetPopup';
 
 export function UiLayout({
   children,
@@ -33,6 +35,8 @@ export function UiLayout({
 }) {
   const pathname = usePathname();
   const { publicKey } = useWallet();
+
+  const [isShowPopup, setIsShowPopup] = React.useState(false);
 
   return (
     <div className="h-full flex flex-col ">
@@ -62,12 +66,17 @@ export function UiLayout({
             ))}
           </ul>
           <div className="flex-grow mx-10">
-            <SearchField placeholder="Look for a project" />
+            {/* <SearchField placeholder="Look for a project" /> */}
           </div>
           <Link href={'/launchproject'}>
             <MainButtonLabel label="Launch your project" />
           </Link>
         </div>
+        {publicKey && (
+          <button onClick={() => setIsShowPopup(true)}>
+            <SecondaryButtonLabel label="Claim faucet" />
+          </button>
+        )}
         <div className="flex-none mx-4">
           <WalletButton />
           <ClusterUiSelect />
@@ -161,6 +170,9 @@ export function UiLayout({
           </p>
         </aside>
       </footer>
+      {isShowPopup && (
+        <ClaimFaucetPopup handleClose={() => setIsShowPopup(false)} />
+      )}
     </div>
   );
 }
