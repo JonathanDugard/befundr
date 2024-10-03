@@ -85,7 +85,7 @@ pub fn create_project(
     require!(from_ata.owner == signer.key(), AtaError::WrongAtaOwner);
     require!(to_ata.owner == project.key(), AtaError::WrongAtaOwner);
 
-    transfer_spl_token(token_program, from_ata, to_ata, signer, project.safety_deposit)?;
+    transfer_spl_token(token_program, from_ata, to_ata, signer, safety_deposit)?;
     project.safety_deposit = safety_deposit;
 
     ctx.accounts.user.created_project_counter += 1;
