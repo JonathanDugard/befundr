@@ -4,10 +4,10 @@ import { User } from "./user/user_type";
 import { anchor, program, systemProgram } from "./config";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Project } from "./project/project_type";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import {
-    MintAmountTo,
-    getSplTransferAccounts,
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from "@solana/spl-token";
+import { 
+    MINT_ADDRESS,
+    newAssociatedTokenAccount,
     newPdaAssociatedTokenAccount
 } from "./token/token_config";
 
@@ -154,17 +154,16 @@ export const createContribution = async (
     projectPubkey: PublicKey,
     userPubkey: PublicKey,
     wallet: Keypair,
-    projectContributionCounter: number,
-    amount: number | bigint,
-    rewardId: number | null,
-    mintAmount?: bigint | null
+    projectContributionCounter: BN,
+    amount: BN,
+    rewardId: BN | null,
 ): Promise<PublicKey> => {
 
     const [contributionPdaPublicKey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
             Buffer.from("contribution"),
             projectPubkey.toBuffer(),
-            new BN(projectContributionCounter + 1).toArray('le', 2),
+            projectContributionCounter.add(new BN(1)).toArray('le', 2),
         ],
         program.programId
     );
@@ -190,29 +189,25 @@ export const createContribution = async (
     const fromAta = await getAssociatedTokenAddress(MINT_ADDRESS, wallet.publicKey);
     const toAta = await getAssociatedTokenAddress(MINT_ADDRESS, projectPubkey, true);
 
-    if (mintAmount && mintAmount !== undefined) {
-        await MintAmountTo(wallet, fromAta, mintAmount);
-    }
-
     // Call the addContribution method
     const createTx = await program.methods
-        .addContribution(
-            new BN(amount),
-            rewardId !== null ? new BN(rewardId) : null
-        )
-        .accountsPartial({
-            project: projectPubkey,
-            projectContributions: projectContributionsPubkey,
-            user: userPubkey,
-            userContributions: userContributionsPubkey,
-            contribution: contributionPdaPublicKey,
-            fromAta: fromAta,
-            toAta: toAta,
-            signer: wallet.publicKey,
-            tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .signers([wallet])
-        .rpc();
+    .addContribution(
+        amount,
+        rewardId !== null ? rewardId : null
+    )
+    .accountsPartial({
+        project: projectPubkey,
+        projectContributions: projectContributionsPubkey,
+        user: userPubkey,
+        userContributions: userContributionsPubkey,
+        contribution: contributionPdaPublicKey,
+        fromAta: fromAta,
+        toAta: toAta,
+        signer: wallet.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+    })
+    .signers([wallet])
+    .rpc();
 
     await confirmTransaction(program, createTx);
 

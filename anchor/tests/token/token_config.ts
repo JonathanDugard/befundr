@@ -25,6 +25,7 @@ import {
 } from '@solana/spl-token';
 import { PROGRAM_CONNECTION } from "../config";
 import { createUserWalletWithSol } from "../utils"
+import { BN } from "@coral-xyz/anchor";
 
 const MINT_DECIMALS = 6;
 
@@ -85,8 +86,8 @@ const InitMint = async() => {
  * @param {number} amount - The amount to convert.
  * @returns {number} The amount in the token's decimal format.
  */
-const convertAmountToDecimals = (amount: number): bigint => {
-    return BigInt(amount * Math.pow(10, MINT_DECIMALS));
+const convertAmountToDecimals = (amount: number): BN => {
+    return new BN(amount * 10**MINT_DECIMALS);
 }
 
 /**
@@ -95,8 +96,8 @@ const convertAmountToDecimals = (amount: number): bigint => {
  * @param {number} amount - The amount in the token's decimal format.
  * @returns {number} The original amount.
  */
-const convertFromDecimalsToAmount = (amount: number): bigint => {
-    return BigInt(amount / Math.pow(10, MINT_DECIMALS));
+const convertFromDecimalsToAmount = (amount: number): BN => {
+    return new BN(amount / 10**MINT_DECIMALS);
 }
 
 /**
@@ -152,9 +153,9 @@ const newPdaAssociatedTokenAccount = async(payer: Keypair, projectPubkey: Public
  * 
  * @param {Keypair} payer - The payer of the transaction fees.
  * @param {PublicKey} toAccount - The account to mint tokens to.
- * @param {number} amount - The amount of tokens to mint.
+ * @param {BN} amount - The amount of tokens to mint.
  */
-const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: bigint) => {
+const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: BN) => {
     // Mint supply
     await mintTo(
         PROGRAM_CONNECTION,
@@ -162,7 +163,7 @@ const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: bigint)
         MINT_ADDRESS,
         toAccount,
         MINT_AUTHORITY,
-        amount,
+        BigInt(amount.toString()),
       );
 }
 
@@ -182,11 +183,11 @@ const getSplTransferAccounts = async(fromWallet: Keypair, toProject: PublicKey):
     return {fromAta, toAta};
 }
 
-const getTokenAccountBalance = async(address: PublicKey, isPda?: boolean): Promise<number> => {
+const getTokenAccountBalance = async(address: PublicKey, isPda?: boolean): Promise<BN> => {
     const tokenAccount: PublicKey = await getAssociatedTokenAddress(MINT_ADDRESS, address, isPda ?? false);
     const account = await getAccount(PROGRAM_CONNECTION, tokenAccount);
 
-    return Number(account.amount);
+    return new BN(account.amount);
 }
 
 export {

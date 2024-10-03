@@ -40,12 +40,12 @@ describe('createContribution', () => {
         // Create a contribution
         const contributionAmount = convertAmountToDecimals(5);
         const contributionPdaKey = await createContribution(
-            projectPdaKey,
-            userPdaKey,
-            userWallet,
-            projectContributionCounter,
-            contributionAmount,
-            0,
+            projectPdaKey, 
+            userPdaKey, 
+            userWallet, 
+            new BN(projectContributionCounter), 
+            contributionAmount, 
+            new BN(0),
         );
 
         const contributionPda = await program.account.contribution.fetch(contributionPdaKey);
@@ -56,28 +56,28 @@ describe('createContribution', () => {
         const projectAtaAddress = await getAssociatedTokenAddress(MINT_ADDRESS, projectPdaKey, true);
         const projectAtaAccount = await getAccount(PROGRAM_CONNECTION, projectAtaAddress);
 
-        expect(userWalletAtaAccount.amount).toEqual(mintAmount - contributionAmount);
-        expect(projectAtaAccount.amount).toEqual(contributionAmount);
+        expect(new BN(userWalletAtaAccount.amount).toString()).toEqual((mintAmount - contributionAmount).toString());
+        expect(new BN(projectAtaAccount.amount).toString()).toEqual(contributionAmount.toString());
 
         expect(contributionPda.initialOwner).toEqual(userPdaKey);
         expect(contributionPda.currentOwner).toEqual(userPdaKey);
         expect(contributionPda.project).toEqual(projectPdaKey);
-        expect(BigInt(contributionPda.amount)).toEqual(contributionAmount);
+        expect(contributionPda.amount.toString()).toEqual(contributionAmount.toString());
         expect(contributionPda.rewardId.toNumber()).toEqual(0);
         expect(contributionPda.creationTimestamp.toNumber()).toBeGreaterThan(0);
         expect(contributionPda.isClaimed).toBeFalsy();
         expect(new Enum(contributionPda.status).enum).toBe(ContributionStatus.Active.enum);
 
-        expect(BigInt(projectPdaUpdated.raisedAmount)).toEqual(contributionAmount);
+        expect(projectPdaUpdated.raisedAmount.toString()).toEqual(contributionAmount.toString());
         expect(projectPdaUpdated.contributionCounter).toEqual(projectContributionCounter+1)
     },
     20000);
 
-    it("should fail if the project is not in fundraising state", async () => {
+    it.skip("should fail if the project is not in fundraising state", async () => {
         // no project state updates instruction exist at this time
     });
 
-    it("should fail if the project is not in fundraising period", async () => {
+    it.skip("should fail if the project is not in fundraising period", async () => {
         // unable to create a past project 
     });
 
@@ -110,79 +110,79 @@ describe('createContribution', () => {
         ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it("should fail if the contribution amount is not positive and greater than 0", async () => {
+    it.skip("should fail if the contribution amount is not positive and greater than 0", async () => {
         // empty
     });
 
-    it("should fail if the reward does not exist in the project rewards list", async () => {
+    it.skip("should fail if the reward does not exist in the project rewards list", async () => {
         // empty
     });
 
-    it("should fail if the contribution amount is insufficient for the selected reward", async () => {
+    it.skip("should fail if the contribution amount is insufficient for the selected reward", async () => {
         // empty
     });
 
-    it("should fail if the reward supply has reached its maximum limit", async () => {
+    it.skip("should fail if the reward supply has reached its maximum limit", async () => {
         // empty
     });
 
-    it("should update the reward supply if a valid reward is selected", async () => {
+    it.skip("should update the reward supply if a valid reward is selected", async () => {
         // empty
     });
 
-    it("should update the project's raised amount and contribution counter", async () => {
+    it.skip("should update the project's raised amount and contribution counter", async () => {
         // empty
     });
 
-    it("should update the ProjectContributions list", async () => {
+    it.skip("should update the ProjectContributions list", async () => {
         // empty
     });
 
-    it("should update the UserContributions list", async () => {
+    it.skip("should update the UserContributions list", async () => {
         // empty
     });
 
-    it("should transfer the contribution amount in USDC to the project", async () => {
+    it.skip("should transfer the contribution amount in USDC to the project", async () => {
         // empty
     });
 
-    it("should handle errors during the contribution transfer", async () => {
+    it.skip("should handle errors during the contribution transfer", async () => {
         // empty
     });
 
-    it("should fail if the reward does not exist in the project rewards list", async () => {
+    it.skip("should fail if the reward does not exist in the project rewards list", async () => {
         // empty
     });
 
-    it("should fail if the contribution amount is insufficient for the selected reward", async () => {
+    it.skip("should fail if the contribution amount is insufficient for the selected reward", async () => {
         // empty
     });
 
-    it("should fail if the reward supply has reached its maximum limit", async () => {
+    it.skip("should fail if the reward supply has reached its maximum limit", async () => {
         // empty
     });
 
-    it("should update the reward supply if a valid reward is selected", async () => {
+    it.skip("should update the reward supply if a valid reward is selected", async () => {
         // empty
     });
 
-    it("should update the project's raised amount and contribution counter", async () => {
+    it.skip("should update the project's raised amount and contribution counter", async () => {
         // empty
     });
 
-    it("should update the ProjectContributions list", async () => {
+    it.skip("should update the ProjectContributions list", async () => {
         // empty
     });
 
-    it("should update the UserContributions list", async () => {
+    it.skip("should update the UserContributions list", async () => {
         // empty
     });
 
-    it("should transfer the contribution amount in USDC to the project", async () => {
+    it.skip("should transfer the contribution amount in USDC to the project", async () => {
         // empty
     });
 
-    it("should handle errors during the contribution transfer", async () => {
+    it.skip("should handle errors during the contribution transfer", async () => {
         // empty
     });
 
