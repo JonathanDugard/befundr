@@ -40,11 +40,11 @@ describe('createContribution', () => {
         // Create a contribution
         const contributionAmount = convertAmountToDecimals(5);
         const contributionPdaKey = await createContribution(
-            projectPdaKey, 
-            userPdaKey, 
-            userWallet, 
-            projectContributionCounter, 
-            contributionAmount, 
+            projectPdaKey,
+            userPdaKey,
+            userWallet,
+            projectContributionCounter,
+            contributionAmount,
             0,
         );
 

@@ -89,3 +89,17 @@ pub enum CreateUnlockRequestError {
     #[msg("Request cooldown ongoing")]
     WaitBeforeNewRequest,
 }
+
+#[error_code]
+pub enum MarketplaceError {
+    #[msg("Signer is not the contribution owner")]
+    NotContributionOwner,
+    #[msg("The reward has been already claimed")]
+    RewardAlreadyClaimed,
+    #[msg("No reward associated to this contribution")]
+    NoReward,
+    #[msg("The contribution is not active")]
+    ContributionNotActive,
+    #[msg("Incorrect selling price")]
+    IncorrectSellingPrice,
+}
