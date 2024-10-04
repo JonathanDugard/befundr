@@ -77,9 +77,21 @@ export type Befundr = {
           "writable": true
         },
         {
+          "name": "fromAta",
+          "writable": true
+        },
+        {
+          "name": "toAta",
+          "writable": true
+        },
+        {
           "name": "signer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "systemProgram",
@@ -240,6 +252,18 @@ export type Befundr = {
           "signer": true
         },
         {
+          "name": "fromAta",
+          "writable": true
+        },
+        {
+          "name": "toAta",
+          "writable": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
@@ -290,6 +314,79 @@ export type Befundr = {
               "name": "projectCategory"
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "createTransaction",
+      "discriminator": [
+        227,
+        193,
+        53,
+        239,
+        55,
+        126,
+        112,
+        105
+      ],
+      "accounts": [
+        {
+          "name": "saleTransaction",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "contribution"
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "sellingPrice",
+          "type": "u64"
         }
       ]
     },
@@ -607,6 +704,19 @@ export type Befundr = {
       ]
     },
     {
+      "name": "saleTransaction",
+      "discriminator": [
+        104,
+        200,
+        226,
+        139,
+        191,
+        134,
+        207,
+        37
+      ]
+    },
+    {
       "name": "unlockRequest",
       "discriminator": [
         35,
@@ -662,58 +772,8 @@ export type Befundr = {
   "errors": [
     {
       "code": 6000,
-      "name": "nameTooShort",
-      "msg": "Project name is too short (min 5 characters)."
-    },
-    {
-      "code": 6001,
-      "name": "nameTooLong",
-      "msg": "Project name is too long (max 64 characters)."
-    },
-    {
-      "code": 6002,
-      "name": "imageUrlTooLong",
-      "msg": "Image URL is too long (max 256 characters)."
-    },
-    {
-      "code": 6003,
-      "name": "urlTooLong",
-      "msg": "URL is too long (max 128 characters)."
-    },
-    {
-      "code": 6004,
-      "name": "descriptionTooShort",
-      "msg": "Description is too short (min 10 characters)."
-    },
-    {
-      "code": 6005,
-      "name": "descriptionTooLong",
-      "msg": "Description is too long (max 500 characters)."
-    },
-    {
-      "code": 6006,
-      "name": "goalAmountBelowLimit",
-      "msg": "Goal amount is too low (min $1)."
-    },
-    {
-      "code": 6007,
-      "name": "endTimeInPast",
-      "msg": "End time is in the past."
-    },
-    {
-      "code": 6008,
-      "name": "exceedingEndTime",
-      "msg": "End time beyond the limit."
-    },
-    {
-      "code": 6009,
-      "name": "notEnoughRewards",
-      "msg": "Not enough rewards (min 1)."
-    },
-    {
-      "code": 6010,
-      "name": "tooManyRewards",
-      "msg": "Too many rewards (max 10)."
+      "name": "transferFailed",
+      "msg": "Funds transfer failed."
     }
   ],
   "types": [
@@ -973,6 +1033,34 @@ export type Befundr = {
           {
             "name": "currentSupply",
             "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "saleTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "contributionAmount",
+            "type": "u64"
+          },
+          {
+            "name": "sellingPrice",
+            "type": "u64"
+          },
+          {
+            "name": "creationTimestamp",
+            "type": "i64"
           }
         ]
       }

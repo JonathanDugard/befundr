@@ -2,6 +2,7 @@
 
 import { uploadImageToFirebase } from '@/utils/functions/firebaseFunctions';
 import {
+  convertNumberToSplAmount,
   getTimestampInFuture,
   toCamelCase,
 } from '@/utils/functions/utilFunctions';
@@ -79,7 +80,9 @@ export const handleProjectCreation = async (
 
   //* Prepare final data for blockchain transaction
   // convert stringify number to real number
-  const convertedSafetyDeposit = Number(project.safetyDeposit);
+  const convertedSafetyDeposit = convertNumberToSplAmount(
+    Number(project.safetyDeposit)
+  );
   const convertedGoalAmount = Number(project.goalAmount);
   // convert endtime number to timestamp
   const convertedEndTime = getTimestampInFuture(project.endTime);
@@ -156,6 +159,11 @@ const validateProjectToCreate = (
     projectToCreate.rewards.length > 4
   ) {
     return 'Number of reward must be between 1 to 4';
+  }
+
+  // Safety deposit check
+  if (projectToCreate.safetyDeposit < 50) {
+    return 'Safety deposit has to be of 50$ minimum';
   }
 
   // If everything is good, return true

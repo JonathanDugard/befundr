@@ -7,16 +7,22 @@ import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
 import { useState } from 'react';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 //* TYPE
 interface CreateProjectArgs {
+  userWalletPublicKey: PublicKey;
   userAccountPDA: PublicKey;
   project: Project;
   userProjectCounter: number;
+  userWalletAtaPubkey: PublicKey;
 }
 
 export function useBefundrProgramProject() {
-  const { program, programId, transactionToast, router } =
+  const { sendTransaction } = useWallet();
+  const { program, programId, transactionToast, router, connection } =
     useBefundrProgramGlobal();
 
   //* QUERIES
@@ -92,8 +98,14 @@ export function useBefundrProgramProject() {
   //* Create project --------------------
   const createProject = useMutation<string, Error, CreateProjectArgs>({
     mutationKey: ['befundr', 'createProject'],
-    mutationFn: async ({ userAccountPDA, project, userProjectCounter }) => {
-      // generation of the seeds for the PDA
+    mutationFn: async ({
+      userWalletPublicKey,
+      userAccountPDA,
+      project,
+      userProjectCounter,
+      userWalletAtaPubkey,
+    }) => {
+      // generation of the seeds for the project PDA
       const [newProjectAddress] = await PublicKey.findProgramAddress(
         [
           Buffer.from('project'), // seeds: "project"
@@ -101,6 +113,14 @@ export function useBefundrProgramProject() {
           new BN(userProjectCounter + 1).toArray('le', 2), // seeds: the user project counter
         ],
         programId
+      );
+
+      // generate the ATA for the project PDA
+      const { account: projectAtaAccount } = await getOrCreateATA(
+        userWalletPublicKey,
+        newProjectAddress,
+        connection,
+        sendTransaction
       );
 
       // Rewards serialization
@@ -127,6 +147,9 @@ export function useBefundrProgramProject() {
         .accountsPartial({
           user: userAccountPDA,
           project: newProjectAddress,
+          fromAta: userWalletAtaPubkey,
+          toAta: projectAtaAccount.address,
+          tokenProgram: TOKEN_PROGRAM_ID,
         }) // definition of the PDA address with the seed generated
         .rpc(); // launch the transaction
     },

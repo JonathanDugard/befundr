@@ -1,3 +1,5 @@
+import { SPL_DECIMAL } from '@/data/constants';
+
 /**
  * Returns a timestamp for the current time plus the given number of days.
  *
@@ -115,6 +117,10 @@ export function calculateTrustScore(
   );
 }
 
-export const convertAtaAmount = (amount: bigint): number => {
-  return Number(amount) / Math.pow(10, 6);
+export const convertSplAmountToNumber = (amount: bigint): number => {
+  return Number(amount) / Math.pow(10, SPL_DECIMAL);
+};
+
+export const convertNumberToSplAmount = (number: number): number => {
+  return Math.round(number * Math.pow(10, SPL_DECIMAL));
 };

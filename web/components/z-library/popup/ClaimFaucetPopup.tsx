@@ -82,7 +82,7 @@ const ClaimFaucetPopup = (props: Props) => {
 
     try {
       setIsLoading(true);
-      await getOrCreateATA(publicKey, connection, sendTransaction);
+      await getOrCreateATA(publicKey, publicKey, connection, sendTransaction);
       toast.success(`account successfully created`);
       refetch();
     } catch (e) {

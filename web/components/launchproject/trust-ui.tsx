@@ -7,7 +7,7 @@ import TrustScore from '../z-library/display elements/TrustScore';
 import InputField from '../z-library/button/InputField';
 import {
   calculateTrustScore,
-  convertAtaAmount,
+  convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import { useEffect, useMemo } from 'react';
 import AtaBalance from '../z-library/display elements/AtaBalance';
@@ -50,7 +50,7 @@ export const TrustBlock = (props: TrustProps) => {
 
   const ATABalance = useMemo(() => {
     if (userWalletATABalance) {
-      return convertAtaAmount(userWalletATABalance.amount);
+      return convertSplAmountToNumber(userWalletATABalance.amount);
     } else {
       return 0;
     }
