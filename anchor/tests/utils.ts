@@ -310,3 +310,71 @@ export const createTransaction = async (
 
     return saleTransactionPubkey;
 }
+
+export const completeTransaction = async (
+    contributionPdaKey: PublicKey,
+    sellerUserPdaKey: PublicKey,
+    buyerUserPdaKey: PublicKey,
+    buyerWallet: Keypair,
+    sellerPubkey: PublicKey,
+): Promise<PublicKey> => {
+
+    const [historyTransactionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("history_transactions"),
+            contributionPdaKey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    const [saleTransactionPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("sale_transaction"),
+            contributionPdaKey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    const [buyerContributionsPdaKey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_contributions"),
+            buyerUserPdaKey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    const [sellerContributionsPdaKey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("user_contributions"),
+            sellerUserPdaKey.toBuffer(),
+        ],
+        program.programId
+    );
+
+    // Get SPL Token transfer accounts
+    const buyerAtaKey = await getAssociatedTokenAddress(MINT_ADDRESS, buyerWallet.publicKey);
+    const sellerAtaKey = await getAssociatedTokenAddress(MINT_ADDRESS, sellerPubkey, true);
+
+    const createTx = await program.methods
+        .completeTransaction()
+        .accountsPartial({
+            historyTransactions: historyTransactionsPubkey,
+            saleTransaction: saleTransactionPubkey,
+            buyerUserContributions: buyerContributionsPdaKey,
+            sellerUserContributions: sellerContributionsPdaKey,
+            buyerUser: buyerUserPdaKey,
+            sellerUser: sellerUserPdaKey,
+            contribution: contributionPdaKey,
+            buyer: buyerWallet.publicKey,
+            buyerAta: buyerAtaKey,
+            seller: sellerPubkey,
+            sellerAta: sellerAtaKey,
+            tokenProgram: TOKEN_PROGRAM_ID
+        })
+        .signers([buyerWallet])
+        .rpc();
+
+    await confirmTransaction(program, createTx);
+
+    return saleTransactionPubkey;
+}
