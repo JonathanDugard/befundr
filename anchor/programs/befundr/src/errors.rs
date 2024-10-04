@@ -104,6 +104,18 @@ pub enum MarketplaceError {
     ContributionNotActive,
     #[msg("Incorrect selling price")]
     IncorrectSellingPrice,
+    #[msg("Buyer is not the user")]
+    BuyerNotUser,
+    #[msg("Seller is not the user")]
+    SellerNotUser,
+    #[msg("The seller is not the contribution owner")]
+    SellerNotContributionOwner,
+}
+
+#[error_code]
+pub enum UserContributionsError {
+    #[msg("Contribution not found")]
+    ContributionNotFound,
 }
 
 #[error_code]

@@ -1,5 +1,5 @@
-pub mod reward_transaction;
-pub use reward_transaction::*;
+pub mod history_transactions;
+pub use history_transactions::*;
 
 pub mod sale_transaction;
 pub use sale_transaction::*;

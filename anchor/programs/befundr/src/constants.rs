@@ -44,6 +44,10 @@ pub mod unlock_request {
     pub const REJECTED_REQUEST_COOLDOWN: i64 = 86400 * 14;
 }
 
+pub mod marketplace {
+    pub const MAX_HISTORY_TRANSACTIONS_NUMBER: u32 = 85;
+}
+
 // Temporary admins keys const
 // FOR LOCAL DEV PURPOSES ONLY
 pub const ADMIN_PUBKEYS: &[&str] = &[
