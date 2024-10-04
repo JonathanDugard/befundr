@@ -115,6 +115,6 @@ export function calculateTrustScore(
   );
 }
 
-export const convertATAAmount = (amount: bigint): number => {
+export const convertAtaAmount = (amount: bigint): number => {
   return Number(amount) / Math.pow(10, 6);
 };

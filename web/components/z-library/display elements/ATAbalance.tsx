@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import InfoLabel from './InfoLabel';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { convertATAAmount } from '@/utils/functions/utilFunctions';
+import { convertAtaAmount } from '@/utils/functions/utilFunctions';
 
 type Props = {
   /*empty*/
@@ -17,7 +17,7 @@ const ATAbalance = (props: Props) => {
 
   const ATABalance = useMemo(() => {
     if (userWalletATABalance) {
-      return convertATAAmount(userWalletATABalance.amount);
+      return convertAtaAmount(userWalletATABalance.amount);
     } else {
       return 0;
     }

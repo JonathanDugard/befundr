@@ -43,7 +43,7 @@ export function UiLayout({
     <div className="h-full flex flex-col ">
       {/* top navbar */}
       <div className="navbar h-20 bg-main text-textColor-main flex-col md:flex-row space-y-2 md:space-y-0">
-        <div className="flex-1 pr-2 ">
+        <div className="flex-1 pr-2">
           <Link className="btn btn-ghost normal-case text-xl" href="/">
             <Image
               className="h-4 md:h-10"
