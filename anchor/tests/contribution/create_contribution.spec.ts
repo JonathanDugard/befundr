@@ -1,48 +1,62 @@
 import { program, PROGRAM_CONNECTION } from "../config";
 import { createContribution, createProject, createUser, createUserWalletWithSol } from "../utils";
-import { ONE_DAY_MILLISECONDS, projectData1 } from "../project/project_dataset";
-import { userData1, userData2 } from "../user/user_dataset";
+import { projectData1 } from "../project/project_dataset";
+import { userData1, userData2, userData3 } from "../user/user_dataset";
 import { BN } from "@coral-xyz/anchor";
-import { LAMPORTS_PER_SOL, Enum } from "@solana/web3.js";
-import { getAssociatedTokenAddress, getAccount } from "@solana/spl-token"
+import { Enum, Keypair, PublicKey } from "@solana/web3.js";
+import { getOrCreateAssociatedTokenAccount, getAssociatedTokenAddress, getAccount, Account } from "@solana/spl-token"
 import { ContributionStatus } from "./contribution_status";
 import {
     InitMint,
     MINT_ADDRESS,
     MintAmountTo,
     convertAmountToDecimals,
+    INITIAL_USER_ATA_BALANCE,
+    getAtaBalance,
 } from "../token/token_config";
 
 describe('createContribution', () => {
-    it.skip("should successfully create a contribution with reward", async () => {
 
-        // Create new mint account
-        if (typeof MINT_ADDRESS === 'undefined') {
-            await InitMint();
-        }
+    let creatorWallet: Keypair, creatorWalletAta: Account, creatorUserPdaKey: PublicKey, 
+        userWallet: Keypair, userWalletAta: Account, userPdaKey: PublicKey;
 
+    beforeEach(async () => {
+        await InitMint();
 
-        // Prepare Creator context
-        const creatorWallet = await createUserWalletWithSol();
-        const creatorUserPdaKey = await createUser(userData1, creatorWallet);
-        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet)
+        creatorWallet = await createUserWalletWithSol();
+        creatorUserPdaKey = await createUser(userData1, creatorWallet);
+        creatorWalletAta = await getOrCreateAssociatedTokenAccount(
+            PROGRAM_CONNECTION,
+            creatorWallet,
+            MINT_ADDRESS,
+            creatorWallet.publicKey
+        );
+        await MintAmountTo(creatorWallet, creatorWalletAta.address, INITIAL_USER_ATA_BALANCE);
 
-        const projectPda = await program.account.project.fetch(projectPdaKey);
-        const projectContributionCounter = projectPda.contributionCounter;
-
-        // Prepare contributor context
-        const userWallet = await createUserWalletWithSol();
-        const userPdaKey = await createUser(userData2, userWallet);
-        // Mint 1000 "USDC" tokens to user wallet ATA
-        const mintAmount = convertAmountToDecimals(10);
-        const userWalletAta = await getAssociatedTokenAddress(
+        userWallet = await createUserWalletWithSol();
+        userPdaKey = await createUser(userData2, userWallet);
+        userWalletAta = await getOrCreateAssociatedTokenAccount(
+            PROGRAM_CONNECTION,
+            userWallet,
             MINT_ADDRESS,
             userWallet.publicKey
         );
-        await MintAmountTo(userWallet, userWalletAta, mintAmount);
+        await MintAmountTo(userWallet, userWalletAta.address, INITIAL_USER_ATA_BALANCE);
+    });
+
+    it("should successfully create a contribution with reward 1", async () => {
+
+        const INITIAL_PAID_AMOUNT = 5;
+
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet)
+        const projectPda = await program.account.project.fetch(projectPdaKey);
+        const projectAtaBalanceBefore = await getAtaBalance(projectAtaKey);
+
+        const projectContributionCounter = projectPda.contributionCounter;
 
         // Create a contribution
-        const contributionAmount = convertAmountToDecimals(5);
+        const contributionAmount = convertAmountToDecimals(INITIAL_PAID_AMOUNT);
         const contributionPdaKey = await createContribution(
             projectPdaKey,
             userPdaKey,
@@ -61,25 +75,18 @@ describe('createContribution', () => {
         // get updated user wallet ata balance
         const userWalletAtaAccount = await getAccount(
             PROGRAM_CONNECTION,
-            userWalletAta
+            userWalletAta.address
         );
         // get update project ata balance
-        const projectAtaAddress = await getAssociatedTokenAddress(
-            MINT_ADDRESS,
-            projectPdaKey,
-            true
-        );
         const projectAtaAccount = await getAccount(
             PROGRAM_CONNECTION,
-            projectAtaAddress
+            projectAtaKey
         );
 
-        expect(new BN(userWalletAtaAccount.amount).toString()).toEqual(
-            (mintAmount - contributionAmount).toString()
-        );
-        expect(new BN(projectAtaAccount.amount).toString()).toEqual(
-            contributionAmount.toString()
-        );
+        expect(new BN(userWalletAtaAccount.amount).toString())
+            .toEqual((INITIAL_USER_ATA_BALANCE - convertAmountToDecimals(INITIAL_PAID_AMOUNT)).toString());
+        expect(new BN(projectAtaAccount.amount).toString())
+            .toEqual(projectAtaBalanceBefore.add(convertAmountToDecimals(INITIAL_PAID_AMOUNT)).toString());
 
         expect(contributionPda.initialOwner).toEqual(userPdaKey);
         expect(contributionPda.currentOwner).toEqual(userPdaKey);
@@ -107,108 +114,201 @@ describe('createContribution', () => {
         // unable to create a past project
     });
 
-    it.skip('should fail if the signer is not the actual user PDA owner', async () => {
-        const creatorWallet = await createUserWalletWithSol();
-        const creatorUserPdaKey = await createUser(userData1, creatorWallet);
-        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet);
+    it('should fail if the signer is not the actual user PDA owner', async () => {
 
-        const userWallet = await createUserWalletWithSol();
-        const userPdaKey = await createUser(userData2, userWallet);
-
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet)
         const projectPda = await program.account.project.fetch(projectPdaKey);
-        const projectContributionCounter = new BN(projectPda.contributionCounter);
-        const contributionAmount = convertAmountToDecimals(5);
+        const projectContributionCounter = projectPda.contributionCounter;
 
         // Create a different wallet to simulate the wrong signer
         const wrongWallet = await createUserWalletWithSol();
+        const wrongWalletAta = await getOrCreateAssociatedTokenAccount(
+            PROGRAM_CONNECTION,
+            wrongWallet,
+            MINT_ADDRESS,
+            wrongWallet.publicKey
+        );
+        await MintAmountTo(wrongWallet, wrongWalletAta.address, INITIAL_USER_ATA_BALANCE);
 
         const expectedErrorMessage = new RegExp('Signer must be the user.');
 
+        // Create a contribution
+        const contributionAmount = convertAmountToDecimals(5);
         await expect(
             createContribution(
                 projectPdaKey,
                 userPdaKey,
-                wrongWallet, // Using the wrong wallet here
-                projectContributionCounter,
+                wrongWallet,
+                new BN(projectContributionCounter),
                 contributionAmount,
                 new BN(0),
             )
         ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it.skip('should fail if the contribution amount is not positive and greater than 0', async () => {
-        // empty
+    it('should fail if the contribution amount is negative or equal to 0', async () => {
+        
+        const INITIAL_PAID_AMOUNT = 0;
+        const expectedErrorMessage = new RegExp('Contribution amount is insufficient for the selected reward.');
+
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet)
+        const projectPda = await program.account.project.fetch(projectPdaKey);
+
+        const projectContributionCounter = projectPda.contributionCounter;
+
+        // Create a contribution
+        const contributionAmount = convertAmountToDecimals(INITIAL_PAID_AMOUNT);
+        await expect(
+            createContribution(
+                projectPdaKey,
+                userPdaKey,
+                userWallet,
+                new BN(projectContributionCounter),
+                contributionAmount,
+                new BN(0),
+            )
+        ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it.skip('should fail if the reward does not exist in the project rewards list', async () => {
-        // empty
+    it('should fail if the reward does not exist in the project rewards list', async () => {
+        const INITIAL_PAID_AMOUNT = 5;
+        const SELECTED_REWARD = 4;
+        const expectedErrorMessage = new RegExp('Reward does not exist.');
+
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet)
+        const projectPda = await program.account.project.fetch(projectPdaKey);
+
+        const projectContributionCounter = projectPda.contributionCounter;
+
+        // Create a contribution
+        const contributionAmount = convertAmountToDecimals(INITIAL_PAID_AMOUNT);
+        await expect(
+            createContribution(
+                projectPdaKey,
+                userPdaKey,
+                userWallet,
+                new BN(projectContributionCounter),
+                contributionAmount,
+                new BN(SELECTED_REWARD),
+            )
+        ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it.skip('should fail if the contribution amount is insufficient for the selected reward', async () => {
-        // empty
+    it('should fail if the contribution amount is insufficient for the selected reward', async () => {
+        const INITIAL_PAID_AMOUNT = 5;
+        const SELECTED_REWARD = 1;
+        const expectedErrorMessage = new RegExp('Contribution amount is insufficient for the selected reward.');
+
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet);
+        const projectPda = await program.account.project.fetch(projectPdaKey);
+
+        const projectContributionCounter = projectPda.contributionCounter;
+
+        // Attempt to create a contribution after the limit is reached
+        const contributionAmount = convertAmountToDecimals(INITIAL_PAID_AMOUNT);
+        await expect(
+            createContribution(
+                projectPdaKey,
+                userPdaKey,
+                userWallet,
+                new BN(projectContributionCounter),
+                contributionAmount,
+                new BN(SELECTED_REWARD),
+            )
+        ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it.skip('should fail if the reward supply has reached its maximum limit', async () => {
-        // empty
+    it('should fail if the reward supply has reached its maximum limit', async () => {
+        const INITIAL_PAID_AMOUNT = 400;
+        const SELECTED_REWARD = 2; // [0,1,2]
+        const expectedErrorMessage = new RegExp('Reward supply has reached its maximum limit.');
+
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet);
+        let projectPda = await program.account.project.fetch(projectPdaKey);
+        let projectContributionCounter = projectPda.contributionCounter;
+
+        const contributionAmount = convertAmountToDecimals(INITIAL_PAID_AMOUNT);
+
+        // First contribution
+        const contributionPdaKey = await createContribution(
+            projectPdaKey,
+            userPdaKey,
+            userWallet,
+            new BN(projectContributionCounter),
+            contributionAmount,
+            new BN(SELECTED_REWARD),
+        );
+
+        // Attempt to create a contribution after the limit is reached
+        const anotherWallet = await createUserWalletWithSol();
+        const anotherUserPda = await createUser(userData3, anotherWallet);
+        const anotherWalletAta = await getAssociatedTokenAddress(MINT_ADDRESS, anotherWallet.publicKey);
+        await MintAmountTo(anotherWallet, anotherWalletAta, INITIAL_USER_ATA_BALANCE);
+
+        projectPda = await program.account.project.fetch(projectPdaKey);
+        projectContributionCounter = projectPda.contributionCounter;
+
+        await expect(
+            createContribution(
+                projectPdaKey,
+                anotherUserPda,
+                anotherWallet,
+                new BN(projectContributionCounter),
+                contributionAmount,
+                new BN(SELECTED_REWARD),
+            )
+        ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it.skip('should update the reward supply if a valid reward is selected', async () => {
-        // empty
-    });
+    it('should update the User and Project contributions list', async () => {
+        
+        const INITIAL_PAID_AMOUNT = 5;
+        const SELECTED_REWARD = 0; // [0,1,2]        
 
-    it.skip("should update the project's raised amount and contribution counter", async () => {
-        // empty
-    });
+        // Prepare Project context
+        const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet)
+        const projectPda = await program.account.project.fetch(projectPdaKey);
 
-    it.skip('should update the ProjectContributions list', async () => {
-        // empty
-    });
+        const projectContributionCounter = projectPda.contributionCounter;
 
-    it.skip('should update the UserContributions list', async () => {
-        // empty
-    });
+        // Create a contribution
+        const contributionAmount = convertAmountToDecimals(INITIAL_PAID_AMOUNT);
+        const contributionPdaKey = await createContribution(
+            projectPdaKey,
+            userPdaKey,
+            userWallet,
+            new BN(projectContributionCounter),
+            contributionAmount,
+            new BN(0),
+        );
 
-    it.skip('should transfer the contribution amount in USDC to the project', async () => {
-        // empty
-    });
+        // Get projectContributions PDA Pubkey
+        const [projectContributionsPubkey] = PublicKey.findProgramAddressSync(
+            [
+                Buffer.from("project_contributions"),
+                projectPdaKey.toBuffer(),
+            ],
+            program.programId
+        );
+        // Get userContributions PDA Pubkey
+        const [userContributionsPubkey] = PublicKey.findProgramAddressSync(
+            [
+                Buffer.from("user_contributions"),
+                userPdaKey.toBuffer(),
+            ],
+            program.programId
+        );
 
-    it.skip('should handle errors during the contribution transfer', async () => {
-        // empty
-    });
+        const projectContributions = await program.account.projectContributions.fetch(projectContributionsPubkey);
+        const userContributions = await program.account.userContributions.fetch(userContributionsPubkey);
 
-    it.skip('should fail if the reward does not exist in the project rewards list', async () => {
-        // empty
-    });
+        expect(projectContributions.contributions).toContainEqual(contributionPdaKey);
+        expect(userContributions.contributions).toContainEqual(contributionPdaKey);
 
-    it.skip('should fail if the contribution amount is insufficient for the selected reward', async () => {
-        // empty
-    });
-
-    it.skip('should fail if the reward supply has reached its maximum limit', async () => {
-        // empty
-    });
-
-    it.skip('should update the reward supply if a valid reward is selected', async () => {
-        // empty
-    });
-
-    it.skip("should update the project's raised amount and contribution counter", async () => {
-        // empty
-    });
-
-    it.skip('should update the ProjectContributions list', async () => {
-        // empty
-    });
-
-    it.skip('should update the UserContributions list', async () => {
-        // empty
-    });
-
-    it.skip('should transfer the contribution amount in USDC to the project', async () => {
-        // empty
-    });
-
-    it.skip('should handle errors during the contribution transfer', async () => {
-        // empty
     });
 });
