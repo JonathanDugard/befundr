@@ -4,8 +4,8 @@ import { User } from "./user/user_type";
 import { anchor, program, systemProgram } from "./config";
 import { BN, Program } from "@coral-xyz/anchor";
 import { Project } from "./project/project_type";
-import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from "@solana/spl-token";
-import { 
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import {
     MINT_ADDRESS,
     newAssociatedTokenAccount,
     newPdaAssociatedTokenAccount
@@ -72,18 +72,12 @@ export const createUser = async (userData: User, wallet: Keypair): Promise<Publi
 
     return userPdaPublicKey;
 }
-// Create a new project
-export const createProject = async (
-    projectData: Project,
-    userProjectCounter: number,
-    userPubkey: PublicKey,
-    wallet: Keypair
-): Promise<PublicKey> => {
 
+export const getProjectPdaKey = (userPdaKey: PublicKey, userProjectCounter: BN) => {
     // Seeds building
     const seeds = [
         Buffer.from("project"),
-        userPubkey.toBuffer(),
+        userPdaKey.toBuffer(),
         new BN(userProjectCounter + 1).toArray('le', 2),
     ];
 
@@ -93,14 +87,31 @@ export const createProject = async (
         program.programId
     );
 
+    return projectPdaPublicKey;
+
+}
+
+// Create a new project
+export const createProject = async (
+    projectData: Project,
+    userProjectCounter: number,
+    userPubkey: PublicKey,
+    wallet: Keypair
+): Promise<{ projectPdaKey: PublicKey, projectAtaKey: PublicKey }> => {
+
+    const projectPdaKey = getProjectPdaKey(userPubkey, userProjectCounter);
+
     // Get projectContributions PDA Pubkey
     const [projectContributionsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
             Buffer.from("project_contributions"),
-            projectPdaPublicKey.toBuffer(),
+            projectPdaKey.toBuffer(),
         ],
         program.programId
     );
+
+    const userWalletAtaPubkey: PublicKey = getAssociatedTokenAddressSync(MINT_ADDRESS, wallet.publicKey, false);
+    const projectAtaKey = await newPdaAssociatedTokenAccount(wallet, projectPdaKey);
 
     // Rewards serialization
     const serializedRewards = projectData.rewards.map((reward) => ({
@@ -126,7 +137,10 @@ export const createProject = async (
         )
         .accountsPartial({
             user: userPubkey,
-            project: projectPdaPublicKey,
+            project: projectPdaKey,
+            fromAta: userWalletAtaPubkey,
+            toAta: projectAtaKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
             signer: wallet.publicKey,
         })
         .signers([wallet])
@@ -134,10 +148,7 @@ export const createProject = async (
 
     await confirmTransaction(program, createTx);
 
-    // Create project ATA
-    await newPdaAssociatedTokenAccount(wallet, projectPdaPublicKey);
-
-    return projectPdaPublicKey;
+    return { projectPdaKey, projectAtaKey };
 }
 
 /**
@@ -191,23 +202,23 @@ export const createContribution = async (
 
     // Call the addContribution method
     const createTx = await program.methods
-    .addContribution(
-        amount,
-        rewardId !== null ? rewardId : null
-    )
-    .accountsPartial({
-        project: projectPubkey,
-        projectContributions: projectContributionsPubkey,
-        user: userPubkey,
-        userContributions: userContributionsPubkey,
-        contribution: contributionPdaPublicKey,
-        fromAta: fromAta,
-        toAta: toAta,
-        signer: wallet.publicKey,
-        tokenProgram: TOKEN_PROGRAM_ID,
-    })
-    .signers([wallet])
-    .rpc();
+        .addContribution(
+            amount,
+            rewardId !== null ? rewardId : null
+        )
+        .accountsPartial({
+            project: projectPubkey,
+            projectContributions: projectContributionsPubkey,
+            user: userPubkey,
+            userContributions: userContributionsPubkey,
+            contribution: contributionPdaPublicKey,
+            fromAta: fromAta,
+            toAta: toAta,
+            signer: wallet.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([wallet])
+        .rpc();
 
     await confirmTransaction(program, createTx);
 
