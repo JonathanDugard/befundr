@@ -115,8 +115,7 @@ export const createProject = async (
 
     // Rewards serialization
     const serializedRewards = projectData.rewards.map((reward) => ({
-        name: reward.name,
-        description: reward.description,
+        metadataUri: reward.metadataUri,
         price: new BN(reward.price),
         maxSupply: new BN(reward.maxSupply),
         currentSupply: new BN(reward.currentSupply),
@@ -126,13 +125,11 @@ export const createProject = async (
     const createTx = await program.methods
         .createProject(
             projectData.name,
-            projectData.imageUrl,
-            projectData.description,
+            projectData.metadataUri,
             projectData.goalAmount,
             new BN(Math.floor(projectData.endTime / 1000)),
             serializedRewards,
             projectData.safetyDeposit,
-            projectData.xAccountUrl,
             projectData.category
         )
         .accountsPartial({

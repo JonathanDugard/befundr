@@ -31,8 +31,7 @@ describe('createProject', () => {
         const projectPda = await program.account.project.fetch(projectPdaKey);
 
         expect(projectPda.name).toEqual(projectData1.name);
-        expect(projectPda.description).toEqual(projectData1.description);
-        expect(projectPda.imageUrl).toEqual(projectData1.imageUrl);
+        expect(projectPda.metadataUri).toEqual(projectData1.metadataUri);
         expect(projectPda.owner).toEqual(userWallet.publicKey);
         expect(projectPda.user).toEqual(userPdaKey);
         expect(projectPda.endTime.toString()).toEqual(Math.floor(projectData1.endTime / 1000).toString());
@@ -65,29 +64,8 @@ describe('createProject', () => {
      */
     it.skip("should throw an error if the image url is too long", async () => {
         const expectedError = /Error Code: ImageUrlTooLong\. Error Number: .*\. Error Message: Image URL is too long \(max 256 characters\).*/;
-        const MAX_URL_LENGTH = 256;
-        const projectData = { ...projectData1, imageUrl: "a".repeat(MAX_URL_LENGTH + 1) };
-
-        await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
-            .toThrow(expectedError);
-    });
-
-    it("should throw an error if the description is too short", async () => {
-        const expectedError = /Error Code: DescriptionTooShort\. Error Number: .*\. Error Message: Description is too short \(min 10 characters\).*/;
-        const MIN_DESCRIPTION_LENGTH = 10;
-        const projectData = { ...projectData1, description: "a".repeat(Math.max(0, MIN_DESCRIPTION_LENGTH - 1)) };
-
-        await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
-            .toThrow(expectedError);
-    });
-
-    /**
-     * TODO Refactor
-     */
-    it.skip("should throw an error if the description is too long", async () => {
-        const expectedError = /Error Code: DescriptionTooLong\. Error Number: .*\. Error Message: Description is too long \(max 500 characters\).*/;
-        const MAX_DESCRIPTION_LENGTH = 500;
-        const projectData = { ...projectData1, description: "a".repeat(MAX_DESCRIPTION_LENGTH + 1) };
+        const MAX_URI_LENGTH = 256;
+        const projectData = { ...projectData1, imageUrl: "a".repeat(MAX_URI_LENGTH + 1) };
 
         await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
             .toThrow(expectedError);

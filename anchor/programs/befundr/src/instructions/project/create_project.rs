@@ -3,9 +3,8 @@ use anchor_spl::token::{Token, TokenAccount};
 
 use crate::{
     constants::project::{
-        MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_REWARDS_NUMBER,
-        MAX_URL_LENGTH, MIN_DESCRIPTION_LENGTH, MIN_NAME_LENGTH, MIN_PROJECT_GOAL_AMOUNT,
-        MIN_REWARDS_NUMBER, MIN_SAFETY_DEPOSIT,
+        MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_REWARDS_NUMBER, MAX_URI_LENGTH,
+        MIN_NAME_LENGTH, MIN_PROJECT_GOAL_AMOUNT, MIN_REWARDS_NUMBER, MIN_SAFETY_DEPOSIT,
     },
     errors::{AtaError, CreateProjectError},
     state::{
@@ -17,13 +16,11 @@ use crate::{
 pub fn create_project(
     ctx: Context<CreateProject>,
     name: String,
-    image_url: String,
-    description: String,
+    metadata_uri: String,
     goal_amount: u64,
     end_time: i64,
     rewards: Vec<Reward>,
     safety_deposit: u64,
-    x_account_url: String,
     category: ProjectCategory,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
@@ -32,18 +29,8 @@ pub fn create_project(
     require!(name_length >= MIN_NAME_LENGTH, CreateProjectError::NameTooShort);
     require!(name_length <= MAX_NAME_LENGTH, CreateProjectError::NameTooLong);
 
-    require!(image_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::ImageUrlTooLong);
+    require!(metadata_uri.len() as u64 <= MAX_URI_LENGTH, CreateProjectError::UriTooLong);
 
-    let description_length = description.len() as u64;
-    require!(
-        description_length >= MIN_DESCRIPTION_LENGTH,
-        CreateProjectError::DescriptionTooShort
-    );
-    require!(
-        description_length <= MAX_DESCRIPTION_LENGTH,
-        CreateProjectError::DescriptionTooLong
-    );
-    require!(x_account_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::UrlTooLong);
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
     require!(end_time > now, CreateProjectError::EndTimeInPast);
     require!(
@@ -67,9 +54,7 @@ pub fn create_project(
     project.owner = ctx.accounts.signer.key();
     project.user = ctx.accounts.user.key();
     project.name = name;
-    project.image_url = image_url;
-    project.description = description;
-    project.x_account_url = x_account_url;
+    project.metadata_uri = metadata_uri;
     project.goal_amount = goal_amount;
     project.raised_amount = 0;
     project.created_time = now;

@@ -8,8 +8,7 @@ export type Project = {
   owner?: string
   user?: string
   name: string
-  imageUrl: string
-  description: string
+  metadataUri: string
   goalAmount: BN
   raisedAmount?: BN
   createdTime: BN
@@ -18,6 +17,5 @@ export type Project = {
   contributionCounter?: BN
   rewards: Reward[],
   safetyDeposit: BN,
-  xAccountUrl: string,
   category: ProjectCategory
 }
