@@ -9,6 +9,7 @@ import ProgressBar from '../z-library/display elements/ProgressBar';
 import {
   calculateTimeRemaining,
   calculateTrustScore,
+  convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import TrustScore from '../z-library/display elements/TrustScore';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
@@ -28,6 +29,7 @@ import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
 import { ProjectStatus } from '@/data/projectStatus';
+import { BN } from '@coral-xyz/anchor';
 
 type Props = {
   project: Project;
@@ -92,9 +94,11 @@ const Project = (props: Props) => {
             <div className="flex flex-col items-start justify-center w-1/2 flex-grow">
               <p className="textStyle-subheadline">
                 <strong className="textStyle-subtitle">
-                  {props.project.raisedAmount} $
+                  {convertSplAmountToNumber(new BN(props.project.raisedAmount))}{' '}
+                  $
                 </strong>{' '}
-                on {props.project.goalAmount}$ goal
+                on {convertSplAmountToNumber(new BN(props.project.goalAmount))}$
+                goal
               </p>
               <p className="textStyle-subheadline">
                 <strong className="textStyle-subtitle">
@@ -213,7 +217,10 @@ const Project = (props: Props) => {
       )}
       {/* blocks to display */}
       {selectedMenu === 'about' && (
-        <AboutBlock description={props.project.description} />
+        <AboutBlock
+          description={props.project.description}
+          xAccount={props.project.xAccountUrl}
+        />
       )}
       {selectedMenu === 'rewards' && (
         <RewardBlock

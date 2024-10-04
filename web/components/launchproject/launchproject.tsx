@@ -13,7 +13,6 @@ import { RewardsBlock } from './rewards-ui';
 import { DescriptionBLock } from './description-ui';
 import { TrustBlock } from './trust-ui';
 import { ValidationBlock } from './validation-ui';
-import { handleProjectCreation } from './handleProjectCreation';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
@@ -23,6 +22,7 @@ import Link from 'next/link';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import { getATA } from '@/utils/functions/AtaFunctions';
 import { useBefundrProgramGlobal } from '../befundrProgram/befundr-global-access';
+import { prepareDataForProjectCreation } from './utils';
 
 const Launchproject = () => {
   //* GENERAL STATE
@@ -205,7 +205,7 @@ const Launchproject = () => {
     if (publicKey && userEntryAddress) {
       setIsCreationLoading(true);
       // data preparation for tx
-      const projectData = await handleProjectCreation(
+      const projectData = await prepareDataForProjectCreation(
         projectToCreate,
         projectImageUrl,
         publicKey

@@ -9,7 +9,7 @@ type Props = {
 const MainButtonLabelAsync = (props: Props) => {
   return (
     <div
-      className={`relative bg-accent hover:bg-accent-hover rounded-md h-8 w-44 px-2 py-1 transition-all ease-in-out group ${
+      className={`relative bg-accent hover:bg-accent-hover rounded-md h-8 min-w-44 px-2 py-1 transition-all ease-in-out group ${
         props.isLoading && 'bg-accent-hover'
       }`}
     >

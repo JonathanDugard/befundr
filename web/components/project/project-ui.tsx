@@ -5,9 +5,30 @@ import Divider from '../z-library/display elements/Divider';
 import FundsRequestCard from '../z-library/card/VoteCard';
 import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
+import Image from 'next/image';
 
-export const AboutBlock = ({ description }: { description: string }) => {
-  return <p className="textStyle-body">{description}</p>;
+export const AboutBlock = ({
+  description,
+  xAccount,
+}: {
+  description: string;
+  xAccount: string;
+}) => {
+  return (
+    <div className="flex flex-col justify-start items-start gap-4">
+      <a href={xAccount} className="flex gap-2" target="_blank">
+        <Image
+          alt="x"
+          src={'/x.jpg'}
+          width={30}
+          height={30}
+          className="rounded-full object-contain"
+        />
+        <p className="textStyle-subheadline underline">Project page on X</p>
+      </a>
+      <p className="textStyle-body">{description}</p>
+    </div>
+  );
 };
 
 export const RewardBlock = ({

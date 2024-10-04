@@ -9,6 +9,8 @@ import { ProjectStatus } from '@/data/projectStatus';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { BN } from '@coral-xyz/anchor';
 
 type Props = {
   reward: Reward;
@@ -46,7 +48,9 @@ const RewardCardDetailled = (props: Props) => {
       {/* info */}
       <div className="flex flex-col items-start justify-between gap-2 w-full ">
         <p className="textStyle-headline">{props.reward.name}</p>
-        <p className="textStyle-subheadline">{props.reward.price}$</p>
+        <p className="textStyle-subheadline">
+          {convertSplAmountToNumber(new BN(props.reward.price))}$
+        </p>
         {props.reward.maxSupply ? (
           <p className="textStyle-body">
             Limited supply :{' '}
