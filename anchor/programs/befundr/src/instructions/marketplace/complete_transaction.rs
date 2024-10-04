@@ -7,7 +7,7 @@ use crate::{
     utils::transfer_spl_token,
 };
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer};
+use anchor_spl::token::{Token, TokenAccount};
 
 pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
     let buyer = &mut ctx.accounts.buyer;
@@ -77,7 +77,13 @@ pub struct CompleteTransaction<'info> {
     #[account(mut, close = seller)]
     pub sale_transaction: Account<'info, SaleTransaction>,
 
-    #[account(mut)]
+    #[account(
+        init_if_needed,
+        payer = buyer,
+        space = 8 + UserContributions::INIT_SPACE,
+        seeds = [b"user_contributions", buyer_user.key().as_ref()],
+        bump
+    )]
     pub buyer_user_contributions: Account<'info, UserContributions>,
 
     #[account(mut)]
@@ -99,7 +105,7 @@ pub struct CompleteTransaction<'info> {
     pub buyer_ata: Account<'info, TokenAccount>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account()]
+    #[account(mut)]
     pub seller: AccountInfo<'info>,
 
     #[account(mut)]
