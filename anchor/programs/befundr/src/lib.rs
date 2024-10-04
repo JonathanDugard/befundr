@@ -47,25 +47,21 @@ pub mod befundr {
     pub fn create_project(
         ctx: Context<CreateProject>,
         name: String,
-        image_url: String,
-        description: String,
+        metadata_uri: String,
         goal_amount: u64,
         end_time: i64,
         rewards: Vec<Reward>,
         safety_deposit: u64,
-        x_account_url: String,
         category: ProjectCategory,
     ) -> Result<()> {
         instructions::create_project(
             ctx,
             name,
-            image_url,
-            description,
+            metadata_uri,
             goal_amount,
             end_time,
             rewards,
             safety_deposit,
-            x_account_url,
             category,
         )
     }

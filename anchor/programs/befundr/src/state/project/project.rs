@@ -1,8 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::constants::project::{
-    MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_REWARDS_NUMBER, MAX_URL_LENGTH,
-};
+use crate::constants::project::{MAX_NAME_LENGTH, MAX_REWARDS_NUMBER, MAX_URI_LENGTH};
 
 use super::{ProjectCategory, Reward};
 
@@ -15,17 +13,10 @@ pub struct Project {
     #[max_len(MAX_NAME_LENGTH)]
     pub name: String,
 
-    #[max_len(MAX_URL_LENGTH)]
-    pub image_url: String,
-
-    #[max_len(MAX_DESCRIPTION_LENGTH)]
-    pub description: String,
-
-    #[max_len(MAX_URL_LENGTH)]
-    pub x_account_url: String,
+    #[max_len(MAX_URI_LENGTH)]
+    pub metadata_uri: String,
 
     pub category: ProjectCategory,
-
     pub goal_amount: u64,
     pub raised_amount: u64,
     pub created_time: i64,
