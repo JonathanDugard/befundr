@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
-
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';

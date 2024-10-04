@@ -24,13 +24,14 @@ import {
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
-import SaleRewardPopup from '../z-library/popup/SaleRewardPopup';
 import RedeemRewardPopup from '../z-library/popup/RedeemRewardPopup';
 import CancelRewardSalePopup from '../z-library/popup/CancelRewardSalePopup';
 import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { BN } from '@coral-xyz/anchor';
+import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
+import SaleRewardPopup from './SaleRewardPopup';
 
 type Props = {
   contributionId: string;
@@ -41,15 +42,11 @@ const ContributionDetail = (props: Props) => {
   const router = useRouter();
   const { getContributionPda } = useBefundrProgramContribution();
   const { projectAccountFromAccountPublicKey } = useBefundrProgramProject();
+  const { getSaleTxFromContributionPdaPublicKey } =
+    useBefundrProgramSaleTransaction();
 
   //* LOCAL STATE
-  const { data: contribution } = getContributionPda(
-    new PublicKey(props.contributionId)
-  );
-  const { data: project } = projectAccountFromAccountPublicKey(
-    contribution?.project
-  );
-
+  // state
   const [contributionToDisplay, setContributionToDisplay] = useState<
     Contribution | null | undefined
   >(null);
@@ -57,6 +54,17 @@ const ContributionDetail = (props: Props) => {
     Project | null | undefined
   >(null);
   const [rewardToDisplay, setRewardToDisplay] = useState<Reward | null>(null);
+
+  // react query
+  const { data: contribution } = getContributionPda(
+    new PublicKey(props.contributionId)
+  );
+  const { data: project } = projectAccountFromAccountPublicKey(
+    contribution?.project
+  );
+
+  const { data: saleTransaction, refetch: refetchSaleTransaction } =
+    getSaleTxFromContributionPdaPublicKey(new PublicKey(props.contributionId));
 
   // convert contribution account to Contribution object
   useEffect(() => {
@@ -104,7 +112,7 @@ const ContributionDetail = (props: Props) => {
           {/* detail */}
           <div className="flex justify-start items-start w-full gap-4">
             {/* image */}
-            <div className="relative w-1/3 aspect-square flex items-center justify-center">
+            <div className="relative w-[300px] aspect-square flex items-center justify-center">
               <Image
                 alt="reward pic"
                 src={projectToDisplay.imageUrl}
@@ -127,9 +135,9 @@ const ContributionDetail = (props: Props) => {
             {/* market info */}
             <div className="flex flex-col justify-between items-start w-1/3 h-full ">
               <p className="textStyle-headline">Market info</p>
-              {/* {!contributionToDisplay.isForSale ? (
+              {saleTransaction === undefined ? (
                 <>
-                  {salesTx && salesTx.length > 0 ? (
+                  {/* {salesTx && salesTx.length > 0 ? (
                     <p className="textStyle-body">
                       {salesTx.length} equivalent rewards to sell on the
                       marketplace with a minimum price of{' '}
@@ -139,7 +147,7 @@ const ContributionDetail = (props: Props) => {
                     <p className="textStyle-body">
                       No equivalent rewards to sell on the marketplace
                     </p>
-                  )}
+                  )} */}
                   <button
                     className="w-full mt-4"
                     onClick={() => setIsSalePopup(true)}
@@ -160,7 +168,7 @@ const ContributionDetail = (props: Props) => {
                     <SecondaryButtonLabelBig label="Share the selling link on X" />
                   </button>
                 </div>
-              )} */}
+              )}
 
               <div className="flex-grow my-4"></div>
               {/* if reward avaiable */}
@@ -192,15 +200,17 @@ const ContributionDetail = (props: Props) => {
                 <p className="textStyle-body !text-custom-red">
                   This reward is not yet redeemable
                 </p>
-              )} */}
+              )}  */}
             </div>
           </div>
         </div>
         {isSalePopup && (
           <SaleRewardPopup
             reward={rewardToDisplay}
-            floorPrice={getMinSellingPrice(salesTx)}
+            // floorPrice={getMinSellingPrice(salesTx)}
             handleClose={() => setIsSalePopup(false)}
+            contributionPdaPublicKey={props.contributionId}
+            refetchSaleTransaction={refetchSaleTransaction}
           />
         )}
         {isRedeemPopup && (
