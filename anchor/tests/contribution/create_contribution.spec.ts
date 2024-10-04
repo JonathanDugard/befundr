@@ -21,6 +21,7 @@ describe('createContribution', () => {
             await InitMint();
         }
 
+
         // Prepare Creator context
         const creatorWallet = await createUserWalletWithSol();
         const creatorUserPdaKey = await createUser(userData1, creatorWallet);
@@ -34,7 +35,10 @@ describe('createContribution', () => {
         const userPdaKey = await createUser(userData2, userWallet);
         // Mint 1000 "USDC" tokens to user wallet ATA
         const mintAmount = convertAmountToDecimals(10);
-        const userWalletAta = await getAssociatedTokenAddress(MINT_ADDRESS, userWallet.publicKey);
+        const userWalletAta = await getAssociatedTokenAddress(
+            MINT_ADDRESS,
+            userWallet.publicKey
+        );
         await MintAmountTo(userWallet, userWalletAta, mintAmount);
 
         // Create a contribution
@@ -48,40 +52,62 @@ describe('createContribution', () => {
             new BN(0),
         );
 
-        const contributionPda = await program.account.contribution.fetch(contributionPdaKey);
-        const projectPdaUpdated = await program.account.project.fetch(projectPdaKey);
+        const contributionPda = await program.account.contribution.fetch(
+            contributionPdaKey
+        );
+        const projectPdaUpdated = await program.account.project.fetch(
+            projectPdaKey
+        );
         // get updated user wallet ata balance
-        const userWalletAtaAccount = await getAccount(PROGRAM_CONNECTION, userWalletAta);
+        const userWalletAtaAccount = await getAccount(
+            PROGRAM_CONNECTION,
+            userWalletAta
+        );
         // get update project ata balance
-        const projectAtaAddress = await getAssociatedTokenAddress(MINT_ADDRESS, projectPdaKey, true);
-        const projectAtaAccount = await getAccount(PROGRAM_CONNECTION, projectAtaAddress);
+        const projectAtaAddress = await getAssociatedTokenAddress(
+            MINT_ADDRESS,
+            projectPdaKey,
+            true
+        );
+        const projectAtaAccount = await getAccount(
+            PROGRAM_CONNECTION,
+            projectAtaAddress
+        );
 
-        expect(new BN(userWalletAtaAccount.amount).toString()).toEqual((mintAmount - contributionAmount).toString());
-        expect(new BN(projectAtaAccount.amount).toString()).toEqual(contributionAmount.toString());
+        expect(new BN(userWalletAtaAccount.amount).toString()).toEqual(
+            (mintAmount - contributionAmount).toString()
+        );
+        expect(new BN(projectAtaAccount.amount).toString()).toEqual(
+            contributionAmount.toString()
+        );
 
         expect(contributionPda.initialOwner).toEqual(userPdaKey);
         expect(contributionPda.currentOwner).toEqual(userPdaKey);
         expect(contributionPda.project).toEqual(projectPdaKey);
-        expect(contributionPda.amount.toString()).toEqual(contributionAmount.toString());
+        expect(contributionPda.amount.toString()).toEqual(
+            contributionAmount.toString()
+        );
         expect(contributionPda.rewardId.toNumber()).toEqual(0);
         expect(contributionPda.creationTimestamp.toNumber()).toBeGreaterThan(0);
         expect(contributionPda.isClaimed).toBeFalsy();
-        expect(new Enum(contributionPda.status).enum).toBe(ContributionStatus.Active.enum);
+        expect(new Enum(contributionPda.status).enum).toBe(
+            ContributionStatus.Active.enum
+        );
 
         expect(projectPdaUpdated.raisedAmount.toString()).toEqual(contributionAmount.toString());
         expect(projectPdaUpdated.contributionCounter).toEqual(projectContributionCounter + 1)
     },
         20000);
 
-    it.skip("should fail if the project is not in fundraising state", async () => {
+    it.skip('should fail if the project is not in fundraising state', async () => {
         // no project state updates instruction exist at this time
     });
 
-    it.skip("should fail if the project is not in fundraising period", async () => {
-        // unable to create a past project 
+    it.skip('should fail if the project is not in fundraising period', async () => {
+        // unable to create a past project
     });
 
-    it.skip("should fail if the signer is not the actual user PDA owner", async () => {
+    it.skip('should fail if the signer is not the actual user PDA owner', async () => {
         const creatorWallet = await createUserWalletWithSol();
         const creatorUserPdaKey = await createUser(userData1, creatorWallet);
         const { projectPdaKey, projectAtaKey } = await createProject(projectData1, 0, creatorUserPdaKey, creatorWallet);
@@ -96,7 +122,7 @@ describe('createContribution', () => {
         // Create a different wallet to simulate the wrong signer
         const wrongWallet = await createUserWalletWithSol();
 
-        const expectedErrorMessage = new RegExp("Signer must be the user.");
+        const expectedErrorMessage = new RegExp('Signer must be the user.');
 
         await expect(
             createContribution(
@@ -110,59 +136,23 @@ describe('createContribution', () => {
         ).rejects.toThrow(expectedErrorMessage);
     });
 
-    it.skip("should fail if the contribution amount is not positive and greater than 0", async () => {
+    it.skip('should fail if the contribution amount is not positive and greater than 0', async () => {
         // empty
     });
 
-    it.skip("should fail if the reward does not exist in the project rewards list", async () => {
+    it.skip('should fail if the reward does not exist in the project rewards list', async () => {
         // empty
     });
 
-    it.skip("should fail if the contribution amount is insufficient for the selected reward", async () => {
+    it.skip('should fail if the contribution amount is insufficient for the selected reward', async () => {
         // empty
     });
 
-    it.skip("should fail if the reward supply has reached its maximum limit", async () => {
+    it.skip('should fail if the reward supply has reached its maximum limit', async () => {
         // empty
     });
 
-    it.skip("should update the reward supply if a valid reward is selected", async () => {
-        // empty
-    });
-
-    it.skip("should update the project's raised amount and contribution counter", async () => {
-        // empty
-    });
-
-    it.skip("should update the ProjectContributions list", async () => {
-        // empty
-    });
-
-    it.skip("should update the UserContributions list", async () => {
-        // empty
-    });
-
-    it.skip("should transfer the contribution amount in USDC to the project", async () => {
-        // empty
-    });
-
-    it.skip("should handle errors during the contribution transfer", async () => {
-        // empty
-    });
-
-    it.skip("should fail if the reward does not exist in the project rewards list", async () => {
-        // empty
-    });
-
-    it.skip("should fail if the contribution amount is insufficient for the selected reward", async () => {
-        // empty
-    });
-
-    it.skip("should fail if the reward supply has reached its maximum limit", async () => {
-        // empty
-    });
-
-    it.skip("should update the reward supply if a valid reward is selected", async () => {
+    it.skip('should update the reward supply if a valid reward is selected', async () => {
         // empty
     });
 
@@ -170,20 +160,55 @@ describe('createContribution', () => {
         // empty
     });
 
-    it.skip("should update the ProjectContributions list", async () => {
+    it.skip('should update the ProjectContributions list', async () => {
         // empty
     });
 
-    it.skip("should update the UserContributions list", async () => {
+    it.skip('should update the UserContributions list', async () => {
         // empty
     });
 
-    it.skip("should transfer the contribution amount in USDC to the project", async () => {
+    it.skip('should transfer the contribution amount in USDC to the project', async () => {
         // empty
     });
 
-    it.skip("should handle errors during the contribution transfer", async () => {
+    it.skip('should handle errors during the contribution transfer', async () => {
         // empty
     });
 
+    it.skip('should fail if the reward does not exist in the project rewards list', async () => {
+        // empty
+    });
+
+    it.skip('should fail if the contribution amount is insufficient for the selected reward', async () => {
+        // empty
+    });
+
+    it.skip('should fail if the reward supply has reached its maximum limit', async () => {
+        // empty
+    });
+
+    it.skip('should update the reward supply if a valid reward is selected', async () => {
+        // empty
+    });
+
+    it.skip("should update the project's raised amount and contribution counter", async () => {
+        // empty
+    });
+
+    it.skip('should update the ProjectContributions list', async () => {
+        // empty
+    });
+
+    it.skip('should update the UserContributions list', async () => {
+        // empty
+    });
+
+    it.skip('should transfer the contribution amount in USDC to the project', async () => {
+        // empty
+    });
+
+    it.skip('should handle errors during the contribution transfer', async () => {
+        // empty
+    });
 });

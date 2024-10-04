@@ -50,7 +50,7 @@ pub enum RewardError {
     CurrentSupplyInvalid,
     #[msg("Max supply must be greater than or equal to current supply.")]
     MaxSupplyInvalid,
-    #[msg("Reward maximum supply reached.")]
+    #[msg("Reward supply has reached its maximum limit.")]
     RewardSupplyReached,
     #[msg("Supply is empty.")]
     RewardSupplyEmpty,
