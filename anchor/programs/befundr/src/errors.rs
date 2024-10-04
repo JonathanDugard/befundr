@@ -123,9 +123,3 @@ pub enum AtaError {
     #[msg("Wrong owner for the given ATA")]
     WrongAtaOwner,
 }
-
-#[error_code]
-pub enum AtaError {
-    #[msg("Wrong owner for the given ATA")]
-    WrongAtaOwner,
-}
