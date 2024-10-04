@@ -14,8 +14,7 @@ import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 //* function to get existing ATA
 export const getATA = async (
   walletPublicKey: PublicKey,
-  connection: Connection,
-  sendTransaction: any
+  connection: Connection
 ): Promise<{ account: Account | null; associatedToken: PublicKey }> => {
   // checks
   if (!process.env.NEXT_PUBLIC_MINT_ACCOUNT) {

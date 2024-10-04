@@ -214,8 +214,7 @@ const Launchproject = () => {
       // get userWallet and project ATA pubkey
       const { associatedToken: userWalletAtaPubkey } = await getATA(
         publicKey,
-        connection,
-        sendTransaction
+        connection
       );
 
       // creation transaction

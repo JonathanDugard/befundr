@@ -1,20 +1,34 @@
 'use client';
-import React, { useState } from 'react';
-import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
-import MainButtonLabel from '../button/MainButtonLabel';
+import React, { useEffect, useState } from 'react';
+import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
+import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Link from 'next/link';
-import MakeContributionPopup from '../popup/MakeContributionPopup';
-import ImageWithFallback from '../display elements/ImageWithFallback';
+import MakeContributionPopup from './MakeContributionPopup';
+import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 
 type Props = {
   reward: Reward;
-  projectStatus: string;
+  project: Project;
   projectId: string;
+  rewardId: number;
+  refetchProject: () => void;
 };
 
 const RewardCardDetailled = (props: Props) => {
+  //* GLOBAL STATE
+  const { getUserEntryAddress } = useBefundrProgramUser();
+  const { publicKey } = useWallet();
+
+  //* LOCAL STATE
   const [isShowPopup, setIsShowPopup] = useState(false);
+
+  // Use React Query to fetch userPDA address based on public key
+  const { data: userEntryAddress, isLoading: isFetchingUserEntryAddress } =
+    getUserEntryAddress(publicKey);
 
   return (
     <div className="flex justify-start items-start gap-6 w-full h-full ">
@@ -35,7 +49,8 @@ const RewardCardDetailled = (props: Props) => {
         <p className="textStyle-subheadline">{props.reward.price}$</p>
         {props.reward.maxSupply ? (
           <p className="textStyle-body">
-            Limited supply : {props.reward.maxSupply}
+            Limited supply :{' '}
+            {props.reward.maxSupply - props.reward.currentSupply} availables
             {props.reward.currentSupply >= props.reward.maxSupply && (
               <strong className="ml-4 !text-custom-red">Supply reached</strong>
             )}
@@ -50,7 +65,7 @@ const RewardCardDetailled = (props: Props) => {
             {props.reward.currentSupply} contributors
           </p>
           {/* button if status fundraising */}
-          {props.projectStatus === ProjectStatus.Fundraising.enum && (
+          {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex justify-end gap-4">
               <Link href={`/marketplace/${props.projectId}`}>
                 <SecondaryButtonLabel label="Go to marketplace" />
@@ -61,17 +76,23 @@ const RewardCardDetailled = (props: Props) => {
             </div>
           )}
           {/* button if status realizing */}
-          {props.projectStatus === ProjectStatus.Realising.enum && (
+          {props.project.status === ProjectStatus.Realising.enum && (
             <Link href={`/marketplace/${props.projectId}`}>
               <MainButtonLabel label="Go to marketplace" />
             </Link>
           )}
         </div>
       </div>
-      {isShowPopup && (
+      {isShowPopup && userEntryAddress && (
         <MakeContributionPopup
           reward={props.reward}
           handleClose={() => setIsShowPopup(false)}
+          projectId={props.projectId}
+          rewardId={props.rewardId}
+          amount={props.reward.price}
+          userEntryAddress={userEntryAddress}
+          refetchProject={props.refetchProject}
+          project={props.project}
         />
       )}
     </div>

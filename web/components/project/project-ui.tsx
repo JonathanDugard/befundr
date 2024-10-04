@@ -1,5 +1,5 @@
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import RewardCardDetailled from '../z-library/card/RewardCardDetailled';
+import RewardCardDetailled from './RewardCardDetailled';
 import FeedCard from '../z-library/card/FeedCard';
 import Divider from '../z-library/display elements/Divider';
 import FundsRequestCard from '../z-library/card/VoteCard';
@@ -11,18 +11,18 @@ export const AboutBlock = ({ description }: { description: string }) => {
 };
 
 export const RewardBlock = ({
-  rewards,
-  projectStatus,
+  project,
   projectId,
+  refetchProject,
 }: {
-  rewards: Reward[];
-  projectStatus: string;
+  project: Project;
   projectId: string;
+  refetchProject: () => void;
 }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
-      {projectStatus === ProjectStatus.Fundraising.enum && (
+      {project.status === ProjectStatus.Fundraising.enum && (
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col items-start justify-between gap-2 w-full ">
             <p className="textStyle-subheadline">Donation</p>
@@ -36,12 +36,14 @@ export const RewardBlock = ({
       )}
       <Divider />
       {/* rewars level */}
-      {rewards.map((reward: Reward, index) => (
+      {project.rewards.map((reward: Reward, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
           <RewardCardDetailled
+            project={project}
             reward={reward}
-            projectStatus={projectStatus}
             projectId={projectId}
+            rewardId={index}
+            refetchProject={refetchProject}
           />
           <Divider />
         </div>
