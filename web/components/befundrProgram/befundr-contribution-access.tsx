@@ -42,6 +42,62 @@ export function useBefundrProgramContribution() {
         );
         return program.account.userContributions.fetch(contributionsPdaKey);
       },
+      staleTime: 6000,
+    });
+  };
+
+  //* Fetch all user contributions --------------
+  const getAllUserContributions = (
+    userPdaPublicKey: PublicKey | null | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['allUserContributions', userPdaPublicKey?.toString()],
+      queryFn: async () => {
+        if (!userPdaPublicKey) throw new Error('PublicKey is required');
+        // get the userContributions Pda
+        const [contributionsPdaKey] = await PublicKey.findProgramAddress(
+          [Buffer.from('user_contributions'), userPdaPublicKey.toBuffer()],
+          programId
+        );
+        const userContributionsPda =
+          await program.account.userContributions.fetch(contributionsPdaKey);
+
+        // return [] if no contribution
+        if (
+          !userContributionsPda ||
+          userContributionsPda.contributions.length === 0
+        ) {
+          return [];
+        }
+        const contributions: AccountWrapper<Contribution>[] = [];
+        for (let i = 0; i < userContributionsPda.contributions.length; i++) {
+          try {
+            const contributionPdaPublicKey =
+              userContributionsPda.contributions[i];
+            const contributionData = await program.account.contribution.fetch(
+              contributionPdaPublicKey
+            );
+
+            if (contributionData) {
+              contributions.push({
+                publicKey: contributionPdaPublicKey,
+                account: contributionData,
+              });
+            }
+          } catch (error) {
+            console.error(`Error fetching contribution ${i}:`, error);
+          }
+        }
+        // Fetch each individual contribution
+        // const contributions: Contribution[] = await Promise.all(
+        //   userContributionsPda.contributions.map(async (contribution) => {
+        //     return await program.account.contribution.fetch(contribution);
+        //   })
+        // );
+        // return the array of contributions
+        return contributions;
+      },
+      staleTime: 6000,
     });
   };
 
@@ -135,6 +191,7 @@ export function useBefundrProgramContribution() {
   return {
     allContributionsAccounts,
     getUserContributionsPda,
+    getAllUserContributions,
     getContributionPda,
     addContribution,
   };

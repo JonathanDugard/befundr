@@ -162,7 +162,7 @@ export function useBefundrProgramProject() {
   });
 
   return {
-    projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
+    projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
     getProjectsByCreator,

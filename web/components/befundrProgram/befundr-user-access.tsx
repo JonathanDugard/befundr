@@ -30,7 +30,7 @@ export function useBefundrProgramUser() {
   });
 
   //* get user entry address
-  const getUserEntryAddress = (publicKey: PublicKey | null) => {
+  const getUserPdaPublicKey = (publicKey: PublicKey | null) => {
     return useQuery({
       queryKey: ['userEntryAddress', publicKey?.toString()],
       queryFn: async () => {
@@ -133,7 +133,7 @@ export function useBefundrProgramUser() {
 
   return {
     allUsersAccounts,
-    getUserEntryAddress,
+    getUserPdaPublicKey,
     getUserWalletATABalance,
     userAccountFromWalletPublicKey,
     userAccountFromAccountPublicKey,

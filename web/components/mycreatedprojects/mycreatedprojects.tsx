@@ -14,8 +14,10 @@ const MyCreatedProjects = (props: Props) => {
   //* GLOBAL STATE
   const { getProjectsByCreator: getAllCreatedProjectsByAUser } =
     useBefundrProgramProject();
-  const { getUserEntryAddress, userAccountFromWalletPublicKey } =
-    useBefundrProgramUser();
+  const {
+    getUserPdaPublicKey: getUserEntryAddress,
+    userAccountFromWalletPublicKey,
+  } = useBefundrProgramUser();
   const { publicKey } = useWallet();
   const router = useRouter();
 

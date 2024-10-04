@@ -52,14 +52,14 @@ type Feed = {
 };
 
 type Contribution = {
-  id: string;
-  initialOwner: string;
-  currentOwner: string;
+  initialOwner: PublicKey;
+  currentOwner: PublicKey;
   amount: number;
-  rewardId: string;
-  timestamp: number;
-  isForSale: boolean;
-  sellingPrice?: number;
+  rewardId: number;
+  creationTimestamp: number;
+  status: ContributionStatus;
+  project: PublicKey;
+  isClaimed: boolean | null;
 };
 
 type SaleTransaction = {
