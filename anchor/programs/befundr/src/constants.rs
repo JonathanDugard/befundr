@@ -45,7 +45,7 @@ pub mod unlock_request {
 }
 
 pub mod marketplace {
-    pub const MAX_HISTORY_TRANSACTIONS_NUMBER: u32 = 10000;
+    pub const MAX_HISTORY_TRANSACTIONS_NUMBER: u32 = 85;
 }
 
 // Temporary admins keys const
