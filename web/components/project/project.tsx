@@ -37,7 +37,9 @@ type Props = {
 const Project = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
-  const { userAccountFromAccountPublicKey } = useBefundrProgramUser();
+  const {
+    getUserAccountFromAccountPublicKey: userAccountFromAccountPublicKey,
+  } = useBefundrProgramUser();
 
   //* LOCAL STATE
   const [selectedMenu, setSelectedMenu] = useState<

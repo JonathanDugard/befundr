@@ -14,8 +14,10 @@ const MyCreatedProjects = (props: Props) => {
   //* GLOBAL STATE
   const { getProjectsByCreator: getAllCreatedProjectsByAUser } =
     useBefundrProgramProject();
-  const { getUserEntryAddress, userAccountFromWalletPublicKey } =
-    useBefundrProgramUser();
+  const {
+    getUserPdaKey: getUserEntryAddress,
+    getUserAccountFromWalletPublicKey,
+  } = useBefundrProgramUser();
   const { publicKey } = useWallet();
   const router = useRouter();
 
@@ -26,7 +28,7 @@ const MyCreatedProjects = (props: Props) => {
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
-    userAccountFromWalletPublicKey(publicKey);
+    getUserAccountFromWalletPublicKey(publicKey);
 
   // Use React Query to fetch userPDA address based on public key
   const { data: userEntryAddress, isLoading: isFetchingUserEntryAddress } =

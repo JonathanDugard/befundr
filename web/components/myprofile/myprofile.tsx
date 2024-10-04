@@ -19,7 +19,7 @@ const MyProfile = () => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
   const router = useRouter();
-  const { userAccountFromWalletPublicKey, createUser, updateUser } =
+  const { getUserAccountFromWalletPublicKey, createUser, updateUser } =
     useBefundrProgramUser();
 
   //* LOCAL STATE
@@ -37,7 +37,7 @@ const MyProfile = () => {
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
-    userAccountFromWalletPublicKey(publicKey);
+    getUserAccountFromWalletPublicKey(publicKey);
 
   // Handle profile data after fetching
   useEffect(() => {

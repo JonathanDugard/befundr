@@ -19,7 +19,9 @@ type Props = {
 
 const ProjectCard = (props: Props) => {
   //* GLOBAL STATE
-  const { userAccountFromAccountPublicKey } = useBefundrProgramUser();
+  const {
+    getUserAccountFromAccountPublicKey: userAccountFromAccountPublicKey,
+  } = useBefundrProgramUser();
 
   //* LOCAL STATE
   // Use React Query to fetch user profile based on public key

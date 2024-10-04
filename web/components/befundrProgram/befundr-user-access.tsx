@@ -28,7 +28,7 @@ export function useBefundrProgramUser() {
   });
 
   //* get user entry address
-  const getUserEntryAddress = (publicKey: PublicKey | null) => {
+  const getUserPdaKey = (publicKey: PublicKey | null) => {
     return useQuery({
       queryKey: ['userEntryAddress', publicKey?.toString()],
       queryFn: async () => {
@@ -44,7 +44,7 @@ export function useBefundrProgramUser() {
   };
 
   //* Fetch single user by user wallet public key --------------------
-  const userAccountFromWalletPublicKey = (publicKey: PublicKey | null) => {
+  const getUserAccountFromWalletPublicKey = (publicKey: PublicKey | null) => {
     return useQuery({
       queryKey: ['user', publicKey?.toString()],
       queryFn: async () => {
@@ -61,7 +61,7 @@ export function useBefundrProgramUser() {
   };
 
   //* Fetch single user by its PDA public key --------------------
-  const userAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+  const getUserAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
     return useQuery({
       queryKey: ['user', publicKey?.toString()],
       queryFn: async () => {
@@ -118,9 +118,9 @@ export function useBefundrProgramUser() {
 
   return {
     allUsersAccounts,
-    getUserEntryAddress,
-    userAccountFromWalletPublicKey,
-    userAccountFromAccountPublicKey,
+    getUserPdaKey,
+    getUserAccountFromWalletPublicKey,
+    getUserAccountFromAccountPublicKey,
     createUser,
     updateUser,
   };

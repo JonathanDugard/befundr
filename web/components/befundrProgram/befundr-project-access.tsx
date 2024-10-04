@@ -28,7 +28,9 @@ export function useBefundrProgramProject() {
   });
 
   //* Fetch single project by public key --------------------
-  const projectAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+  const getProjectAccountFromAccountPublicKey = (
+    publicKey: PublicKey | null
+  ) => {
     return useQuery({
       queryKey: ['project', publicKey?.toString()],
       queryFn: async () => {
@@ -139,7 +141,7 @@ export function useBefundrProgramProject() {
   });
 
   return {
-    projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
+    projectAccountFromPublicKey: getProjectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
     getProjectsByCreator,
