@@ -11,6 +11,7 @@ pub mod project {
     pub const MIN_DESCRIPTION_LENGTH: u64 = 10;
     pub const MAX_DESCRIPTION_LENGTH: u64 = 500;
     pub const MAX_URL_LENGTH: u64 = 256;
+    pub const MIN_SAFETY_DEPOSIT: u64 = 50_000_000;
     pub const MIN_PROJECT_GOAL_AMOUNT: u64 = 0; //USD
     pub const MIN_PROJECT_CAMPAIGN_DURATION: i64 = 86400; // 1 day
     pub const MAX_PROJECT_CAMPAIGN_DURATION: i64 = 86400 * 90; //90 days

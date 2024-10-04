@@ -1,15 +1,17 @@
 use anchor_lang::prelude::*;
+use anchor_spl::token::{Token, TokenAccount};
 
 use crate::{
     constants::project::{
         MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_REWARDS_NUMBER,
         MAX_URL_LENGTH, MIN_DESCRIPTION_LENGTH, MIN_NAME_LENGTH, MIN_PROJECT_GOAL_AMOUNT,
-        MIN_REWARDS_NUMBER,
+        MIN_REWARDS_NUMBER, MIN_SAFETY_DEPOSIT,
     },
-    errors::CreateProjectError,
+    errors::{AtaError, CreateProjectError},
     state::{
         Project, ProjectCategory, ProjectContributions, ProjectStatus, Reward, UnlockRequests, User,
     },
+    utils::transfer_spl_token,
 };
 
 pub fn create_project(
@@ -41,11 +43,8 @@ pub fn create_project(
         description_length <= MAX_DESCRIPTION_LENGTH,
         CreateProjectError::DescriptionTooLong
     );
-
     require!(x_account_url.len() as u64 <= MAX_URL_LENGTH, CreateProjectError::UrlTooLong);
-
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
-
     require!(end_time > now, CreateProjectError::EndTimeInPast);
     require!(
         end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
@@ -53,35 +52,44 @@ pub fn create_project(
     );
     require!(rewards.len() as u16 >= MIN_REWARDS_NUMBER, CreateProjectError::NotEnoughRewards);
     require!(rewards.len() as u16 <= MAX_REWARDS_NUMBER, CreateProjectError::TooManyRewards);
+    require!(
+        safety_deposit >= MIN_SAFETY_DEPOSIT,
+        CreateProjectError::InsufficientSafetyDeposit
+    );
 
     for reward in rewards.iter() {
         reward.validate()?;
     }
 
-    ctx.accounts.project.owner = ctx.accounts.signer.key();
-    ctx.accounts.project.user = ctx.accounts.user.key();
-    ctx.accounts.project.name = name;
-    ctx.accounts.project.image_url = image_url;
-    ctx.accounts.project.description = description;
-    ctx.accounts.project.x_account_url = x_account_url;
-    ctx.accounts.project.goal_amount = goal_amount;
-    ctx.accounts.project.raised_amount = 0;
-    ctx.accounts.project.created_time = now;
+    let signer = &ctx.accounts.signer;
+    let project = &mut ctx.accounts.project;
 
-    ctx.accounts.project.end_time = end_time;
-    ctx.accounts.project.status = ProjectStatus::Fundraising;
-    ctx.accounts.project.rewards = rewards;
-    ctx.accounts.project.category = category;
+    project.owner = ctx.accounts.signer.key();
+    project.user = ctx.accounts.user.key();
+    project.name = name;
+    project.image_url = image_url;
+    project.description = description;
+    project.x_account_url = x_account_url;
+    project.goal_amount = goal_amount;
+    project.raised_amount = 0;
+    project.created_time = now;
+    project.end_time = end_time;
+    project.status = ProjectStatus::Fundraising;
+    project.rewards = rewards;
+    project.category = category;
 
-    if safety_deposit > 0 {
-        //TODO Handle deposit in USDC
-    }
-    ctx.accounts.project.safety_deposit = safety_deposit;
+    let to_ata = &ctx.accounts.to_ata;
+    let from_ata = &ctx.accounts.from_ata;
+    let token_program = &ctx.accounts.token_program;
 
-    // Increment project user counter
+    require!(from_ata.owner == signer.key(), AtaError::WrongAtaOwner);
+    require!(to_ata.owner == project.key(), AtaError::WrongAtaOwner);
+
+    transfer_spl_token(token_program, from_ata, to_ata, signer, safety_deposit)?;
+    project.safety_deposit = safety_deposit;
+
     ctx.accounts.user.created_project_counter += 1;
-
-    ctx.accounts.unlock_requests.project = ctx.accounts.project.key();
+    ctx.accounts.unlock_requests.project = project.key();
 
     Ok(())
 }
@@ -120,6 +128,14 @@ pub struct CreateProject<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
+
+    #[account(mut)]
+    pub from_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
+    pub to_ata: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
 
     pub system_program: Program<'info, System>,
 }

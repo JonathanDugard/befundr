@@ -15,20 +15,20 @@
  */
 
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { 
-    createMint, 
-    Account, 
-    mintTo, 
+import {
+    createMint,
+    Account,
+    mintTo,
     getAssociatedTokenAddress,
     getAccount,
-    getOrCreateAssociatedTokenAccount, 
+    getOrCreateAssociatedTokenAccount,
+    getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
 import { PROGRAM_CONNECTION } from "../config";
 import { createUserWalletWithSol } from "../utils"
 import { BN } from "@coral-xyz/anchor";
 
 const MINT_DECIMALS = 6;
-
 var MINT_ADDRESS: PublicKey;
 var MINT_AUTHORITY: Keypair;
 
@@ -49,10 +49,10 @@ var MINT_AUTHORITY: Keypair;
  * @function InitMint
  * @returns {Promise<void>} A promise that resolves when the mint token account has been successfully created.
  */
-const InitMint = async() => {
+const InitMint = async () => {
     // Create a new user wallet and fund it with SOL
     const payer = await createUserWalletWithSol();
-    
+
     // Generate a new keypair to act as the mint authority
     const mintAuthority = Keypair.generate();
 
@@ -64,20 +64,12 @@ const InitMint = async() => {
         null,               // Freeze authority (null means no freeze authority)
         MINT_DECIMALS,      // Number of decimal places for the token (6 to match USDC)
     );
-      
+
     // Store the mint address and authority in global variables
     MINT_ADDRESS = mintAddress;
     MINT_AUTHORITY = mintAuthority;
 
-    // Log the new mint token account details
-    console.info(
-        "New Mint Token Account created",
-        "\n-------------------------------",
-        "\nMint Address =>", 
-        MINT_ADDRESS.toBase58(),
-        "\nMint Authority =>",
-        MINT_AUTHORITY.publicKey.toBase58()
-    );    
+    return { MINT_ADDRESS, MINT_AUTHORITY };
 }
 
 /**
@@ -87,7 +79,7 @@ const InitMint = async() => {
  * @returns {number} The amount in the token's decimal format.
  */
 const convertAmountToDecimals = (amount: number): BN => {
-    return new BN(amount * 10**MINT_DECIMALS);
+    return new BN(amount * 10 ** MINT_DECIMALS);
 }
 
 /**
@@ -97,8 +89,10 @@ const convertAmountToDecimals = (amount: number): BN => {
  * @returns {number} The original amount.
  */
 const convertFromDecimalsToAmount = (amount: number): BN => {
-    return new BN(amount / 10**MINT_DECIMALS);
+    return new BN(amount / 10 ** MINT_DECIMALS);
 }
+
+export const INITIAL_USER_ATA_BALANCE = convertAmountToDecimals(10000);
 
 /**
  * Creates a new associated token account for the given payer.
@@ -106,21 +100,21 @@ const convertFromDecimalsToAmount = (amount: number): BN => {
  * @param {Keypair} payer - The payer of the transaction fees.
  * @returns {Promise<Account>} The created associated token account.
  */
-const newAssociatedTokenAccount = async(payer: Keypair): Promise<Account> => {
+const newAssociatedTokenAccount = async (payer: Keypair): Promise<Account> => {
 
     // Create new mint account
     if (typeof MINT_ADDRESS === 'undefined') {
         await InitMint();
     }
-    
+
     const tokenAccount = await getOrCreateAssociatedTokenAccount(
         PROGRAM_CONNECTION,
         payer,
         MINT_ADDRESS,
         payer.publicKey
-      )
+    )
 
-      return tokenAccount;
+    return tokenAccount;
 }
 
 /**
@@ -130,7 +124,7 @@ const newAssociatedTokenAccount = async(payer: Keypair): Promise<Account> => {
  * @param {PublicKey} projectPubkey - The project public key.
  * @returns {Promise<PublicKey>} The created PDA associated token account public key.
  */
-const newPdaAssociatedTokenAccount = async(payer: Keypair, projectPubkey: PublicKey): Promise<PublicKey> => {
+const newPdaAssociatedTokenAccount = async (payer: Keypair, projectPubkey: PublicKey): Promise<PublicKey> => {
 
     // Create new mint account
     if (typeof MINT_ADDRESS === 'undefined') {
@@ -143,9 +137,9 @@ const newPdaAssociatedTokenAccount = async(payer: Keypair, projectPubkey: Public
         MINT_ADDRESS,
         projectPubkey,
         true,
-      )
+    )
 
-      return pdaAta.address;
+    return pdaAta.address;
 }
 
 /**
@@ -155,7 +149,7 @@ const newPdaAssociatedTokenAccount = async(payer: Keypair, projectPubkey: Public
  * @param {PublicKey} toAccount - The account to mint tokens to.
  * @param {BN} amount - The amount of tokens to mint.
  */
-const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: BN) => {
+const MintAmountTo = async (payer: Keypair, toAccount: PublicKey, amount: BN) => {
     // Mint supply
     await mintTo(
         PROGRAM_CONNECTION,
@@ -164,10 +158,10 @@ const MintAmountTo = async(payer: Keypair, toAccount: PublicKey, amount: BN) => 
         toAccount,
         MINT_AUTHORITY,
         BigInt(amount.toString()),
-      );
+    );
 }
 
-const getSplTransferAccounts = async(fromWallet: Keypair, toProject: PublicKey): Promise<{fromAta: PublicKey, toAta: PublicKey}> => {
+const getSplTransferAccounts = async (fromWallet: Keypair, toProject: PublicKey): Promise<{ fromAta: PublicKey, toAta: PublicKey }> => {
 
     // Create new mint account
     if (typeof MINT_ADDRESS === 'undefined') {
@@ -176,22 +170,27 @@ const getSplTransferAccounts = async(fromWallet: Keypair, toProject: PublicKey):
     // get or Create user Associated Token Account
     const fromAtaAccount: Account = await newAssociatedTokenAccount(fromWallet);
     const fromAta: PublicKey = fromAtaAccount.address;
-  
+
     // Get existing project ATA
     const toAta: PublicKey = await getAssociatedTokenAddress(MINT_ADDRESS, toProject, true);
 
-    return {fromAta, toAta};
+    return { fromAta, toAta };
 }
 
-const getTokenAccountBalance = async(address: PublicKey, isPda?: boolean): Promise<BN> => {
-    const tokenAccount: PublicKey = await getAssociatedTokenAddress(MINT_ADDRESS, address, isPda ?? false);
+const getTokenAccountBalance = async (address: PublicKey, isPda?: boolean): Promise<BN> => {
+    const tokenAccount: PublicKey = getAssociatedTokenAddressSync(MINT_ADDRESS, address, isPda ?? false);
     const account = await getAccount(PROGRAM_CONNECTION, tokenAccount);
 
     return new BN(account.amount);
 }
 
+export const getAtaBalance = async (ataAddress: PublicKey): Promise<BN> => {
+    const account = await getAccount(PROGRAM_CONNECTION, ataAddress);
+    return new BN(account.amount);
+}
+
 export {
-    MINT_ADDRESS, 
+    MINT_ADDRESS,
     InitMint,
     newAssociatedTokenAccount,
     newPdaAssociatedTokenAccount,
