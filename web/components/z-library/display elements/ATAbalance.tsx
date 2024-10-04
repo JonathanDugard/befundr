@@ -9,7 +9,7 @@ type Props = {
   /*empty*/
 };
 
-const ATAbalance = (props: Props) => {
+const AtaBalance = (props: Props) => {
   const { getUserWalletATABalance } = useBefundrProgramUser();
   const { publicKey } = useWallet();
 
@@ -26,4 +26,4 @@ const ATAbalance = (props: Props) => {
   return <InfoLabel label={`Your balance : ${ATABalance} $`} />;
 };
 
-export default ATAbalance;
+export default AtaBalance;

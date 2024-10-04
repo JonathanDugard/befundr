@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -6,7 +5,7 @@ import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { getATA } from '@/utils/functions/ATAAndFaucet';
+import { getATA } from '@/utils/functions/AtaFunctions';
 
 //* TYPE
 interface CreateUserArgs {

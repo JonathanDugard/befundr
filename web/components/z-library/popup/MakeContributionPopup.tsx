@@ -6,7 +6,7 @@ import MainButtonLabel from '../button/MainButtonLabel';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { convertAtaAmount } from '@/utils/functions/utilFunctions';
-import ATAbalance from '../display elements/ATAbalance';
+import AtaBalance from '../display elements/AtaBalance';
 import ClaimUSDCButton from '../button/ClaimUSDCButton';
 
 type Props = {
@@ -38,7 +38,7 @@ const MakeContributionPopup = (props: Props) => {
           Contribute for {props.reward.name}
         </p>
         <div className="w-full flex justify-start -mt-10">
-          <ATAbalance />
+          <AtaBalance />
         </div>
         {/* description */}
         <div className="flex justify-start items-center gap-4 w-full">

@@ -6,9 +6,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
 import MainButtonLabelAsync from '../button/MainButtonLabelAsync';
 import toast from 'react-hot-toast';
-import ATAbalance from '../display elements/ATAbalance';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
-import { getATAAndMint } from '@/utils/functions/ATAAndFaucet';
+import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
+import AtaBalance from '../display elements/AtaBalance';
 
 type Props = {
   handleClose: () => void;
@@ -35,7 +35,7 @@ const ClaimFaucetPopup = (props: Props) => {
 
   const amountChoices = [50, 100, 500];
 
-  const { refetch } = getUserWalletATABalance(publicKey);
+  const { data: userAta, refetch } = getUserWalletATABalance(publicKey);
 
   const handleClaim = async () => {
     if (!publicKey || !selectedAmount) {
@@ -45,16 +45,48 @@ const ClaimFaucetPopup = (props: Props) => {
 
     try {
       setIsLoading(true);
-      await getATAAndMint(
-        publicKey,
-        connection,
-        sendTransaction,
-        selectedAmount
-      );
+
+      // Envoyer une requête POST vers l'API /api/mintFaucet
+      const response = await fetch('/api/claim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletPublicKey: publicKey.toString(),
+          amount: selectedAmount,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error claiming faucet');
+      }
+
+      const mintSignature = await response.json();
       toast.success(`Successfully claimed ${selectedAmount}$`);
       refetch();
     } catch (e) {
       toast.error('Error claiming faucet...');
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCreateATA = async () => {
+    if (!publicKey) {
+      toast.error('Public key or amount missing');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await getOrCreateATA(publicKey, connection, sendTransaction);
+      toast.success(`account successfully created`);
+      refetch();
+    } catch (e) {
+      toast.error('Error creating account...');
       console.error(e);
     } finally {
       setIsLoading(false);
@@ -68,7 +100,7 @@ const ClaimFaucetPopup = (props: Props) => {
         <p className="textStyle-title w-full text-center -mb-10">
           Claim $ faucet
         </p>
-        <ATAbalance />
+        <AtaBalance />
         {/* description */}
         <p className="textStyle-body">
           Select the amount to claim or enter a custom one
@@ -101,13 +133,23 @@ const ClaimFaucetPopup = (props: Props) => {
           <button onClick={props.handleClose}>
             <SecondaryButtonLabel label="Close" />
           </button>
-          <button onClick={handleClaim} disabled={isLoading}>
-            <MainButtonLabelAsync
-              label={`Claim`}
-              isLoading={isLoading}
-              loadingLabel="Claiming..."
-            />
-          </button>
+          {!userAta ? (
+            <button onClick={handleCreateATA} disabled={isLoading}>
+              <MainButtonLabelAsync
+                label={`Create your account`}
+                isLoading={isLoading}
+                loadingLabel="Creating..."
+              />
+            </button>
+          ) : (
+            <button onClick={handleClaim} disabled={isLoading}>
+              <MainButtonLabelAsync
+                label={`Claim`}
+                isLoading={isLoading}
+                loadingLabel="Claiming..."
+              />
+            </button>
+          )}
         </div>
       </div>
     </PopupLayout>

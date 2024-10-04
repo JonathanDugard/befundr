@@ -21,7 +21,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
 import ClaimFaucetPopup from '../z-library/popup/ClaimFaucetPopup';
-import ATAbalance from '../z-library/display elements/ATAbalance';
+import AtaBalance from '../z-library/display elements/AtaBalance';
 
 export function UiLayout({
   children,
