@@ -1,19 +1,3 @@
-/**
- * How to use:
- *
- * import { getSplTransferAccounts, MintAmountTo } from "./token/token_config";
- * 
- * // Get SPL Token transfer accounts in order: first is an Account, second id a PdaAccount
- * const { fromAta, toAta } = await getSplTransferAccounts(wallet, pdaPubkey);
- * 
- * // Add mocked up USDC to the wallet before sending transfers calls if needed
- * await MintAmountTo(wallet, fromAta, 500);
- * 
- * // Create an ATA from a PDA, ex. project
- * await newPdaAssociatedTokenAccount(wallet, PdaPublicKey);
- *
- */
-
 import { Keypair, PublicKey } from "@solana/web3.js";
 import {
     createMint,
@@ -161,22 +145,6 @@ const MintAmountTo = async (payer: Keypair, toAccount: PublicKey, amount: BN) =>
     );
 }
 
-const getSplTransferAccounts = async (fromWallet: Keypair, toProject: PublicKey): Promise<{ fromAta: PublicKey, toAta: PublicKey }> => {
-
-    // Create new mint account
-    if (typeof MINT_ADDRESS === 'undefined') {
-        await InitMint();
-    }
-    // get or Create user Associated Token Account
-    const fromAtaAccount: Account = await newAssociatedTokenAccount(fromWallet);
-    const fromAta: PublicKey = fromAtaAccount.address;
-
-    // Get existing project ATA
-    const toAta: PublicKey = await getAssociatedTokenAddress(MINT_ADDRESS, toProject, true);
-
-    return { fromAta, toAta };
-}
-
 const getTokenAccountBalance = async (address: PublicKey, isPda?: boolean): Promise<BN> => {
     const tokenAccount: PublicKey = getAssociatedTokenAddressSync(MINT_ADDRESS, address, isPda ?? false);
     const account = await getAccount(PROGRAM_CONNECTION, tokenAccount);
@@ -191,12 +159,12 @@ export const getAtaBalance = async (ataAddress: PublicKey): Promise<BN> => {
 
 export {
     MINT_ADDRESS,
+    MINT_DECIMALS,
     InitMint,
     newAssociatedTokenAccount,
     newPdaAssociatedTokenAccount,
     MintAmountTo,
     convertAmountToDecimals,
     convertFromDecimalsToAmount,
-    getSplTransferAccounts,
     getTokenAccountBalance,
 }

@@ -32,7 +32,7 @@ pub fn add_contribution(
     require!(user.owner == ctx.accounts.signer.key(), ContributionError::SignerNotUser);
 
     // Amount must be positive and greater than 0
-    require!(amount > 0, ContributionError::RewardAlreadyReserved);
+    require!(amount > 0, ContributionError::RewardPriceError);
 
     let mut reward: Option<&mut Reward> = None;
     if reward_id.is_some() {
@@ -89,6 +89,8 @@ pub fn reward_validation(project: &Project, amount: u64, reward_id: u64) -> Resu
         if let Some(max_supply) = reward.max_supply {
             require!(reward.current_supply < max_supply as u32, RewardError::RewardSupplyReached);
         }
+    } else {
+        return Err(ContributionError::RewardError.into());
     }
 
     Ok(())
