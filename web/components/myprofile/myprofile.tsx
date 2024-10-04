@@ -14,6 +14,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { concatFileName } from '@/utils/functions/utilFunctions';
+import { WalletButton } from '../solana/solana-provider';
 
 const MyProfile = () => {
   //* GLOBAL STATE
@@ -146,8 +147,13 @@ const MyProfile = () => {
     setIsLoading(false);
   };
 
-  // nagiguate to homepage is user disconnected
-  if (!publicKey) router.push('/');
+  // display connection button if user not connected
+  if (!publicKey)
+    return (
+      <div className="w-full text-center">
+        <WalletButton />
+      </div>
+    );
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">

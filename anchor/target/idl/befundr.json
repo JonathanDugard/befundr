@@ -71,9 +71,21 @@
           "writable": true
         },
         {
+          "name": "from_ata",
+          "writable": true
+        },
+        {
+          "name": "to_ata",
+          "writable": true
+        },
+        {
           "name": "signer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "system_program",
@@ -234,6 +246,18 @@
           "signer": true
         },
         {
+          "name": "from_ata",
+          "writable": true
+        },
+        {
+          "name": "to_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
@@ -284,6 +308,79 @@
               "name": "ProjectCategory"
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "create_transaction",
+      "discriminator": [
+        227,
+        193,
+        53,
+        239,
+        55,
+        126,
+        112,
+        105
+      ],
+      "accounts": [
+        {
+          "name": "sale_transaction",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "contribution"
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "selling_price",
+          "type": "u64"
         }
       ]
     },
@@ -601,6 +698,19 @@
       ]
     },
     {
+      "name": "SaleTransaction",
+      "discriminator": [
+        104,
+        200,
+        226,
+        139,
+        191,
+        134,
+        207,
+        37
+      ]
+    },
+    {
       "name": "UnlockRequest",
       "discriminator": [
         35,
@@ -656,58 +766,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooShort",
-      "msg": "Project name is too short (min 5 characters)."
-    },
-    {
-      "code": 6001,
-      "name": "NameTooLong",
-      "msg": "Project name is too long (max 64 characters)."
-    },
-    {
-      "code": 6002,
-      "name": "ImageUrlTooLong",
-      "msg": "Image URL is too long (max 256 characters)."
-    },
-    {
-      "code": 6003,
-      "name": "UrlTooLong",
-      "msg": "URL is too long (max 128 characters)."
-    },
-    {
-      "code": 6004,
-      "name": "DescriptionTooShort",
-      "msg": "Description is too short (min 10 characters)."
-    },
-    {
-      "code": 6005,
-      "name": "DescriptionTooLong",
-      "msg": "Description is too long (max 500 characters)."
-    },
-    {
-      "code": 6006,
-      "name": "GoalAmountBelowLimit",
-      "msg": "Goal amount is too low (min $1)."
-    },
-    {
-      "code": 6007,
-      "name": "EndTimeInPast",
-      "msg": "End time is in the past."
-    },
-    {
-      "code": 6008,
-      "name": "ExceedingEndTime",
-      "msg": "End time beyond the limit."
-    },
-    {
-      "code": 6009,
-      "name": "NotEnoughRewards",
-      "msg": "Not enough rewards (min 1)."
-    },
-    {
-      "code": 6010,
-      "name": "TooManyRewards",
-      "msg": "Too many rewards (max 10)."
+      "name": "TransferFailed",
+      "msg": "Funds transfer failed."
     }
   ],
   "types": [
@@ -967,6 +1027,34 @@
           {
             "name": "current_supply",
             "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SaleTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution_amount",
+            "type": "u64"
+          },
+          {
+            "name": "selling_price",
+            "type": "u64"
+          },
+          {
+            "name": "creation_timestamp",
+            "type": "i64"
           }
         ]
       }

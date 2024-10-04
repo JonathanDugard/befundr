@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Divider from '../z-library/display elements/Divider';
 import { useRouter } from 'next/navigation';
 import BackButton from '../z-library/button/BackButton';
-import { ProjectLaunchMenu } from './launchproject-ui';
+import { ProfileCreationAlert, ProjectLaunchMenu } from './launchproject-ui';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
@@ -21,16 +21,20 @@ import { PublicKey } from '@solana/web3.js';
 import { ProjectCategory } from '@/data/category';
 import Link from 'next/link';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
+import { getATA } from '@/utils/functions/AtaFunctions';
+import { useBefundrProgramGlobal } from '../befundrProgram/befundr-global-access';
 
 const Launchproject = () => {
   //* GENERAL STATE
   const router = useRouter();
-  const { publicKey } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useBefundrProgramGlobal();
   const { createProject } = useBefundrProgramProject();
   const {
     userAccountFromAccountPublicKey,
     userAccountFromWalletPublicKey,
     getUserEntryAddress,
+    getUserWalletATABalance,
   } = useBefundrProgramUser();
 
   //* LOCAL STATE
@@ -207,13 +211,22 @@ const Launchproject = () => {
         publicKey
       );
 
+      // get userWallet and project ATA pubkey
+      const { associatedToken: userWalletAtaPubkey } = await getATA(
+        publicKey,
+        connection,
+        sendTransaction
+      );
+
       // creation transaction
       if (projectData)
         try {
           await createProject.mutateAsync({
+            userWalletPublicKey: publicKey,
             userAccountPDA: userEntryAddress,
             project: projectData,
             userProjectCounter: userProjectCounter,
+            userWalletAtaPubkey: userWalletAtaPubkey,
           });
         } catch (error) {
           console.error(error);
@@ -241,71 +254,82 @@ const Launchproject = () => {
         setSelectedStep={setSelectedStep}
       />
       {/* steps blocks */}
-      <div className={`${selectedStep === 2 ? 'w-full' : 'w-full md:w-1/2'}`}>
-        {' '}
-        {/*to handle rewardCard display*/}
-        {selectedStep === 0 && (
-          <MainInfoBlock
-            handleChange={handleProjectChange}
-            handleCategoryChange={handleCategoryChange}
-            setSelectedPic={handleProjectPicChange}
-            projectToCreate={projectToCreate}
-            displayedSelectedCategory={displayedSelectedCategory}
-          />
-        )}
-        {selectedStep === 1 && (
-          <FundingBlock
-            handleChange={handleProjectChange}
-            projectToCreate={projectToCreate}
-          />
-        )}
-        {selectedStep === 2 && (
-          <RewardsBlock
-            handleAddReward={handleAddReward}
-            projectToCreate={projectToCreate}
-            handleRemoveReward={handleRemoveReward}
-            handleUpdateReward={handleUpdateReward}
-          />
-        )}
-        {selectedStep === 3 && (
-          <DescriptionBLock
-            handleChange={handleProjectChange}
-            projectToCreate={projectToCreate}
-          />
-        )}
-        {selectedStep === 4 && (
-          <TrustBlock
-            handleChange={handleProjectChange}
-            projectToCreate={projectToCreate}
-            handleTrustscoreChange={handleTrustScoreChange}
-          />
-        )}
-        {selectedStep === 5 && <ValidationBlock />}
-      </div>
-      {/* continue button */}
-      <div className="w-full flex justify-end">
-        {selectedStep !== 5 && (
-          <button onClick={() => setSelectedStep(selectedStep + 1)}>
-            <MainButtonLabel label="Contrinue" />
-          </button>
-        )}
-        {selectedStep === 5 && publicKey && userEntryAddress && (
-          <button onClick={() => launchProjectCreation()}>
-            <MainButtonLabelAsync
-              label="Launch your project"
-              isLoading={isCreationLoading}
-              loadingLabel={'Launching project'}
-            />
-          </button>
-        )}
-        {selectedStep === 5 && !publicKey && <WalletButton />}
-        {/* need to check if userAccount already init */}
-        {selectedStep === 5 && publicKey && !userEntryAddress && (
-          <Link href={'/profile/myprofile'}>
-            <SecondaryButtonLabel label="Create your profile first" />
-          </Link>
-        )}
-      </div>
+      {/* if no user profile, display alert */}
+      {!userProfile && <ProfileCreationAlert />}
+      {/* if user profile, display project creation process */}
+      {userProfile && (
+        <>
+          <div
+            className={`${selectedStep === 2 ? 'w-full' : 'w-full md:w-1/2'}`}
+          >
+            {' '}
+            {/*to handle rewardCard display*/}
+            {selectedStep === 0 && (
+              <MainInfoBlock
+                handleChange={handleProjectChange}
+                handleCategoryChange={handleCategoryChange}
+                setSelectedPic={handleProjectPicChange}
+                projectToCreate={projectToCreate}
+                displayedSelectedCategory={displayedSelectedCategory}
+              />
+            )}
+            {selectedStep === 1 && (
+              <FundingBlock
+                handleChange={handleProjectChange}
+                projectToCreate={projectToCreate}
+              />
+            )}
+            {selectedStep === 2 && (
+              <RewardsBlock
+                handleAddReward={handleAddReward}
+                projectToCreate={projectToCreate}
+                handleRemoveReward={handleRemoveReward}
+                handleUpdateReward={handleUpdateReward}
+              />
+            )}
+            {selectedStep === 3 && (
+              <DescriptionBLock
+                handleChange={handleProjectChange}
+                projectToCreate={projectToCreate}
+              />
+            )}
+            {selectedStep === 4 && (
+              <TrustBlock
+                handleChange={handleProjectChange}
+                projectToCreate={projectToCreate}
+                handleTrustscoreChange={handleTrustScoreChange}
+              />
+            )}
+            {selectedStep === 5 && <ValidationBlock />}
+          </div>
+          {/* continue button */}
+          <div className="w-full flex justify-end">
+            {selectedStep !== 5 && (
+              <button onClick={() => setSelectedStep(selectedStep + 1)}>
+                <MainButtonLabel label="Contrinue" />
+              </button>
+            )}
+            {selectedStep === 5 && (
+              <div className="flex flex-col items-end justify-end gap-2">
+                <button
+                  onClick={() => launchProjectCreation()}
+                  disabled={isCreationLoading}
+                >
+                  <MainButtonLabelAsync
+                    label="Launch your project"
+                    isLoading={isCreationLoading}
+                    loadingLabel={'Launching project'}
+                  />
+                </button>
+                <p className="textStyle-body">
+                  You will have to sign two transactions to launch your project
+                </p>
+              </div>
+            )}
+            {selectedStep === 5 && !publicKey && <WalletButton />}
+          </div>
+        </>
+      )}
     </div>
   );
 };
