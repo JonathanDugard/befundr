@@ -34,6 +34,8 @@ pub enum CreateProjectError {
     NotEnoughRewards,
     #[msg("Too many rewards (max 10).")]
     TooManyRewards,
+    #[msg("Safety deposit is too low (min $50).")]
+    InsufficientSafetyDeposit,
 }
 
 #[error_code]
@@ -102,4 +104,10 @@ pub enum MarketplaceError {
     ContributionNotActive,
     #[msg("Incorrect selling price")]
     IncorrectSellingPrice,
+}
+
+#[error_code]
+pub enum AtaError {
+    #[msg("Wrong owner for the given ATA")]
+    WrongAtaOwner,
 }

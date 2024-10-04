@@ -2,15 +2,17 @@ import { Keypair, PublicKey } from "@solana/web3.js";
 import { userData1, userData2, userData3 } from './user_dataset';
 import { projectData1 } from "../project/project_dataset";
 import { confirmTransaction, createUser, createUserWalletWithSol, createProject } from '../utils';
-import { program, systemProgram, anchor } from '../config';
+import { program, systemProgram, anchor, PROGRAM_CONNECTION } from '../config';
 import * as bs58 from "bs58";
+import { INITIAL_USER_ATA_BALANCE, InitMint, MintAmountTo } from "../token/token_config";
+import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 
 // Generate admin keypair from secret key 
 // FOR LOCAL TESTING PURPOSES ONLY
 const adminKeypair = Keypair.fromSecretKey(
-  bs58.decode(
-    "tpXxTgtdHNPiXeU7cQ8WWkZdti9spg3GoXVCViFjdY5FXhDVwaGCFXvdDGbgCtSBrnQ5C1XW87qUYfa3m6iQyd9",
-  ),
+    bs58.decode(
+        "tpXxTgtdHNPiXeU7cQ8WWkZdti9spg3GoXVCViFjdY5FXhDVwaGCFXvdDGbgCtSBrnQ5C1XW87qUYfa3m6iQyd9",
+    ),
 );
 
 describe('deleteUser', () => {
@@ -78,7 +80,7 @@ describe('deleteUser', () => {
 
     // Add the deleteUser function definition
     it("should fail to delete the user by user himself", async () => {
-  
+
         const userWallet = await createUserWalletWithSol();
         const userPda = await createUser(userData1, userWallet);
         // Fetching to confirm user account exists
@@ -92,9 +94,9 @@ describe('deleteUser', () => {
     });
 
     it("should fail to delete the user by another user", async () => {
-        
+
         const expectedError = /^AnchorError thrown.*.Unauthorized: Only the admin can delete users/;
-        
+
         const userWallet = await createUserWalletWithSol();
         const userData = userData2;
         const userPda = await createUser(userData, userWallet);
@@ -104,8 +106,8 @@ describe('deleteUser', () => {
         // Delete the user profile with another wallet
         const anotherWallet = await createUserWalletWithSol();
         await expect(deleteUser(userPda, fetchUserAccount.owner, anotherWallet))
-        .rejects
-        .toThrow(expectedError);
+            .rejects
+            .toThrow(expectedError);
     });
 
     it("should fail to delete the user by admin if the user has created a project", async () => {
@@ -113,8 +115,15 @@ describe('deleteUser', () => {
         const expectedError = /^AnchorError thrown.*.User has associated projects or contributions/;
 
         const userWallet = await createUserWalletWithSol();
-        const userData = userData1;
-        const userPda = await createUser(userData, userWallet);
+        const { MINT_ADDRESS } = await InitMint();
+        const userWalletAta = await getOrCreateAssociatedTokenAccount(
+            PROGRAM_CONNECTION,
+            userWallet,
+            MINT_ADDRESS,
+            userWallet.publicKey
+        )
+        await MintAmountTo(userWallet, userWalletAta.address, INITIAL_USER_ATA_BALANCE);
+        const userPda = await createUser(userData1, userWallet);
         // Fetching to confirm user account exists
         const fetchUserAccount = await program.account.user.fetch(userPda);
 
@@ -123,7 +132,7 @@ describe('deleteUser', () => {
 
         // Attempt to delete the user profile
         await expect(deleteUser(userPda, fetchUserAccount.owner, adminKeypair))
-        .rejects
-        .toThrow(expectedError);
+            .rejects
+            .toThrow(expectedError);
     });
 });
