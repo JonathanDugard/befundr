@@ -1,7 +1,13 @@
-import React from 'react';
+'use client';
+import React, { useMemo } from 'react';
 import PopupLayout from './PopupLayout';
 import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
 import MainButtonLabel from '../button/MainButtonLabel';
+import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { convertAtaAmount } from '@/utils/functions/utilFunctions';
+import AtaBalance from '../display elements/AtaBalance';
+import ClaimUSDCButton from '../button/ClaimUSDCButton';
 
 type Props = {
   reward: Reward;
@@ -9,6 +15,21 @@ type Props = {
 };
 
 const MakeContributionPopup = (props: Props) => {
+  // get ATA balance ---
+  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { publicKey } = useWallet();
+
+  const { data: userWalletATABalance } = getUserWalletATABalance(publicKey);
+
+  const ATABalance = useMemo(() => {
+    if (userWalletATABalance) {
+      return convertAtaAmount(userWalletATABalance.amount);
+    } else {
+      return 0;
+    }
+  }, [userWalletATABalance]);
+  // --- get ATA balance
+
   return (
     <PopupLayout item="center" justify="center" padding="10">
       <div className="flex flex-col justify-center items-center gap-10 w-full">
@@ -16,13 +37,26 @@ const MakeContributionPopup = (props: Props) => {
         <p className="textStyle-title w-full text-left">
           Contribute for {props.reward.name}
         </p>
+        <div className="w-full flex justify-start -mt-10">
+          <AtaBalance />
+        </div>
         {/* description */}
         <div className="flex justify-start items-center gap-4 w-full">
           <div className="w-40 h-40 bg-neutral-300"></div>
-          <p className="textStyle-body">
-            You are about to contribute for this reward for{' '}
-            <strong>{props.reward.price}$</strong>
-          </p>
+          <div className="flex flex-col items-center gap-4">
+            <p className="textStyle-body">
+              You are about to contribute for this reward for{' '}
+              <strong>{props.reward.price}$</strong>
+            </p>
+            {ATABalance < props.reward.price && (
+              <>
+                <p className="textStyle-body !text-custom-red">
+                  you don&apos;t have enough faucet $
+                </p>
+                <ClaimUSDCButton />
+              </>
+            )}
+          </div>
         </div>
         {/* buttons */}
         <div className="flex justify-center items-center gap-10 w-full">

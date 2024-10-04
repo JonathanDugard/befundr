@@ -114,3 +114,7 @@ export function calculateTrustScore(
     valueAt0Percent + (valueAt5Percent - valueAt0Percent) * (percentage / 5)
   );
 }
+
+export const convertAtaAmount = (amount: bigint): number => {
+  return Number(amount) / Math.pow(10, 6);
+};
