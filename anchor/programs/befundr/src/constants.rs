@@ -25,11 +25,6 @@ pub mod user_contributions {
     pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 100;
 }
 
-pub mod reward {
-    pub const MAX_NAME_LENGTH: u64 = 64;
-    pub const MAX_DESCRIPTION_LENGTH: u64 = 100;
-}
-
 pub mod unlock_request_vote {
     pub const MAX_VOTE_NUMBER: u64 = 100;
 }

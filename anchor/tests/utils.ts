@@ -115,8 +115,7 @@ export const createProject = async (
 
     // Rewards serialization
     const serializedRewards = projectData.rewards.map((reward) => ({
-        name: reward.name,
-        description: reward.description,
+        metadataUri: reward.metadataUri,
         price: new BN(reward.price),
         maxSupply: new BN(reward.maxSupply),
         currentSupply: new BN(reward.currentSupply),

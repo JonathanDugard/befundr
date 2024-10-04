@@ -1,17 +1,14 @@
 use anchor_lang::prelude::*;
 
 use crate::{
-    constants::reward::{MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH},
-    errors::RewardError,
+    constants::project::MAX_URI_LENGTH,
+    errors::{CreateProjectError, RewardError},
 };
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
 pub struct Reward {
-    #[max_len(MAX_NAME_LENGTH)]
-    pub name: String,
-
-    #[max_len(MAX_DESCRIPTION_LENGTH)]
-    pub description: String,
+    #[max_len(MAX_URI_LENGTH)]
+    pub metadata_uri: String,
 
     pub price: u64,
     pub max_supply: Option<u16>,
@@ -21,13 +18,7 @@ pub struct Reward {
 impl Reward {
     pub fn validate(&self) -> Result<()> {
         // Validate name length
-        require!(self.name.len() as u64 <= MAX_NAME_LENGTH, RewardError::NameTooLong);
-
-        // Validate description length
-        require!(
-            self.description.len() as u64 <= MAX_DESCRIPTION_LENGTH,
-            RewardError::DescriptionTooLong
-        );
+        require!(self.metadata_uri.len() as u64 <= MAX_URI_LENGTH, CreateProjectError::UriTooLong);
 
         // Validate price
         require!(self.price > 0, RewardError::PriceInvalid);

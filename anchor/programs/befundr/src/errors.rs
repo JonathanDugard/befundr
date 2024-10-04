@@ -34,10 +34,6 @@ pub enum CreateProjectError {
 
 #[error_code]
 pub enum RewardError {
-    #[msg("Name cannot exceed 64 characters.")]
-    NameTooLong,
-    #[msg("Description cannot exceed 100 characters.")]
-    DescriptionTooLong,
     #[msg("Price must be greater than 0.")]
     PriceInvalid,
     #[msg("Current supply must be greater than 0.")]
