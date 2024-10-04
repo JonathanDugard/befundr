@@ -13,7 +13,7 @@ const now = Date.now();
 */
 export const projectData1: Project = {
   name: 'Don association',
-  metadataUri: 'https://myURL.com/myXAccount/project1',
+  metadataUri: 'https://myURL.com/projects/project1',
   goalAmount: convertAmountToDecimals(1000),
   createdTime: new BN(now),
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
@@ -24,7 +24,7 @@ export const projectData1: Project = {
 
 export const projectData2: Project = {
   name: 'Envoyer une fusée dans l\'espace',
-  metadataUri: 'https://myURL.com/myXAccount/project2',
+  metadataUri: 'https://myURL.com/projects/project2',
   goalAmount: convertAmountToDecimals(100),
   createdTime: new BN(new Date('2024-05-01T00:00:00Z').getTime()),
   endTime: new BN(now + ONE_DAY_MILLISECONDS),
@@ -35,7 +35,7 @@ export const projectData2: Project = {
 
 export const projectData3: Project = {
   name: 'Construction d\'une guitare',
-  metadataUri: 'https://myURL.com/myXAccount/project3',
+  metadataUri: 'https://myURL.com/projects/project3',
   goalAmount: convertAmountToDecimals(100),
   status: ProjectStatus.Abandoned,
   createdTime: new BN(new Date('2024-01-01T00:00:00Z').getTime()),
