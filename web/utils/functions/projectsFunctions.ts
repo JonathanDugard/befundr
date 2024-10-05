@@ -31,7 +31,7 @@ export const isProjectHasVoteOngoing = (project: Project): boolean => {
 };
 
 export const getProgressPercentage = (start: number, end: number) => {
-  return Math.floor((start / end) * 100);
+  return Math.min(Math.round((start / end) * 100), 100);
 };
 
 //* SERIALIZATION

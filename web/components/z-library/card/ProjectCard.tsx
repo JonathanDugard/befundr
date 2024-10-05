@@ -9,8 +9,10 @@ import { PublicKey } from '@solana/web3.js';
 import {
   calculateTimeRemaining,
   calculateTrustScore,
+  convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import Divider from '../display elements/Divider';
+import { BN } from '@coral-xyz/anchor';
 
 type Props = {
   project: Project;
@@ -72,7 +74,8 @@ const ProjectCard = (props: Props) => {
             <Divider />
           </div>
           <p className="textStyle-subheadline">
-            {props.project.raisedAmount}$ raised
+            {convertSplAmountToNumber(new BN(props.project.raisedAmount))}$
+            raised
           </p>
           <p className="textStyle-subheadline">
             {calculateTimeRemaining(props.project.endTime)} days remaining

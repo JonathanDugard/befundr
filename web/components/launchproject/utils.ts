@@ -1,5 +1,3 @@
-'use client';
-
 import { uploadImageToFirebase } from '@/utils/functions/firebaseFunctions';
 import {
   convertNumberToSplAmount,
@@ -10,7 +8,7 @@ import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 
 // function to prepare the project object to use in the blockchain TX
-export const handleProjectCreation = async (
+export const prepareDataForProjectCreation = async (
   project: Project,
   projectImage: File | null,
   userPublicKey: PublicKey
@@ -56,7 +54,8 @@ export const handleProjectCreation = async (
           // convert stringify number to real number
           let convertedSupply = null;
           if (reward.maxSupply) convertedSupply = Number(reward.maxSupply);
-          const convertedPrice = Number(reward.price);
+          // convert string to number with SPL decimal
+          const convertedPrice = convertNumberToSplAmount(Number(reward.price));
           // Return updated reward with the image URL
           return {
             ...reward,
@@ -79,11 +78,14 @@ export const handleProjectCreation = async (
   );
 
   //* Prepare final data for blockchain transaction
-  // convert stringify number to real number
+  // convert string to number with SPL decimal
   const convertedSafetyDeposit = convertNumberToSplAmount(
     Number(project.safetyDeposit)
   );
-  const convertedGoalAmount = Number(project.goalAmount);
+  // convert string to number with SPL decimal
+  const convertedGoalAmount = convertNumberToSplAmount(
+    Number(project.goalAmount)
+  );
   // convert endtime number to timestamp
   const convertedEndTime = getTimestampInFuture(project.endTime);
   const convertedEndTimeInSecond = Math.floor(convertedEndTime / 1000); // convertion from millisecond to second for BE compatibility

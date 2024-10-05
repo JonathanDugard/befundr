@@ -13,6 +13,8 @@ import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
+import { BN } from '@coral-xyz/anchor';
+import Link from 'next/link';
 
 type Props = {
   reward: Reward;
@@ -27,7 +29,8 @@ type Props = {
 
 const MakeContributionPopup = (props: Props) => {
   //* GLOBAL STATE
-  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { getUserWalletATABalance, userAccountFromWalletPublicKey } =
+    useBefundrProgramUser();
   const { publicKey } = useWallet();
   const { addContribution } = useBefundrProgramContribution();
 
@@ -35,9 +38,13 @@ const MakeContributionPopup = (props: Props) => {
   const { data: userWalletATABalance, refetch } =
     getUserWalletATABalance(publicKey);
 
+  // Use React Query to fetch user profile based on public key
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromWalletPublicKey(publicKey);
+
   const ATABalance = useMemo(() => {
     if (userWalletATABalance) {
-      return convertSplAmountToNumber(userWalletATABalance.amount);
+      return userWalletATABalance.amount;
     } else {
       return 0;
     }
@@ -81,6 +88,8 @@ const MakeContributionPopup = (props: Props) => {
     props.handleClose();
   };
 
+  const priceToDisplay = convertSplAmountToNumber(new BN(props.reward.price));
+
   return (
     <PopupLayout item="center" justify="center" padding="10">
       <div className="flex flex-col justify-center items-center gap-10 w-full">
@@ -94,11 +103,12 @@ const MakeContributionPopup = (props: Props) => {
         {/* description */}
         <div className="flex justify-start items-center gap-4 w-full">
           <div className="w-40 h-40 bg-neutral-300"></div>
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-start gap-4">
             <p className="textStyle-body">
               You are about to contribute for this reward for{' '}
-              <strong>{props.reward.price}$</strong>
+              <strong>{priceToDisplay}$</strong>
             </p>
+            {/* alert if not enough balance */}
             {ATABalance < props.reward.price && (
               <>
                 <p className="textStyle-body !text-custom-red">
@@ -107,6 +117,12 @@ const MakeContributionPopup = (props: Props) => {
                 <ClaimUSDCButton />
               </>
             )}
+            {/* alert if no user profile already created */}
+            {!userProfile && (
+              <p className="textStyle-body !text-custom-red">
+                You need to create your profile to contribute
+              </p>
+            )}
           </div>
         </div>
         {/* buttons */}
@@ -114,13 +130,19 @@ const MakeContributionPopup = (props: Props) => {
           <button onClick={props.handleClose}>
             <SecondaryButtonLabel label="Cancel" />
           </button>
-          <button onClick={handleAddContribution}>
-            <MainButtonLabelAsync
-              label={`Contribute for ${props.reward.price}$`}
-              isLoading={isLoading}
-              loadingLabel={'contributing'}
-            />
-          </button>
+          {userProfile ? (
+            <button onClick={handleAddContribution}>
+              <MainButtonLabelAsync
+                label={`Contribute for ${priceToDisplay}$`}
+                isLoading={isLoading}
+                loadingLabel={'contributing'}
+              />
+            </button>
+          ) : (
+            <Link href={'/profile/myprofile'}>
+              <MainButtonLabel label="Create your profile" />
+            </Link>
+          )}
         </div>
       </div>
     </PopupLayout>
