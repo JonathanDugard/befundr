@@ -12,7 +12,7 @@ import {
   getContributionById,
   transformAccountToContribution,
 } from '@/utils/functions/contributionsFunctions';
-import InfoLabel from '../z-library/display elements/InfoLabel';
+import InfoLabel from '../z-library/display_elements/InfoLabel';
 import Image from 'next/image';
 import {
   getMinSellingPrice,

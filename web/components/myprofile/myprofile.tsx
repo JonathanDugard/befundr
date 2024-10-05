@@ -5,7 +5,7 @@ import TextArea from '../z-library/button/TextArea';
 import PicSelector from '../z-library/button/PicSelector';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useWallet } from '@solana/wallet-adapter-react';
-import InfoLabel from '../z-library/display elements/InfoLabel';
+import InfoLabel from '../z-library/display_elements/InfoLabel';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import {
   deleteImageFromFirebase,

@@ -1,8 +1,8 @@
 'use client';
 import { projects } from '@/data/localdata';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import Divider from '../z-library/display elements/Divider';
-import WhiteBlock from '../z-library/display elements/WhiteBlock';
+import Divider from '../z-library/display_elements/Divider';
+import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import Link from 'next/link';
 import ProjectCard from '../z-library/card/ProjectCard';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';

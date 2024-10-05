@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Divider from '../z-library/display elements/Divider';
+import Divider from '../z-library/display_elements/Divider';
 import { useRouter } from 'next/navigation';
 import BackButton from '../z-library/button/BackButton';
 import { ProfileCreationAlert, ProjectLaunchMenu } from './launchproject-ui';
@@ -34,7 +34,7 @@ const Launchproject = () => {
     userAccountFromAccountPublicKey,
     userAccountFromWalletPublicKey,
     getUserPdaPublicKey: getUserEntryAddress,
-    getUserWalletATABalance,
+    getUserWalletAtaBalance,
   } = useBefundrProgramUser();
 
   //* LOCAL STATE

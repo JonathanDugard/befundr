@@ -1,5 +1,5 @@
 import React from 'react';
-import Divider from '../z-library/display elements/Divider';
+import Divider from '../z-library/display_elements/Divider';
 
 type Props = {};
 
