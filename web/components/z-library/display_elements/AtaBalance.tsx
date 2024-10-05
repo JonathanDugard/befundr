@@ -15,7 +15,7 @@ const AtaBalance = (props: Props) => {
 
   const { data: userWalletAtaBalance } = getUserWalletAtaBalance(publicKey);
 
-  const AtaBalance = useMemo(() => {
+  const ataBalance = useMemo(() => {
     if (userWalletAtaBalance) {
       return convertSplAmountToNumber(userWalletAtaBalance.amount);
     } else {
@@ -23,7 +23,7 @@ const AtaBalance = (props: Props) => {
     }
   }, [userWalletAtaBalance]);
 
-  return <InfoLabel label={`Your balance : ${AtaBalance} $`} />;
+  return <InfoLabel label={`Your balance : ${ataBalance} $`} />;
 };
 
 export default AtaBalance;
