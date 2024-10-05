@@ -96,6 +96,8 @@ pub enum CreateUnlockRequestError {
 pub enum MarketplaceError {
     #[msg("Signer is not the contribution owner")]
     NotContributionOwner,
+    #[msg("Wrong project sale transactions PDA")]
+    WrongProjectSaleTransactions,
     #[msg("The reward has been already claimed")]
     RewardAlreadyClaimed,
     #[msg("No reward associated to this contribution")]
@@ -122,4 +124,10 @@ pub enum UserContributionsError {
 pub enum AtaError {
     #[msg("Wrong owner for the given ATA")]
     WrongAtaOwner,
+}
+
+#[error_code]
+pub enum ProjectSaleTransactionError {
+    #[msg("Sale Transaction not found")]
+    SaleTransactionNotFound,
 }

@@ -9,6 +9,7 @@ pub struct SaleTransaction {
     pub contribution_amount: u64,
     pub selling_price: u64,
     pub creation_timestamp: i64,
+    pub reward_id: u64,
 }
 
 impl SaleTransaction {}

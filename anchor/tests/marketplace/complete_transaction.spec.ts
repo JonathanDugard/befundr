@@ -56,7 +56,7 @@ describe('complete_transaction', () => {
             new BN(0)
         );
         const sellingPrice = convertAmountToDecimals(200);
-        const saleTransactionPdaKey = await createTransaction(contributionPdaKey, sellerUserPdaKey, sellerWallet, sellingPrice);
+        const saleTransactionPdaKey = await createTransaction(projectPdaKey, contributionPdaKey, sellerUserPdaKey, sellerWallet, sellingPrice);
         const [sellerUserContributionsPdaKey] = anchor.web3.PublicKey.findProgramAddressSync(
             [
                 Buffer.from("user_contributions"),
@@ -73,7 +73,7 @@ describe('complete_transaction', () => {
         const buyerAtaBalanceBefore = await getAtaBalance(buyerWalletAta.address);
         const sellerAtaBalanceBefore = await getAtaBalance(sellerWalletAta.address);
 
-        await completeTransaction(contributionPdaKey, sellerUserPdaKey, buyerUserPdaKey, buyerWallet, sellerWallet.publicKey);
+        await completeTransaction(projectPdaKey, contributionPdaKey, sellerUserPdaKey, buyerUserPdaKey, buyerWallet, sellerWallet.publicKey);
 
 
         const [buyerUserContributionsPdaKey] = anchor.web3.PublicKey.findProgramAddressSync(

@@ -279,6 +279,7 @@ export const createUnlockRequest = async (
 }
 
 export const createTransaction = async (
+    projectPdaKey: PublicKey,
     contributionPubkey: PublicKey,
     userPubkey: PublicKey,
     sellerWallet: Keypair,
@@ -293,11 +294,20 @@ export const createTransaction = async (
         program.programId
     );
 
+    const [projectSaleTransactionsPdaKey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("project_sale_transactions"),
+            projectPdaKey.toBuffer(),
+        ],
+        program.programId
+    );
+
     const createTx = await program.methods
         .createTransaction(
             new BN(sellingPrice)
         )
         .accountsPartial({
+            projectSaleTransactions: projectSaleTransactionsPdaKey,
             saleTransaction: saleTransactionPubkey,
             user: userPubkey,
             contribution: contributionPubkey,
@@ -312,6 +322,7 @@ export const createTransaction = async (
 }
 
 export const completeTransaction = async (
+    projectPdaKey: PublicKey,
     contributionPdaKey: PublicKey,
     sellerUserPdaKey: PublicKey,
     buyerUserPdaKey: PublicKey,
@@ -351,6 +362,14 @@ export const completeTransaction = async (
         program.programId
     );
 
+    const [projectSaleTransactionsPdaKey] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from("project_sale_transactions"),
+            projectPdaKey.toBuffer(),
+        ],
+        program.programId
+    );
+
     // Get SPL Token transfer accounts
     const buyerAtaKey = await getAssociatedTokenAddress(MINT_ADDRESS, buyerWallet.publicKey);
     const sellerAtaKey = await getAssociatedTokenAddress(MINT_ADDRESS, sellerPubkey, true);
@@ -358,6 +377,7 @@ export const completeTransaction = async (
     const createTx = await program.methods
         .completeTransaction()
         .accountsPartial({
+            projectSaleTransactions: projectSaleTransactionsPdaKey,
             historyTransactions: historyTransactionsPubkey,
             saleTransaction: saleTransactionPubkey,
             buyerUserContributions: buyerContributionsPdaKey,
