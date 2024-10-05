@@ -13,28 +13,51 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import FundedProjectCard from '../z-library/card/FundedProjectCard';
 import Divider from '../z-library/display elements/Divider';
 import { useRouter } from 'next/navigation';
+import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { PublicKey } from '@solana/web3.js';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 
-type Props = {};
+type Props = {
+  /*empty*/
+};
 
 const MyFundedProjects = (props: Props) => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
   const router = useRouter();
+  const { getAllUserContributions } = useBefundrProgramContribution();
+  const { getUserPdaPublicKey } = useBefundrProgramUser();
+  const { projectsAccountsFromPublicKeysArray } = useBefundrProgramProject();
 
   //* LOCAL STATE
-  const [contributionsToDisplay, setContributionsToDisplay] = useState<
-    Contribution[] | null
-  >(null);
+  const [projectsToDsiplay, setProjectsToDisplay] = useState<
+    AccountWrapper<Project>[]
+  >([]);
 
-  useEffect(() => {
-    if (user1)
-      setContributionsToDisplay(
-        getContributionByUserAddress(contributions, user1.owner)
-      );
-  }, [user1]);
+  // react query
+  const { data: userPdaPublicKey } = getUserPdaPublicKey(publicKey);
+
+  const { data: userContributions } = getAllUserContributions(userPdaPublicKey);
+
+  // Get unique project PublicKeys
+  const uniqueProjectKeys = userContributions
+    ? Array.from(
+        new Set(
+          userContributions.map((contribution) =>
+            contribution.account.project.toBase58()
+          )
+        )
+      ).map((publicKeyString) => new PublicKey(publicKeyString))
+    : [];
+
+  const { data: projects } =
+    projectsAccountsFromPublicKeysArray(uniqueProjectKeys);
 
   // nagiguate to homepage is user disconnected
   if (!publicKey) router.push('/');
+
+  console.log(projects);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -45,9 +68,16 @@ const MyFundedProjects = (props: Props) => {
         </h2>
       </div>
       <div className="flex flex-col items-start justify-start gap-10 w-full">
-        {contributionsToDisplay?.map((contribution, index) => (
-          <div className="flex flex-col items-start justify-start gap-10 w-full">
-            <FundedProjectCard key={index} contribution={contribution} />
+        {projects?.map((project, index) => (
+          <div
+            key={index}
+            className="flex flex-col items-start justify-start gap-10 w-full"
+          >
+            <FundedProjectCard
+              key={index}
+              project={project.account}
+              projectId={project.publicKey}
+            />
             <Divider />
           </div>
         ))}

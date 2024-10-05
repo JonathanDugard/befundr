@@ -9,6 +9,7 @@ import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 
 //* TYPE
 interface CreateProjectArgs {
@@ -44,6 +45,33 @@ export function useBefundrProgramProject() {
       },
       staleTime: 60000,
       enabled: !!publicKey,
+    });
+  };
+
+  //* Fetch an array of project --------------------
+  const projectsAccountsFromPublicKeysArray = (
+    publicKeys: PublicKey[] | null | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['project', 'array', publicKeys?.[0]?.toString()],
+      queryFn: async () => {
+        if (!publicKeys || publicKeys.length === 0)
+          throw new Error('PublicKeys are required');
+
+        const projects = await Promise.all(
+          publicKeys.map(async (key) => {
+            const projectAccount = await program.account.project.fetch(key);
+            return {
+              publicKey: key,
+              account: transformAccountToProject(projectAccount), // Transformation en type Project
+            };
+          })
+        );
+
+        return projects as AccountWrapper<Project>[];
+      },
+      staleTime: 60000,
+      enabled: !!publicKeys,
     });
   };
 
@@ -165,6 +193,7 @@ export function useBefundrProgramProject() {
   return {
     projectAccountFromAccountPublicKey,
     allProjectsAccounts,
+    projectsAccountsFromPublicKeysArray,
     createProject,
     getProjectsByCreator,
   };
