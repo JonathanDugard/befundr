@@ -51,13 +51,12 @@ const MyFundedProjects = (props: Props) => {
       ).map((publicKeyString) => new PublicKey(publicKeyString))
     : [];
 
+  // react query fetch using unique proejcts publicKeys[]
   const { data: projects } =
     projectsAccountsFromPublicKeysArray(uniqueProjectKeys);
 
   // nagiguate to homepage is user disconnected
   if (!publicKey) router.push('/');
-
-  console.log(projects);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
