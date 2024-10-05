@@ -16,7 +16,7 @@ type Project = {
   endTime: number;
   status: ProjectStatus;
   contributionCounter: number;
-  trustScore: number; // init between 75 to 100
+  // trustScore: number; // init between 75 to 100
   rewards: Reward[];
   safetyDeposit: number;
   xAccountUrl: string;

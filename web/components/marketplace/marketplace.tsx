@@ -1,16 +1,32 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ProjectsFilters } from '../projects/projects-ui';
 import { projects } from '@/data/localdata';
 import ProjectCard from '../z-library/card/ProjectCard';
 import RewardCardMarketplace from '../z-library/card/RewardCardMarketplace';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
+import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
+import ProjectCardMarketplace from '../z-library/card/ProjectCardMarketplace';
 
 // type Props = {}
 
 const Marketplace = (/*props: Props*/) => {
-  // //* GLOBAL STATE
+  //* GLOBAL STATE
+  const { allProjectsAccounts } = useBefundrProgramProject();
 
-  // //* TEST
+  //* LOCAL STATE
+  const [allProjects, setAllProjects] = useState<AccountWrapper<Project>[]>([]); // use the AccountWrapper type to handle the publicKey
+
+  //extract all the projects from the accounts
+  useEffect(() => {
+    if (allProjectsAccounts.data) {
+      const transformedProjects = allProjectsAccounts.data.map(
+        (programAccount) => transformProgramAccountToProject(programAccount)
+      );
+
+      setAllProjects(transformedProjects);
+    }
+  }, [allProjectsAccounts.data]);
 
   return (
     <div className="flex flex-col items-start justify-start gap-10 w-full">
@@ -24,17 +40,15 @@ const Marketplace = (/*props: Props*/) => {
       <ProjectsFilters />
       <div
         className="grid justify-center gap-6 w-full"
-        style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(320px,320px))' }}
+        style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(240px,240px))' }}
       >
-        {projects.map((project: Project, projectIndex) =>
-          project.rewards.map((reward: Reward, rewardIndex: number) => (
-            <RewardCardMarketplace
-              key={`${projectIndex}-${rewardIndex}`}
-              reward={reward}
-              projectId={project.id}
-            />
-          ))
-        )}
+        {allProjects.map((project, index) => (
+          <ProjectCardMarketplace
+            key={index}
+            project={project.account}
+            projectId={project.publicKey}
+          />
+        ))}
       </div>
     </div>
   );

@@ -12,22 +12,22 @@ type Props = {
   };
 };
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   //* GLOBAL STATE
   const { projectAccountFromAccountPublicKey: projectAccountFromPublicKey } =
     useBefundrProgramProject();
 
   //* LOCAL STATE
+  const [projectToDisplay, setProjectToDisplay] = useState<Project | undefined>(
+    undefined
+  );
+
   // Use React Query to fetch project based on public key
   const {
     data: projectData,
     isLoading: isFetchingProject,
     refetch,
   } = projectAccountFromPublicKey(new PublicKey(props.params.projectId));
-
-  const [projectToDisplay, setProjectToDisplay] = useState<Project | undefined>(
-    undefined
-  );
 
   // store a transformed data for UI
   useEffect(() => {
@@ -46,4 +46,4 @@ const page = (props: Props) => {
     );
 };
 
-export default page;
+export default Page;
