@@ -11,7 +11,7 @@ import {
 import { contributions, user1 } from '@/data/localdata';
 import { useWallet } from '@solana/wallet-adapter-react';
 import FundedProjectCard from '../z-library/card/FundedProjectCard';
-import Divider from '../z-library/display elements/Divider';
+import Divider from '../z-library/display_elements/Divider';
 import { useRouter } from 'next/navigation';
 
 type Props = {};

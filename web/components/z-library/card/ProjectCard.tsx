@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
-import InfoLabel from '../display elements/InfoLabel';
-import ImageWithFallback from '../display elements/ImageWithFallback';
+import InfoLabel from '../display_elements/InfoLabel';
+import ImageWithFallback from '../display_elements/ImageWithFallback';
 import { getProgressPercentage } from '@/utils/functions/projectsFunctions';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
@@ -11,7 +11,7 @@ import {
   calculateTrustScore,
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
-import Divider from '../display elements/Divider';
+import Divider from '../display_elements/Divider';
 import { BN } from '@coral-xyz/anchor';
 
 type Props = {

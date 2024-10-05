@@ -2,14 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import Divider from '../z-library/display elements/Divider';
+import Divider from '../z-library/display_elements/Divider';
 import RewardCardCreation from '../z-library/card/RewardCardCreation';
 import { v4 as uuidv4 } from 'uuid';
 import InputField from '../z-library/button/InputField';
 import TextArea from '../z-library/button/TextArea';
 import ToggleButton from '../z-library/button/ToggleButton';
 import PicSelector from '../z-library/button/PicSelector';
-import AlertInfoLabel from '../z-library/display elements/AlertInfoLabel';
+import AlertInfoLabel from '../z-library/display_elements/AlertInfoLabel';
 
 type RewardsProps = {
   handleAddReward: (reward: Reward) => void;

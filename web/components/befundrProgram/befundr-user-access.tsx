@@ -46,9 +46,9 @@ export function useBefundrProgramUser() {
   };
 
   //* get user wallet ATA balance
-  const getUserWalletATABalance = (walletPublicKey: PublicKey | null) => {
+  const getUserWalletAtaBalance = (walletPublicKey: PublicKey | null) => {
     return useQuery({
-      queryKey: ['userATABalance', walletPublicKey?.toString()],
+      queryKey: ['userAtaBalance', walletPublicKey?.toString()],
       queryFn: async () => {
         if (!walletPublicKey) throw new Error('PublicKey is required');
         const { account } = await getATA(walletPublicKey, connection);
@@ -134,7 +134,7 @@ export function useBefundrProgramUser() {
   return {
     allUsersAccounts,
     getUserPdaPublicKey,
-    getUserWalletATABalance,
+    getUserWalletAtaBalance,
     userAccountFromWalletPublicKey,
     userAccountFromAccountPublicKey,
     createUser,

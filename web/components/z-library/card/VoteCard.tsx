@@ -1,9 +1,9 @@
 import { calculateTimeElapsed } from '@/utils/functions/utilFunctions';
 import React from 'react';
-import VoteProgressBar from '../display elements/VoteProgressBar';
+import VoteProgressBar from '../display_elements/VoteProgressBar';
 import MainButtonLabel from '../button/MainButtonLabel';
 import CancelButtonLabel from '../button/CancelButtonLabel';
-import InfoLabel from '../display elements/InfoLabel';
+import InfoLabel from '../display_elements/InfoLabel';
 
 type Props = {
   fundsRequest: FundsRequest;

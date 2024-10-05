@@ -6,7 +6,7 @@ import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
-import AtaBalance from '../z-library/display elements/AtaBalance';
+import AtaBalance from '../z-library/display_elements/AtaBalance';
 import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
 import { requiresCheckBeforeAddContribution } from './utils';
 import { PublicKey } from '@solana/web3.js';
@@ -29,26 +29,26 @@ type Props = {
 
 const MakeContributionPopup = (props: Props) => {
   //* GLOBAL STATE
-  const { getUserWalletATABalance, userAccountFromWalletPublicKey } =
+  const { getUserWalletAtaBalance, userAccountFromWalletPublicKey } =
     useBefundrProgramUser();
   const { publicKey } = useWallet();
   const { addContribution } = useBefundrProgramContribution();
 
   //* LOCAL STATE
-  const { data: userWalletATABalance, refetch } =
-    getUserWalletATABalance(publicKey);
+  const { data: userWalletAtaBalance, refetch } =
+    getUserWalletAtaBalance(publicKey);
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromWalletPublicKey(publicKey);
 
-  const ATABalance = useMemo(() => {
-    if (userWalletATABalance) {
-      return userWalletATABalance.amount;
+  const AtaBalance = useMemo(() => {
+    if (userWalletAtaBalance) {
+      return userWalletAtaBalance.amount;
     } else {
       return 0;
     }
-  }, [userWalletATABalance]);
+  }, [userWalletAtaBalance]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -109,7 +109,7 @@ const MakeContributionPopup = (props: Props) => {
               <strong>{priceToDisplay}$</strong>
             </p>
             {/* alert if not enough balance */}
-            {ATABalance < props.reward.price && (
+            {AtaBalance < props.reward.price && (
               <>
                 <p className="textStyle-body !text-custom-red">
                   you don&apos;t have enough faucet $

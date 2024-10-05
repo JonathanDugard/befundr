@@ -10,12 +10,12 @@ import { getRewardByRewardId } from '@/utils/functions/rewardsFunctions';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { CiPower } from 'react-icons/ci';
-import FundsOverviewBar from '../display elements/FundsOverviewBar';
+import FundsOverviewBar from '../display_elements/FundsOverviewBar';
 import { FaCircle } from 'react-icons/fa';
 import Link from 'next/link';
 import MainButtonLabelBig from '../button/MainButtonLabelBig';
 import MainButtonLabel from '../button/MainButtonLabel';
-import TrustScore from '../display elements/TrustScore';
+import TrustScore from '../display_elements/TrustScore';
 
 type Props = {
   contribution: Contribution;
