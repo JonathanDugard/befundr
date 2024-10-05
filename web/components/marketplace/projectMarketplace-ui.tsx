@@ -17,7 +17,7 @@ import {
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
-import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
+import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 
 export const RewardMarketplaceBlock = ({
   reward,
