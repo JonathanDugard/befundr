@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
-import { useState } from 'react';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -34,7 +33,9 @@ export function useBefundrProgramProject() {
   });
 
   //* Fetch single project by public key --------------------
-  const projectAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+  const projectAccountFromAccountPublicKey = (
+    publicKey: PublicKey | null | undefined
+  ) => {
     return useQuery({
       queryKey: ['project', publicKey?.toString()],
       queryFn: async () => {
@@ -162,7 +163,7 @@ export function useBefundrProgramProject() {
   });
 
   return {
-    projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
+    projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     createProject,
     getProjectsByCreator,

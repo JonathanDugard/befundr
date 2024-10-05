@@ -14,7 +14,8 @@ type Props = {
 
 const page = (props: Props) => {
   //* GLOBAL STATE
-  const { projectAccountFromPublicKey } = useBefundrProgramProject();
+  const { projectAccountFromAccountPublicKey: projectAccountFromPublicKey } =
+    useBefundrProgramProject();
 
   //* LOCAL STATE
   // Use React Query to fetch project based on public key

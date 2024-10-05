@@ -33,7 +33,7 @@ const Launchproject = () => {
   const {
     userAccountFromAccountPublicKey,
     userAccountFromWalletPublicKey,
-    getUserEntryAddress,
+    getUserPdaPublicKey: getUserEntryAddress,
     getUserWalletATABalance,
   } = useBefundrProgramUser();
 

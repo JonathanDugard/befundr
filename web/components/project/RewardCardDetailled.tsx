@@ -22,7 +22,7 @@ type Props = {
 
 const RewardCardDetailled = (props: Props) => {
   //* GLOBAL STATE
-  const { getUserEntryAddress } = useBefundrProgramUser();
+  const { getUserPdaPublicKey: getUserEntryAddress } = useBefundrProgramUser();
   const { publicKey } = useWallet();
 
   //* LOCAL STATE

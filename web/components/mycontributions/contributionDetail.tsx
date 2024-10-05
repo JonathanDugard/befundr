@@ -4,8 +4,14 @@ import React, { useEffect, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import { getRewardByRewardId } from '@/utils/functions/rewardsFunctions';
 import { contributions, projects, rewards, sales } from '@/data/localdata';
-import { getProjectByRewardId } from '@/utils/functions/projectsFunctions';
-import { getContributionById } from '@/utils/functions/contributionsFunctions';
+import {
+  getProjectByRewardId,
+  transformAccountToProject,
+} from '@/utils/functions/projectsFunctions';
+import {
+  getContributionById,
+  transformAccountToContribution,
+} from '@/utils/functions/contributionsFunctions';
 import InfoLabel from '../z-library/display elements/InfoLabel';
 import Image from 'next/image';
 import {
@@ -13,11 +19,19 @@ import {
   getSaleTransactionByRewardId,
 } from '@/utils/functions/saleTransactionFunctions';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
-import { calculateTimeRemaining } from '@/utils/functions/utilFunctions';
+import {
+  calculateTimeRemaining,
+  convertSplAmountToNumber,
+} from '@/utils/functions/utilFunctions';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
-import SaleRewardPopup from '../z-library/popup/SaleRewardPopup';
 import RedeemRewardPopup from '../z-library/popup/RedeemRewardPopup';
 import CancelRewardSalePopup from '../z-library/popup/CancelRewardSalePopup';
+import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
+import { PublicKey } from '@solana/web3.js';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
+import { BN } from '@coral-xyz/anchor';
+import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
+import SaleRewardPopup from './SaleRewardPopup';
 
 type Props = {
   contributionId: string;
@@ -26,68 +40,57 @@ type Props = {
 const ContributionDetail = (props: Props) => {
   //* GLOBAL STATE
   const router = useRouter();
+  const { getContributionPda } = useBefundrProgramContribution();
+  const { projectAccountFromAccountPublicKey } = useBefundrProgramProject();
+  const { getSaleTxFromContributionPdaPublicKey } =
+    useBefundrProgramSaleTransaction();
 
   //* LOCAL STATE
+  // state
   const [contributionToDisplay, setContributionToDisplay] = useState<
     Contribution | null | undefined
   >(null);
   const [projectToDisplay, setProjectToDisplay] = useState<
     Project | null | undefined
   >(null);
-  const [rewardToDisplay, setRewardToDisplay] = useState<
-    Reward | null | undefined
-  >(null);
-  const [salesTx, setSalesTx] = useState<SaleTransaction[] | null>(null);
+  const [rewardToDisplay, setRewardToDisplay] = useState<Reward | null>(null);
+
+  // react query
+  const { data: contribution } = getContributionPda(
+    new PublicKey(props.contributionId)
+  );
+  const { data: project } = projectAccountFromAccountPublicKey(
+    contribution?.project
+  );
+
+  const { data: saleTransaction, refetch: refetchSaleTransaction } =
+    getSaleTxFromContributionPdaPublicKey(new PublicKey(props.contributionId));
+
+  // convert contribution account to Contribution object
+  useEffect(() => {
+    if (contribution)
+      setContributionToDisplay(transformAccountToContribution(contribution));
+  }, [contribution]);
+
+  // convert the associated project account to Project object
+  useEffect(() => {
+    if (project) setProjectToDisplay(transformAccountToProject(project));
+  }, [project]);
+
+  // store the associated reward
+  useEffect(() => {
+    if (projectToDisplay && contributionToDisplay)
+      setRewardToDisplay(
+        projectToDisplay.rewards[contributionToDisplay?.rewardId]
+      );
+  }, [projectToDisplay, contributionToDisplay]);
 
   // popup mngt
   const [isSalePopup, setIsSalePopup] = useState(false);
   const [isRedeemPopup, setIsRedeemPopup] = useState(false);
   const [isCancelSalePopup, setIsCancelSalePopup] = useState(false);
 
-  // 1-fetch the contribution
-  useEffect(() => {
-    const fetchContribution = () => {
-      setContributionToDisplay(
-        getContributionById(contributions, props.contributionId)
-      );
-    };
-
-    fetchContribution();
-  }, [props.contributionId]);
-
-  // 2-fetch the reward associated to the contribution
-  useEffect(() => {
-    const fetchReward = () => {
-      if (contributionToDisplay)
-        setRewardToDisplay(
-          getRewardByRewardId(rewards, contributionToDisplay.rewardId)
-        );
-    };
-
-    if (contributionToDisplay) fetchReward();
-  }, [contributionToDisplay]);
-
-  // 3-fetch the project associated to the reward
-  useEffect(() => {
-    const fetchProject = () => {
-      if (rewardToDisplay)
-        setProjectToDisplay(getProjectByRewardId(projects, rewardToDisplay));
-    };
-
-    if (rewardToDisplay) fetchProject();
-  }, [rewardToDisplay]);
-
-  // 4-fetch the sales tx associated to the reward
-  useEffect(() => {
-    const fetchSalesTx = () => {
-      if (rewardToDisplay)
-        setSalesTx(getSaleTransactionByRewardId(sales, rewardToDisplay.id));
-    };
-
-    if (rewardToDisplay) fetchSalesTx();
-  }, [rewardToDisplay]);
-
-  if (projectToDisplay && rewardToDisplay && contributionToDisplay)
+  if (projectToDisplay && contributionToDisplay && rewardToDisplay)
     return (
       <div className="flex flex-col items-start justify-start gap-4 w-full">
         {/* header */}
@@ -109,19 +112,20 @@ const ContributionDetail = (props: Props) => {
           {/* detail */}
           <div className="flex justify-start items-start w-full gap-4">
             {/* image */}
-            <div className="relative w-1/3 h-40 flex items-center justify-center">
+            <div className="relative w-[300px] aspect-square flex items-center justify-center">
               <Image
                 alt="reward pic"
-                src={rewardToDisplay.imageUrl}
+                src={projectToDisplay.imageUrl}
                 fill
-                className="object-contain"
+                className="object-cover"
               />
             </div>
             {/* reward detail */}
             <div className="flex flex-col justify-start items-start w-1/3">
               <p className="textStyle-headline">{rewardToDisplay.name}</p>
               <p className="textStyle-subheadline">
-                Initial price : {rewardToDisplay.price}$
+                Initial price :{' '}
+                {convertSplAmountToNumber(new BN(rewardToDisplay.price))}$
               </p>
               <p className="textStyle-body mb-4">
                 {rewardToDisplay.currentSupply} rewards
@@ -131,9 +135,9 @@ const ContributionDetail = (props: Props) => {
             {/* market info */}
             <div className="flex flex-col justify-between items-start w-1/3 h-full ">
               <p className="textStyle-headline">Market info</p>
-              {!contributionToDisplay.isForSale ? (
+              {saleTransaction === undefined ? (
                 <>
-                  {salesTx && salesTx.length > 0 ? (
+                  {/* {salesTx && salesTx.length > 0 ? (
                     <p className="textStyle-body">
                       {salesTx.length} equivalent rewards to sell on the
                       marketplace with a minimum price of{' '}
@@ -143,7 +147,7 @@ const ContributionDetail = (props: Props) => {
                     <p className="textStyle-body">
                       No equivalent rewards to sell on the marketplace
                     </p>
-                  )}
+                  )} */}
                   <button
                     className="w-full mt-4"
                     onClick={() => setIsSalePopup(true)}
@@ -168,7 +172,7 @@ const ContributionDetail = (props: Props) => {
 
               <div className="flex-grow my-4"></div>
               {/* if reward avaiable */}
-              {rewardToDisplay.isAvailable ? (
+              {/* {rewardToDisplay.isAvailable ? (
                 rewardToDisplay.redeemLimitTime && (
                   <div className="flex flex-col items-start justify-ends w-full mt-auto">
                     <p className="textStyle-headline">Reward available</p>
@@ -196,15 +200,17 @@ const ContributionDetail = (props: Props) => {
                 <p className="textStyle-body !text-custom-red">
                   This reward is not yet redeemable
                 </p>
-              )}
+              )}  */}
             </div>
           </div>
         </div>
         {isSalePopup && (
           <SaleRewardPopup
             reward={rewardToDisplay}
-            floorPrice={getMinSellingPrice(salesTx)}
+            // floorPrice={getMinSellingPrice(salesTx)}
             handleClose={() => setIsSalePopup(false)}
+            contributionPdaPublicKey={props.contributionId}
+            refetchSaleTransaction={refetchSaleTransaction}
           />
         )}
         {isRedeemPopup && (

@@ -42,28 +42,69 @@ export function useBefundrProgramContribution() {
         );
         return program.account.userContributions.fetch(contributionsPdaKey);
       },
+      staleTime: 6000,
+    });
+  };
+
+  //* Fetch all user contributions --------------
+  const getAllUserContributions = (
+    userPdaPublicKey: PublicKey | null | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['allUserContributions', userPdaPublicKey?.toString()],
+      queryFn: async () => {
+        if (!userPdaPublicKey) throw new Error('PublicKey is required');
+        // get the userContributions Pda
+        const [contributionsPdaKey] = await PublicKey.findProgramAddress(
+          [Buffer.from('user_contributions'), userPdaPublicKey.toBuffer()],
+          programId
+        );
+        const userContributionsPda =
+          await program.account.userContributions.fetch(contributionsPdaKey);
+
+        // return [] if no contribution
+        if (
+          !userContributionsPda ||
+          userContributionsPda.contributions.length === 0
+        ) {
+          return [];
+        }
+        const contributions: AccountWrapper<Contribution>[] = [];
+        for (let i = 0; i < userContributionsPda.contributions.length; i++) {
+          try {
+            const contributionPdaPublicKey =
+              userContributionsPda.contributions[i];
+            const contributionData = await program.account.contribution.fetch(
+              contributionPdaPublicKey
+            );
+
+            if (contributionData) {
+              contributions.push({
+                publicKey: contributionPdaPublicKey,
+                account: contributionData,
+              });
+            }
+          } catch (error) {
+            console.error(`Error fetching contribution ${i}:`, error);
+          }
+        }
+
+        return contributions;
+      },
+      staleTime: 6000,
     });
   };
 
   //* Fetch a contributions PDA --------------
-  const getContributionPda = (
-    projectPdaPublicKey: PublicKey | null,
-    contributionCounter: number
-  ) => {
+  const getContributionPda = (contributionPdaPublicKey: PublicKey | null) => {
     return useQuery({
-      queryKey: ['contributionPda', projectPdaPublicKey?.toString()],
+      queryKey: ['contributionPda', contributionPdaPublicKey?.toString()],
       queryFn: async () => {
-        if (!projectPdaPublicKey) throw new Error('PublicKey is required');
-        const [contributionPdaKey] = await PublicKey.findProgramAddress(
-          [
-            Buffer.from('contribution'),
-            projectPdaPublicKey.toBuffer(),
-            new BN(contributionCounter + 1).toArray('le', 2),
-          ],
-          programId
-        );
-        return program.account.contribution.fetch(contributionPdaKey);
+        if (!contributionPdaPublicKey) throw new Error('PublicKey is required');
+
+        return program.account.contribution.fetch(contributionPdaPublicKey);
       },
+      staleTime: 6000,
     });
   };
 
@@ -135,6 +176,7 @@ export function useBefundrProgramContribution() {
   return {
     allContributionsAccounts,
     getUserContributionsPda,
+    getAllUserContributions,
     getContributionPda,
     addContribution,
   };

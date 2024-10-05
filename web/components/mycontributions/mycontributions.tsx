@@ -9,6 +9,8 @@ import { getContributionByUserAddress } from '@/utils/functions/contributionsFun
 import ContributionCard from '../z-library/card/ContributionCard';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/navigation';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
 
 type Props = {};
 
@@ -16,17 +18,12 @@ const MyContributions = (props: Props) => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
   const router = useRouter();
+  const { getAllUserContributions } = useBefundrProgramContribution();
+  const { getUserPdaPublicKey } = useBefundrProgramUser();
 
   //* LOCAL STATE
-  const [contributionsToDisplay, setContributionsToDisplay] = useState<
-    Contribution[] | null | undefined
-  >(null);
-
-  useEffect(() => {
-    setContributionsToDisplay(
-      getContributionByUserAddress(contributions, user1.owner)
-    );
-  }, [user1]);
+  const { data: userPdaPublicKey } = getUserPdaPublicKey(publicKey);
+  const { data } = getAllUserContributions(userPdaPublicKey);
 
   // nagiguate to homepage is user disconnected
   if (!publicKey) router.push('/');
@@ -45,9 +42,13 @@ const MyContributions = (props: Props) => {
           gridTemplateColumns: 'repeat(auto-fit,minmax(240px,240px))',
         }}
       >
-        {contributionsToDisplay &&
-          contributionsToDisplay.map((contribution, index) => (
-            <ContributionCard key={index} contribution={contribution} />
+        {data &&
+          data.map((contribution, index) => (
+            <ContributionCard
+              key={index}
+              contribution={contribution.account}
+              contributionPdaPublicKey={contribution.publicKey}
+            />
           ))}
       </div>
     </div>
