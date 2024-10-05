@@ -18,8 +18,11 @@ const page = (props: Props) => {
 
   //* LOCAL STATE
   // Use React Query to fetch project based on public key
-  const { data: projectData, isLoading: isFetchingProject } =
-    projectAccountFromPublicKey(new PublicKey(props.params.projectId));
+  const {
+    data: projectData,
+    isLoading: isFetchingProject,
+    refetch,
+  } = projectAccountFromPublicKey(new PublicKey(props.params.projectId));
 
   const [projectToDisplay, setProjectToDisplay] = useState<Project | undefined>(
     undefined
@@ -34,7 +37,11 @@ const page = (props: Props) => {
 
   if (projectToDisplay)
     return (
-      <Project project={projectToDisplay} projectId={props.params.projectId} />
+      <Project
+        project={projectToDisplay}
+        projectId={props.params.projectId}
+        refetchProject={refetch}
+      />
     );
 };
 

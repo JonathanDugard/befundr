@@ -38,6 +38,7 @@ export const getProgressPercentage = (start: number, end: number) => {
 import { ProjectCategory } from '@/data/category';
 import { ProjectStatus } from '@/data/projectStatus';
 import { BN, ProgramAccount } from '@coral-xyz/anchor';
+import { convertSplAmountToNumber } from './utilFunctions';
 
 export const transformProgramAccountToProject = (
   programAccount: ProgramAccount<any>
@@ -86,7 +87,9 @@ export const transformAccountToProject = (account: any): Project => {
         ? new BN(reward.redeemLimitTime).toNumber()
         : undefined,
     })),
-    safetyDeposit: new BN(account.safetyDeposit).toNumber(),
+    safetyDeposit: convertSplAmountToNumber(
+      new BN(account.safetyDeposit).toNumber()
+    ),
     xAccountUrl: account.xAccountUrl,
   };
 };

@@ -51,11 +51,7 @@ export function useBefundrProgramUser() {
       queryKey: ['userATABalance', walletPublicKey?.toString()],
       queryFn: async () => {
         if (!walletPublicKey) throw new Error('PublicKey is required');
-        const { account } = await getATA(
-          walletPublicKey,
-          connection,
-          sendTransaction
-        );
+        const { account } = await getATA(walletPublicKey, connection);
         return account;
       },
       staleTime: 6000,
