@@ -3,14 +3,14 @@ import Image from 'next/image';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { FaRegIdCard } from 'react-icons/fa';
 import Slider from '../z-library/button/Slider';
-import TrustScore from '../z-library/display elements/TrustScore';
+import TrustScore from '../z-library/display_elements/TrustScore';
 import InputField from '../z-library/button/InputField';
 import {
   calculateTrustScore,
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import { useEffect, useMemo } from 'react';
-import AtaBalance from '../z-library/display elements/AtaBalance';
+import AtaBalance from '../z-library/display_elements/AtaBalance';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
@@ -43,18 +43,18 @@ export const TrustBlock = (props: TrustProps) => {
   }, [collateralRatio]);
 
   // get user wallet ATA balance ----
-  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { getUserWalletAtaBalance } = useBefundrProgramUser();
   const { publicKey } = useWallet();
 
-  const { data: userWalletATABalance } = getUserWalletATABalance(publicKey);
+  const { data: userWalletAtaBalance } = getUserWalletAtaBalance(publicKey);
 
-  const ATABalance = useMemo(() => {
-    if (userWalletATABalance) {
-      return convertSplAmountToNumber(userWalletATABalance.amount);
+  const ataBalance = useMemo(() => {
+    if (userWalletAtaBalance) {
+      return convertSplAmountToNumber(userWalletAtaBalance.amount);
     } else {
       return 0;
     }
-  }, [userWalletATABalance]);
+  }, [userWalletAtaBalance]);
   // ---- get user wallet ATA balance
 
   return (
@@ -118,8 +118,8 @@ export const TrustBlock = (props: TrustProps) => {
         <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
       </div>
       <div className="flex justify-start items-center gap-2 w-full">
-        <AtaBalance />
-        {ATABalance < props.projectToCreate.safetyDeposit && (
+        <ataBalance />
+        {ataBalance < props.projectToCreate.safetyDeposit && (
           <>
             <p className="textStyle-body !text-custom-red">
               you don&apos;t have enough faucet $

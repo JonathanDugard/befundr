@@ -1,8 +1,8 @@
 use crate::{
     errors::{AtaError, MarketplaceError},
     state::{
-        user::User, Contribution, HistoryTransaction, HistoryTransactions, SaleTransaction,
-        UserContributions,
+        user::User, Contribution, HistoryTransaction, HistoryTransactions, ProjectSaleTransactions,
+        SaleTransaction, UserContributions,
     },
     utils::transfer_spl_token,
 };
@@ -21,12 +21,17 @@ pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
     let contribution = &mut ctx.accounts.contribution;
     let history_transactions = &mut ctx.accounts.history_transactions;
     let sale_transaction = &mut ctx.accounts.sale_transaction;
+    let project_sale_transactions = &mut ctx.accounts.project_sale_transactions;
 
     require!(buyer.key() == buyer_user.owner, MarketplaceError::BuyerNotUser);
     require!(seller.key() == seller_user.owner, MarketplaceError::SellerNotUser);
     require!(
         sale_transaction.seller == seller_user.key(),
         MarketplaceError::SellerNotContributionOwner
+    );
+    require!(
+        project_sale_transactions.project == contribution.project,
+        MarketplaceError::WrongProjectSaleTransactions
     );
 
     require!(buyer_ata.owner == buyer.key(), AtaError::WrongAtaOwner);
@@ -60,6 +65,10 @@ pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
         sale_transaction.selling_price,
     )?;
 
+    ctx.accounts
+        .project_sale_transactions
+        .remove_sale_transaction(sale_transaction.key())?;
+
     Ok(())
 }
 
@@ -74,8 +83,11 @@ pub struct CompleteTransaction<'info> {
     )]
     pub history_transactions: Account<'info, HistoryTransactions>,
 
-    #[account(mut, close = seller)]
+    #[account(mut, has_one = contribution, close = seller)]
     pub sale_transaction: Account<'info, SaleTransaction>,
+
+    #[account(mut)]
+    pub project_sale_transactions: Account<'info, ProjectSaleTransactions>,
 
     #[account(
         init_if_needed,

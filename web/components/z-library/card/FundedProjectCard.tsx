@@ -1,14 +1,20 @@
 'use client';
 import Image from 'next/image';
-import React, { useMemo } from 'react';
+
+import React, { useEffect, useState } from 'react';
+import { CiPower } from 'react-icons/ci';
+import FundsOverviewBar from '../display_elements/FundsOverviewBar';
+import { FaCircle } from 'react-icons/fa';
+
 import Link from 'next/link';
 import MainButtonLabel from '../button/MainButtonLabel';
-import TrustScore from '../display elements/TrustScore';
+import TrustScore from '../display_elements/TrustScore';
 import {
   calculateTrustScore,
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
+
 
 type Props = {
   project: Project;

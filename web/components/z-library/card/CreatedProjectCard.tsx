@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import InfoLabel from '../display elements/InfoLabel';
+import InfoLabel from '../display_elements/InfoLabel';
 
 type Props = {
   project: Project;

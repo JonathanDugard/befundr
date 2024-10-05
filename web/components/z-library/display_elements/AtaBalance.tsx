@@ -10,20 +10,20 @@ type Props = {
 };
 
 const AtaBalance = (props: Props) => {
-  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { getUserWalletAtaBalance } = useBefundrProgramUser();
   const { publicKey } = useWallet();
 
-  const { data: userWalletATABalance } = getUserWalletATABalance(publicKey);
+  const { data: userWalletAtaBalance } = getUserWalletAtaBalance(publicKey);
 
-  const ATABalance = useMemo(() => {
-    if (userWalletATABalance) {
-      return convertSplAmountToNumber(userWalletATABalance.amount);
+  const ataBalance = useMemo(() => {
+    if (userWalletAtaBalance) {
+      return convertSplAmountToNumber(userWalletAtaBalance.amount);
     } else {
       return 0;
     }
-  }, [userWalletATABalance]);
+  }, [userWalletAtaBalance]);
 
-  return <InfoLabel label={`Your balance : ${ATABalance} $`} />;
+  return <InfoLabel label={`Your balance : ${ataBalance} $`} />;
 };
 
 export default AtaBalance;

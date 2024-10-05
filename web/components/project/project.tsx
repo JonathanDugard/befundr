@@ -3,15 +3,15 @@ import { project1, user1 } from '@/data/localdata';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
-import Divider from '../z-library/display elements/Divider';
-import InfoLabel from '../z-library/display elements/InfoLabel';
-import ProgressBar from '../z-library/display elements/ProgressBar';
+import Divider from '../z-library/display_elements/Divider';
+import InfoLabel from '../z-library/display_elements/InfoLabel';
+import ProgressBar from '../z-library/display_elements/ProgressBar';
 import {
   calculateTimeRemaining,
   calculateTrustScore,
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
-import TrustScore from '../z-library/display elements/TrustScore';
+import TrustScore from '../z-library/display_elements/TrustScore';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
 import {
@@ -25,7 +25,7 @@ import Link from 'next/link';
 import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
-import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
+import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
 import { ProjectStatus } from '@/data/projectStatus';

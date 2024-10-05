@@ -1,10 +1,10 @@
 import { categories } from '@/data/localdata';
 import Selector from '../z-library/button/Selector';
 import ToggleSwitch from '../z-library/button/ToggleSwitch';
-import Divider from '../z-library/display elements/Divider';
-import DividerLight from '../z-library/display elements/DividerLight';
+import Divider from '../z-library/display_elements/Divider';
+import DividerLight from '../z-library/display_elements/DividerLight';
 import SearchField from '../z-library/button/SearchField';
-import WhiteBlock from '../z-library/display elements/WhiteBlock';
+import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import ToggleButton from '../z-library/button/ToggleButton';
 import Slider from '../z-library/button/Slider';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';

@@ -49,7 +49,7 @@ describe('create_transaction', () => {
         );
         const sellingPrice = convertAmountToDecimals(20);
 
-        const saleTransactionPdaKey = await createTransaction(contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice);
+        const saleTransactionPdaKey = await createTransaction(projectPdaKey, contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice);
 
         const saleTransactionPda = await program.account.saleTransaction.fetch(saleTransactionPdaKey);
 
@@ -75,11 +75,11 @@ describe('create_transaction', () => {
         const sellingPrice = convertAmountToDecimals(200);
         const secondSellingPrice = convertAmountToDecimals(40);
 
-        const saleTransactionPdaKey = await createTransaction(contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice);
+        const saleTransactionPdaKey = await createTransaction(projectPdaKey, contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice);
 
         const errorRegex = new RegExp(`Allocate: account Address { address: (?<address>${saleTransactionPdaKey.toString()}), base: None } already in use`);
 
-        await expect(createTransaction(contributionPdaKey, sellerPdaKey, sellerWallet, secondSellingPrice)).rejects.toThrow(errorRegex);
+        await expect(createTransaction(projectPdaKey, contributionPdaKey, sellerPdaKey, sellerWallet, secondSellingPrice)).rejects.toThrow(errorRegex);
 
         const saleTransactionPda = await program.account.saleTransaction.fetch(saleTransactionPdaKey);
         expect(saleTransactionPda.sellingPrice.toString()).toEqual(sellingPrice.toString());
@@ -101,7 +101,7 @@ describe('create_transaction', () => {
         const sellingPrice = convertAmountToDecimals(200);;
         const expectedError = /Error Code: NoReward\. Error Number: .*\. Error Message: No reward associated to this contribution.*/;
 
-        await expect(createTransaction(contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice)).rejects.toThrow(expectedError);
+        await expect(createTransaction(projectPdaKey, contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice)).rejects.toThrow(expectedError);
     });
 
     it("should throw an error if the selling price is 0", async () => {
@@ -120,7 +120,7 @@ describe('create_transaction', () => {
         const sellingPrice = 0;
         const expectedError = /Error Code: IncorrectSellingPrice\. Error Number: .*\. Error Message: Incorrect selling price.*/;
 
-        await expect(createTransaction(contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice)).rejects.toThrow(expectedError);
+        await expect(createTransaction(projectPdaKey, contributionPdaKey, sellerPdaKey, sellerWallet, sellingPrice)).rejects.toThrow(expectedError);
     });
 
     it("should throw an error if the contribution reward has already been claimed", async () => {

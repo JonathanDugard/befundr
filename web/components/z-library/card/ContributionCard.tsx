@@ -4,8 +4,8 @@ import { transformAccountToContribution } from '@/utils/functions/contributionsF
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import ImageWithFallback from '../display elements/ImageWithFallback';
-import Divider from '../display elements/Divider';
+import ImageWithFallback from '../display_elements/ImageWithFallback';
+import Divider from '../display_elements/Divider';
 
 type Props = {
   contribution: Contribution;

@@ -1,6 +1,9 @@
 import Link from 'next/link';
-import ImageWithFallback from '../display elements/ImageWithFallback';
-import InfoLabel from '../display elements/InfoLabel';
+
+import ImageWithFallback from '../display_elements/ImageWithFallback';
+import InfoLabel from '../display_elements/InfoLabel';
+
+
 
 type Props = {
   project: Project;

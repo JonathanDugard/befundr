@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
-import Divider from '../z-library/display elements/Divider';
+import Divider from '../z-library/display_elements/Divider';
 import { RewardMarketplaceBlock } from './projectMarketplace-ui';
 
 type Props = {
