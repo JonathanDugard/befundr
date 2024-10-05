@@ -23,6 +23,10 @@ pub mod project_contributions {
     pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 300;
 }
 
+pub mod project_sale_transactions {
+    pub const MAX_SALE_TRANSACTIONS_NUMBER: u32 = 500;
+}
+
 pub mod user_contributions {
     pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 100;
 }

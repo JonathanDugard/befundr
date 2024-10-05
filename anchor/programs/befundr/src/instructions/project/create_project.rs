@@ -9,7 +9,8 @@ use crate::{
     },
     errors::{AtaError, CreateProjectError},
     state::{
-        Project, ProjectCategory, ProjectContributions, ProjectStatus, Reward, UnlockRequests, User,
+        Project, ProjectCategory, ProjectContributions, ProjectSaleTransactions, ProjectStatus,
+        Reward, UnlockRequests, User,
     },
     utils::transfer_spl_token,
 };
@@ -90,6 +91,7 @@ pub fn create_project(
 
     ctx.accounts.user.created_project_counter += 1;
     ctx.accounts.unlock_requests.project = project.key();
+    ctx.accounts.project_sale_transactions.project = project.key();
 
     Ok(())
 }
@@ -107,6 +109,15 @@ pub struct CreateProject<'info> {
     bump
     )]
     pub project: Account<'info, Project>,
+
+    #[account(
+    init,
+    payer = signer,
+    space = 8 + ProjectSaleTransactions::INIT_SPACE,
+    seeds = [b"project_sale_transactions", project.key().as_ref()],
+    bump
+    )]
+    pub project_sale_transactions: Account<'info, ProjectSaleTransactions>,
 
     #[account(
         init,

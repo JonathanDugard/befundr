@@ -12,3 +12,6 @@ pub use project_contributions::*;
 
 pub mod project_category;
 pub use project_category::ProjectCategory;
+
+pub mod project_sale_transactions;
+pub use project_sale_transactions::ProjectSaleTransactions;
