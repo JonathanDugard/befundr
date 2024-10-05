@@ -99,7 +99,7 @@ pub fn create_project(
 #[derive(Accounts)]
 pub struct CreateProject<'info> {
     #[account(mut)]
-    pub user: Account<'info, User>,
+    pub user: Box<Account<'info, User>>,
 
     #[account(
     init,
@@ -108,7 +108,7 @@ pub struct CreateProject<'info> {
     seeds = [b"project", user.key().as_ref(), &(user.created_project_counter + 1).to_le_bytes()],
     bump
     )]
-    pub project: Account<'info, Project>,
+    pub project: Box<Account<'info, Project>>,
 
     #[account(
     init,
@@ -117,7 +117,7 @@ pub struct CreateProject<'info> {
     seeds = [b"project_sale_transactions", project.key().as_ref()],
     bump
     )]
-    pub project_sale_transactions: Account<'info, ProjectSaleTransactions>,
+    pub project_sale_transactions: Box<Account<'info, ProjectSaleTransactions>>,
 
     #[account(
         init,
@@ -126,7 +126,7 @@ pub struct CreateProject<'info> {
         seeds = [b"project_contributions", project.key().as_ref()],
         bump
     )]
-    pub project_contributions: Account<'info, ProjectContributions>,
+    pub project_contributions: Box<Account<'info, ProjectContributions>>,
 
     #[account(
         init,
@@ -135,16 +135,16 @@ pub struct CreateProject<'info> {
         seeds = [b"project_unlock_requests", project.key().as_ref()],
         bump
     )]
-    pub unlock_requests: Account<'info, UnlockRequests>,
+    pub unlock_requests: Box<Account<'info, UnlockRequests>>,
 
     #[account(mut)]
     pub signer: Signer<'info>,
 
     #[account(mut)]
-    pub from_ata: Account<'info, TokenAccount>,
+    pub from_ata: Box<Account<'info, TokenAccount>>,
 
     #[account(mut)]
-    pub to_ata: Account<'info, TokenAccount>,
+    pub to_ata: Box<Account<'info, TokenAccount>>,
 
     pub token_program: Program<'info, Token>,
 

@@ -24,7 +24,7 @@ pub mod project_contributions {
 }
 
 pub mod project_sale_transactions {
-    pub const MAX_SALE_TRANSACTIONS_NUMBER: u32 = 500;
+    pub const MAX_SALE_TRANSACTIONS_NUMBER: u32 = 100;
 }
 
 pub mod user_contributions {
