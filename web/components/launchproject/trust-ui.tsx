@@ -48,7 +48,7 @@ export const TrustBlock = (props: TrustProps) => {
 
   const { data: userWalletAtaBalance } = getUserWalletAtaBalance(publicKey);
 
-  const AtaBalance = useMemo(() => {
+  const ataBalance = useMemo(() => {
     if (userWalletAtaBalance) {
       return convertSplAmountToNumber(userWalletAtaBalance.amount);
     } else {
@@ -118,8 +118,8 @@ export const TrustBlock = (props: TrustProps) => {
         <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
       </div>
       <div className="flex justify-start items-center gap-2 w-full">
-        <AtaBalance />
-        {AtaBalance < props.projectToCreate.safetyDeposit && (
+        <ataBalance />
+        {ataBalance < props.projectToCreate.safetyDeposit && (
           <>
             <p className="textStyle-body !text-custom-red">
               you don&apos;t have enough faucet $

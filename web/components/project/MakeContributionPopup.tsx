@@ -42,7 +42,7 @@ const MakeContributionPopup = (props: Props) => {
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromWalletPublicKey(publicKey);
 
-  const AtaBalance = useMemo(() => {
+  const ataBalance = useMemo(() => {
     if (userWalletAtaBalance) {
       return userWalletAtaBalance.amount;
     } else {
@@ -98,7 +98,7 @@ const MakeContributionPopup = (props: Props) => {
           Contribute for {props.reward.name}
         </p>
         <div className="w-full flex justify-start -mt-10">
-          <AtaBalance />
+          <ataBalance />
         </div>
         {/* description */}
         <div className="flex justify-start items-center gap-4 w-full">
@@ -109,7 +109,7 @@ const MakeContributionPopup = (props: Props) => {
               <strong>{priceToDisplay}$</strong>
             </p>
             {/* alert if not enough balance */}
-            {AtaBalance < props.reward.price && (
+            {ataBalance < props.reward.price && (
               <>
                 <p className="textStyle-body !text-custom-red">
                   you don&apos;t have enough faucet $
