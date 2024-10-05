@@ -8,10 +8,15 @@ import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { convertNumberToSplAmount } from '@/utils/functions/utilFunctions';
+import {
+  confirmTransaction,
+  convertNumberToSplAmount,
+} from '@/utils/functions/utilFunctions';
+import { transformAccountToSaleTransaction } from '@/utils/functions/saleTransactionFunctions';
 
 //* TYPE
 interface CreateSaleTransactionArgs {
+  projectPdaPublicKey: PublicKey;
   contributionPdaPublicKey: PublicKey;
   userPdaPublicKey: PublicKey;
   userWallet: PublicKey;
@@ -30,6 +35,55 @@ export function useBefundrProgramSaleTransaction() {
     queryFn: () => program.account.saleTransaction.all(),
     staleTime: 60000,
   });
+
+  //* get projectSale Pda from project Pda publicKey
+  const getProjectSalesPdaFromProjectPdaKey = (
+    projectPdaKey: PublicKey | null | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['projectSalesPda', projectPdaKey?.toString()],
+      queryFn: async () => {
+        if (!projectPdaKey) throw new Error('PublicKey is required');
+        const [projectSalesPdaKey] = await PublicKey.findProgramAddress(
+          [Buffer.from('project_sale_transactions'), projectPdaKey.toBuffer()],
+          programId
+        );
+
+        return program.account.projectSaleTransactions.fetch(
+          projectSalesPdaKey
+        );
+      },
+    });
+  };
+
+  //* Fetch an array of sale transactions --------------------
+  const salesAccountsFromPublicKeysArray = (
+    publicKeys: PublicKey[] | null | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['sale', 'array', publicKeys?.[0]?.toString()],
+      queryFn: async () => {
+        if (!publicKeys || publicKeys.length === 0)
+          throw new Error('PublicKeys are required');
+
+        const sales = await Promise.all(
+          publicKeys.map(async (key) => {
+            const saleAccount = await program.account.saleTransaction.fetch(
+              key
+            );
+            return {
+              publicKey: key,
+              account: transformAccountToSaleTransaction(saleAccount), // Transformation en type Project
+            };
+          })
+        );
+
+        return sales as AccountWrapper<SaleTransaction>[];
+      },
+      staleTime: 60000,
+      enabled: !!publicKeys,
+    });
+  };
 
   //* get sale from contribution pda publicKey --------------------
   const getSaleTxFromContributionPdaPublicKey = (
@@ -65,6 +119,7 @@ export function useBefundrProgramSaleTransaction() {
   >({
     mutationKey: ['befundr', 'createTransaction'],
     mutationFn: async ({
+      projectPdaPublicKey,
       contributionPdaPublicKey,
       userPdaPublicKey,
       userWallet,
@@ -75,20 +130,32 @@ export function useBefundrProgramSaleTransaction() {
         programId
       );
 
+      const [projectSaleTransactionsPdaKey] =
+        await PublicKey.findProgramAddressSync(
+          [
+            Buffer.from('project_sale_transactions'),
+            projectPdaPublicKey.toBuffer(),
+          ],
+          program.programId
+        );
+
       const convertedPrice = new BN(convertNumberToSplAmount(sellingPrice));
 
-      return await program.methods
+      const tx = await program.methods
         .createTransaction(convertedPrice)
         .accountsPartial({
+          projectSaleTransactions: projectSaleTransactionsPdaKey,
           saleTransaction: saleTransactionPdaPublicKey,
           user: userPdaPublicKey,
           contribution: contributionPdaPublicKey,
           owner: userWallet,
         })
         .rpc();
-    },
-    onSuccess: async (signature) => {
-      transactionToast(signature, 'Contribution on sale !');
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return saleTransactionPdaPublicKey.toString();
     },
     onError: () => toast.error('Error selling contribution...'),
   });
@@ -97,5 +164,7 @@ export function useBefundrProgramSaleTransaction() {
     allSaleTransactions,
     getSaleTxFromContributionPdaPublicKey,
     createSaleTransaction,
+    getProjectSalesPdaFromProjectPdaKey,
+    salesAccountsFromPublicKeysArray,
   };
 }

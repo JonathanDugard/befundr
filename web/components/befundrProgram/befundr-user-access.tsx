@@ -6,6 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getATA } from '@/utils/functions/AtaFunctions';
+import { confirmTransaction } from '@/utils/functions/utilFunctions';
 
 //* TYPE
 interface CreateUserArgs {
@@ -97,10 +98,15 @@ export function useBefundrProgramUser() {
         [Buffer.from('user'), signer.toBuffer()],
         programId
       );
-      return await program.methods
+      const tx = await program.methods
         .createUser(name, avatarUrl, bio, city)
         .accountsPartial({ user: userEntryAddress })
         .rpc();
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return userEntryAddress.toString();
     },
     onSuccess: async (signature) => {
       transactionToast(signature, 'Profile created');
@@ -118,10 +124,15 @@ export function useBefundrProgramUser() {
         [Buffer.from('user'), signer.toBuffer()],
         programId
       );
-      return await program.methods
+      const tx = await program.methods
         .updateUser(name, avatarUrl, bio, city)
         .accountsPartial({ user: userEntryAddress, owner: signer })
         .rpc();
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return userEntryAddress.toString();
     },
     onSuccess: async (signature) => {
       transactionToast(signature, 'Profile updated');

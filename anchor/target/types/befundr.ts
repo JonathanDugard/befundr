@@ -148,6 +148,144 @@ export type Befundr = {
       "args": []
     },
     {
+      "name": "completeTransaction",
+      "discriminator": [
+        34,
+        152,
+        198,
+        211,
+        120,
+        165,
+        66,
+        161
+      ],
+      "accounts": [
+        {
+          "name": "historyTransactions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  105,
+                  115,
+                  116,
+                  111,
+                  114,
+                  121,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "saleTransaction",
+          "writable": true
+        },
+        {
+          "name": "projectSaleTransactions",
+          "writable": true
+        },
+        {
+          "name": "buyerUserContributions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyerUser"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sellerUserContributions",
+          "writable": true
+        },
+        {
+          "name": "buyerUser"
+        },
+        {
+          "name": "sellerUser"
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "relations": [
+            "saleTransaction"
+          ]
+        },
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "buyerAta",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "sellerAta",
+          "writable": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "createProject",
       "discriminator": [
         148,
@@ -167,6 +305,48 @@ export type Befundr = {
         {
           "name": "project",
           "writable": true
+        },
+        {
+          "name": "projectSaleTransactions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
         },
         {
           "name": "projectContributions",
@@ -362,6 +542,10 @@ export type Befundr = {
               }
             ]
           }
+        },
+        {
+          "name": "projectSaleTransactions",
+          "writable": true
         },
         {
           "name": "user",
@@ -678,6 +862,19 @@ export type Befundr = {
       ]
     },
     {
+      "name": "historyTransactions",
+      "discriminator": [
+        184,
+        17,
+        28,
+        110,
+        11,
+        241,
+        1,
+        42
+      ]
+    },
+    {
       "name": "project",
       "discriminator": [
         205,
@@ -701,6 +898,19 @@ export type Befundr = {
         187,
         160,
         150
+      ]
+    },
+    {
+      "name": "projectSaleTransactions",
+      "discriminator": [
+        220,
+        186,
+        205,
+        79,
+        189,
+        231,
+        72,
+        3
       ]
     },
     {
@@ -772,8 +982,8 @@ export type Befundr = {
   "errors": [
     {
       "code": 6000,
-      "name": "transferFailed",
-      "msg": "Funds transfer failed."
+      "name": "contributionNotFound",
+      "msg": "Contribution not found"
     }
   ],
   "types": [
@@ -835,6 +1045,56 @@ export type Befundr = {
           },
           {
             "name": "cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "historyTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "sellingPrice",
+            "type": "u64"
+          },
+          {
+            "name": "creationTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "saleTimestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "historyTransactions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transactions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "historyTransaction"
+                }
+              }
+            }
           }
         ]
       }
@@ -982,6 +1242,24 @@ export type Befundr = {
       }
     },
     {
+      "name": "projectSaleTransactions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "saleTransactions",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "projectStatus",
       "type": {
         "kind": "enum",
@@ -1061,6 +1339,10 @@ export type Befundr = {
           {
             "name": "creationTimestamp",
             "type": "i64"
+          },
+          {
+            "name": "rewardId",
+            "type": "u64"
           }
         ]
       }

@@ -18,39 +18,32 @@ import {
 } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 
 export const RewardMarketplaceBlock = ({
   reward,
   projectImageUrl,
+  rewardSales,
 }: {
   reward: Reward;
   projectImageUrl: string;
+  rewardSales: AccountWrapper<SaleTransaction>[];
 }) => {
-  //* LOCAL DATA
-  const [saleTxToDisplay, setSaleTxToDisplay] = useState<
-    SaleTransaction[] | null
-  >(null);
+  //* GLOBAL STATE
+  const { publicKey } = useWallet();
+  const { getUserPdaPublicKey } = useBefundrProgramUser();
 
-  const [ownedContributions, setOwnedContributions] = useState<
-    Contribution[] | null
-  >(null);
+  //* LOCAL DATA
+  const { data: userPdaKey } = getUserPdaPublicKey(publicKey);
+  // const [ownedContributions, setOwnedContributions] = useState<
+  //   Contribution[] | null
+  // >(null);
 
   const [isShowPopup, setIsShowPopup] = useState(false);
   const [selectedSaleTx, setSelectedSaleTx] = useState<SaleTransaction | null>(
     null
   );
-
-  // fetch the saleTransaction and owned Rewards
-  useEffect(() => {
-    setSaleTxToDisplay(getSaleTransactionByRewardId(sales, reward.id));
-    setOwnedContributions(
-      getContributionByRewardIdAndUserAddress(
-        contributions,
-        reward.id,
-        user1.owner
-      )
-    );
-  }, [reward.id]);
 
   // Check if at least on contribution could be sold
   // const hasNonSaleContributions = ownedContributions?.some(
@@ -85,7 +78,7 @@ export const RewardMarketplaceBlock = ({
       <div className="flex flex-col items-start justify-start w-1/3 h-full">
         {/* legend */}
         <p className="textStyle-headline">
-          Sell offers available ({saleTxToDisplay?.length})
+          Sell offers available ({rewardSales?.length})
         </p>
         <div className="grid grid-cols-2 justify-items-stretch w-full">
           <p className="textStyle-body !font-normal !text-textColor-main">
@@ -97,8 +90,8 @@ export const RewardMarketplaceBlock = ({
         </div>
         {/* offers */}
         <div className="flex flex-col items-start justify-start w-full gap-1 overflow-auto">
-          {saleTxToDisplay &&
-            saleTxToDisplay.map((saleTx, index) => (
+          {rewardSales &&
+            rewardSales.map((saleTx, index) => (
               <div
                 key={index}
                 className="flex flex-col items-start justify-start gap-1 w-full "
@@ -106,9 +99,10 @@ export const RewardMarketplaceBlock = ({
                 <div className="grid grid-cols-2 justify-items-stretch items-center w-full my-1">
                   <div className="flex justify-start gap-1">
                     <p className="textStyle-body">
-                      {calculateTimeElapsed(saleTx.creationTimestamp)} days ago
+                      {calculateTimeElapsed(saleTx.account.creationTimestamp)}{' '}
+                      days ago
                     </p>
-                    {saleTx.seller === user1.owner && (
+                    {saleTx.account.seller === userPdaKey?.toString() && (
                       <div className="textStyle-body !text-custom-red">
                         (your)
                       </div>
@@ -117,12 +111,14 @@ export const RewardMarketplaceBlock = ({
                   <button
                     className="relative self-end w-full"
                     onClick={() => {
-                      setSelectedSaleTx(saleTx);
+                      setSelectedSaleTx(saleTx.account);
                       setIsShowPopup(true);
                     }}
                   >
                     <MainButtonLabelDynamic
-                      label={`Buy for ${saleTx.sellingPrice}$`}
+                      label={`Buy for ${convertSplAmountToNumber(
+                        new BN(saleTx.account.sellingPrice)
+                      )}$`}
                     />
                   </button>
                 </div>
@@ -131,7 +127,7 @@ export const RewardMarketplaceBlock = ({
             ))}
         </div>
         {/* if no sale offer */}
-        {saleTxToDisplay?.length === 0 && (
+        {rewardSales?.length === 0 && (
           <div className="flex justify-center items-center w-full h-full flex-grow mt-10 ">
             <InfoLabel label="No sale offer available" />
           </div>

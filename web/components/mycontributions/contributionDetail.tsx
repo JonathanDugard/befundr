@@ -32,6 +32,8 @@ import { useBefundrProgramProject } from '../befundrProgram/befundr-project-acce
 import { BN } from '@coral-xyz/anchor';
 import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
 import SaleRewardPopup from './SaleRewardPopup';
+import toast from 'react-hot-toast';
+import { soonToast } from '../z-library/display_elements/SoonToast';
 
 type Props = {
   contributionId: string;
@@ -42,8 +44,11 @@ const ContributionDetail = (props: Props) => {
   const router = useRouter();
   const { getContributionPda } = useBefundrProgramContribution();
   const { projectAccountFromAccountPublicKey } = useBefundrProgramProject();
-  const { getSaleTxFromContributionPdaPublicKey } =
-    useBefundrProgramSaleTransaction();
+  const {
+    getSaleTxFromContributionPdaPublicKey,
+    getProjectSalesPdaFromProjectPdaKey,
+    salesAccountsFromPublicKeysArray,
+  } = useBefundrProgramSaleTransaction();
 
   //* LOCAL STATE
   // state
@@ -63,8 +68,31 @@ const ContributionDetail = (props: Props) => {
     contribution?.project
   );
 
+  // get the sale tx associated with the contribution, if exist
   const { data: saleTransaction, refetch: refetchSaleTransaction } =
     getSaleTxFromContributionPdaPublicKey(new PublicKey(props.contributionId));
+
+  // get the contribution's project sale pda
+  const { data: projectSalesPda } = getProjectSalesPdaFromProjectPdaKey(
+    contribution?.project
+  );
+
+  //get all the sale transaction of the project
+  const { data: salesAccount } = salesAccountsFromPublicKeysArray(
+    projectSalesPda?.saleTransactions
+  );
+
+  const [sameRewardSales, setSameRewardSales] = useState<
+    AccountWrapper<SaleTransaction>[]
+  >([]);
+  useEffect(() => {
+    if (salesAccount && contributionToDisplay) {
+      const filteredSales = salesAccount.filter(
+        (sale) => sale.account.rewardId === contributionToDisplay.rewardId
+      );
+      setSameRewardSales(filteredSales);
+    }
+  }, [salesAccount, contributionToDisplay]);
 
   // convert contribution account to Contribution object
   useEffect(() => {
@@ -137,17 +165,17 @@ const ContributionDetail = (props: Props) => {
               <p className="textStyle-headline">Market info</p>
               {saleTransaction === undefined ? (
                 <>
-                  {/* {salesTx && salesTx.length > 0 ? (
+                  {sameRewardSales && sameRewardSales.length > 0 ? (
                     <p className="textStyle-body">
-                      {salesTx.length} equivalent rewards to sell on the
+                      {sameRewardSales.length} equivalent rewards to sell on the
                       marketplace with a minimum price of{' '}
-                      {getMinSellingPrice(salesTx)}$
+                      {getMinSellingPrice(sameRewardSales)}$
                     </p>
                   ) : (
                     <p className="textStyle-body">
                       No equivalent rewards to sell on the marketplace
                     </p>
-                  )} */}
+                  )}
                   <button
                     className="w-full mt-4"
                     onClick={() => setIsSalePopup(true)}
@@ -157,11 +185,11 @@ const ContributionDetail = (props: Props) => {
                 </>
               ) : (
                 <div className="flex flex-col items-start justify-start gap-2 w-full">
-                  <p className="textStyle-body">This reward is on sale.</p>
-                  <button
-                    className="w-full"
-                    onClick={() => setIsCancelSalePopup(true)}
-                  >
+                  <p className="textStyle-body">
+                    Your reward is on sale for{' '}
+                    {convertSplAmountToNumber(saleTransaction.sellingPrice)}$.
+                  </p>
+                  <button className="w-full" onClick={soonToast}>
                     <MainButtonLabelBig label="Cancel sale" />
                   </button>
                   <button className="w-full">
@@ -204,13 +232,14 @@ const ContributionDetail = (props: Props) => {
             </div>
           </div>
         </div>
-        {isSalePopup && (
+        {isSalePopup && contribution?.project && (
           <SaleRewardPopup
             reward={rewardToDisplay}
             // floorPrice={getMinSellingPrice(salesTx)}
             handleClose={() => setIsSalePopup(false)}
             contributionPdaPublicKey={props.contributionId}
             refetchSaleTransaction={refetchSaleTransaction}
+            projectPdaKey={contribution?.project}
           />
         )}
         {isRedeemPopup && (

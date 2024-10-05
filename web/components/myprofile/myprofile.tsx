@@ -15,6 +15,8 @@ import { useRouter } from 'next/navigation';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { concatFileName } from '@/utils/functions/utilFunctions';
 import { WalletButton } from '../solana/solana-provider';
+import toast from 'react-hot-toast';
+import { soonToast } from '../z-library/display_elements/SoonToast';
 
 const MyProfile = () => {
   //* GLOBAL STATE
@@ -215,7 +217,7 @@ const MyProfile = () => {
         />
         <div className="flex justify-start items-center gap-2">
           <p>Your DID profile status</p>
-          <button>
+          <button onClick={soonToast}>
             <MainButtonLabel label="Sync my DID" />
           </button>
         </div>

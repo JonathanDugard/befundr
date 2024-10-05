@@ -18,6 +18,7 @@ type Props = {
   handleClose: () => void;
   contributionPdaPublicKey: string;
   refetchSaleTransaction: () => void;
+  projectPdaKey: PublicKey;
 };
 
 const SaleRewardPopup = (props: Props) => {
@@ -42,6 +43,7 @@ const SaleRewardPopup = (props: Props) => {
         throw new Error('missing user wallet');
       }
       await createSaleTransaction.mutateAsync({
+        projectPdaPublicKey: props.projectPdaKey,
         contributionPdaPublicKey: new PublicKey(props.contributionPdaPublicKey),
         userPdaPublicKey,
         userWallet: publicKey,

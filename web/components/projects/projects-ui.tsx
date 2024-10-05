@@ -8,6 +8,7 @@ import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import ToggleButton from '../z-library/button/ToggleButton';
 import Slider from '../z-library/button/Slider';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
+import { soonToast } from '../z-library/display_elements/SoonToast';
 
 export const ProjectsFilters = () => {
   return (
@@ -77,7 +78,7 @@ export const ProjectsFilters = () => {
         </div>
         <DividerLight />
         <div className="w-full flex justify-end">
-          <button>
+          <button onClick={soonToast}>
             <MainButtonLabel label="Apply filter" />
           </button>
         </div>

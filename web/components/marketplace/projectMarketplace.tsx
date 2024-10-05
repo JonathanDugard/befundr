@@ -4,16 +4,31 @@ import React, { useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import Divider from '../z-library/display_elements/Divider';
 import { RewardMarketplaceBlock } from './projectMarketplace-ui';
+import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
+import { PublicKey } from '@solana/web3.js';
 
 type Props = {
   project: Project;
+  projectId: string;
 };
 
 const ProjectMarketplace = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
+  const {
+    getProjectSalesPdaFromProjectPdaKey,
+    salesAccountsFromPublicKeysArray,
+  } = useBefundrProgramSaleTransaction();
 
   //* LOCAL STATE
+  const { data: projectSalesPda } = getProjectSalesPdaFromProjectPdaKey(
+    new PublicKey(props.projectId)
+  );
+
+  //get all the sale transaction of the project
+  const { data: salesAccount } = salesAccountsFromPublicKeysArray(
+    projectSalesPda?.saleTransactions
+  );
 
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
@@ -29,15 +44,22 @@ const ProjectMarketplace = (props: Props) => {
         Find all the available rewards for this project
       </h2>
       {/* rewards */}
-      {props.project.rewards.map((reward: Reward, index) => (
-        <div key={index} className="flex flex-col gap-6 w-full h-full">
-          <RewardMarketplaceBlock
-            reward={reward}
-            projectImageUrl={props.project.imageUrl}
-          />
-          <Divider />
-        </div>
-      ))}
+      {props.project.rewards.map((reward: Reward, index) => {
+        // Filter the sales account for the current reward
+        const rewardSales = salesAccount
+          ? salesAccount.filter((sale) => sale.account.rewardId === index)
+          : [];
+        return (
+          <div key={index} className="flex flex-col gap-6 w-full h-full">
+            <RewardMarketplaceBlock
+              reward={reward}
+              projectImageUrl={props.project.imageUrl}
+              rewardSales={rewardSales}
+            />
+            <Divider />
+          </div>
+        );
+      })}
     </div>
   );
 };

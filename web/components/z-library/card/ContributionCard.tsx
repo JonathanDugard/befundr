@@ -6,6 +6,9 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import ImageWithFallback from '../display_elements/ImageWithFallback';
 import Divider from '../display_elements/Divider';
+import { useBefundrProgramSaleTransaction } from '@/components/befundrProgram/befundr-saleTransaction-access';
+import { PublicKey } from '@solana/web3.js';
+import InfoLabel from '../display_elements/InfoLabel';
 
 type Props = {
   contribution: Contribution;
@@ -15,6 +18,8 @@ type Props = {
 const ContributionCard = (props: Props) => {
   //* GLOBAL STATE
   const { projectAccountFromAccountPublicKey } = useBefundrProgramProject();
+  const { getSaleTxFromContributionPdaPublicKey } =
+    useBefundrProgramSaleTransaction();
 
   const [contributionToDisplay, setContributionToDisplay] =
     useState<Contribution | null>(null);
@@ -23,6 +28,10 @@ const ContributionCard = (props: Props) => {
   );
   const { data: project } = projectAccountFromAccountPublicKey(
     props.contribution.project
+  );
+
+  const { data: saleTx } = getSaleTxFromContributionPdaPublicKey(
+    new PublicKey(props.contributionPdaPublicKey)
   );
 
   // convert contribution account to Contribution object
@@ -62,6 +71,15 @@ const ContributionCard = (props: Props) => {
             </p>
           </div>
         </div>
+        {saleTx && (
+          <div
+            className=" absolute top-2 left-2
+          bg-none rounded-md h-8  px-2 py-1 border border-accent
+          textStyle-body-accent text-center bg-main"
+          >
+            On sale
+          </div>
+        )}
       </Link>
     );
 };

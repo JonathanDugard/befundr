@@ -133,7 +133,7 @@ export function UiLayout({
               </li>
             ))}
             <Link href={'/'}>
-              <SecondaryButtonLabel label="Leave profile" />
+              <SecondaryButtonLabel label="Back to main menu" />
             </Link>
           </ul>
         </div>
