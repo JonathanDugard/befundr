@@ -61,9 +61,9 @@ export const HighlightSelection = ({ title }: { title: string }) => {
   //extract all the projects from the accounts
   useEffect(() => {
     if (allProjectsAccounts.data) {
-      const transformedProjects = allProjectsAccounts.data.map(
-        (programAccount) => transformProgramAccountToProject(programAccount)
-      );
+      const transformedProjects = allProjectsAccounts.data
+      .sort((a, b) => b.account.raisedAmount - a.account.raisedAmount)
+      .map((programAccount) => transformProgramAccountToProject(programAccount));
 
       setProjectsSelection(transformedProjects.slice(0, 3));
     }
@@ -84,6 +84,50 @@ export const HighlightSelection = ({ title }: { title: string }) => {
       <div className="flex justify-end w-full mb-10">
         <Link href={'/projects'}>
           <MainButtonLabel label="See more projects" />
+        </Link>
+      </div>
+      <Divider />
+    </div>
+  );
+};
+
+export const EndingSoonProjects = () => {
+  const { allProjectsAccounts } = useBefundrProgramProject();
+  const [endingSoonProjects, setEndingSoonProjects] = useState<
+    AccountWrapper<Project>[]
+  >([]);
+
+  useEffect(() => {
+    if (allProjectsAccounts.data) {
+      const soonEndingProjects = allProjectsAccounts.data
+        .filter((project) => {
+          const endTime = new Date(project.account.endTime * 1000); // Assuming endTime is in seconds
+          const now = new Date();
+          const timeRemaining = endTime.getTime() - now.getTime();
+          return timeRemaining > 0 && timeRemaining <= 7 * 24 * 60 * 60 * 1000; // Projects ending in the next 7 days
+        })
+        .sort((a, b) => a.account.endTime - b.account.endTime) // Sort by closest end time
+        .map((programAccount) => transformProgramAccountToProject(programAccount));
+
+      setEndingSoonProjects(soonEndingProjects.slice(0, 3));
+    }
+  }, [allProjectsAccounts.data]);
+
+  return (
+    <div className="flex flex-col items-start justify-start gap-6 w-full">
+      <h2 className="textStyle-subtitle">Ending Soon</h2>
+      <div className="flex justify-between gap-8 w-full overflow-x-auto">
+        {endingSoonProjects.map((project: AccountWrapper<Project>, index) => (
+          <ProjectCard
+            key={index}
+            project={project.account}
+            projectAccountPublicKey={project.publicKey}
+          />
+        ))}
+      </div>
+      <div className="flex justify-end w-full mb-10">
+        <Link href={'/projects'}>
+          <MainButtonLabel label="See All Projects" />
         </Link>
       </div>
       <Divider />

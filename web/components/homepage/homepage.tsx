@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { HighlightSelection, KeyFigures, UserDashboard } from './homepage-ui';
+import { HighlightSelection, EndingSoonProjects, KeyFigures, UserDashboard } from './homepage-ui';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 const Homepage = () => {
@@ -17,10 +17,8 @@ const Homepage = () => {
         Join a <strong className="text-accent">community</strong> where <strong className="text-accent">trust</strong> and innovation drive success.
         Start your project with the confidence of <strong className="text-accent">blockchain</strong> security and community support.
       </h3>
-      <HighlightSelection title="Almost funded" />
-      <HighlightSelection title="Top contributions" />
-      <HighlightSelection title="Most trusted" />
-      <HighlightSelection title="Ending soon" />
+      <HighlightSelection title="Featured projects" />
+      <EndingSoonProjects title="Ending soon" />
     </div>
   );
 };
