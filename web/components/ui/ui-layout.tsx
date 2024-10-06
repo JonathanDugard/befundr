@@ -20,6 +20,7 @@ import Image from 'next/image';
 import { useWallet } from '@solana/wallet-adapter-react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ClaimFaucetPopup from '../z-library/popup/ClaimFaucetPopup';
+import AtaBalance from '../z-library/display_elements/AtaBalance';
 
 export function UiLayout({
   children,
@@ -38,7 +39,7 @@ export function UiLayout({
   const [isShowPopup, setIsShowPopup] = React.useState(false);
 
   return (
-    <>
+      <>
       {/* MOBILE */}
       <div className="h-full md:hidden flex  flex-col items-center justify-center p-4">
         <div className="relative w-full  h-28">
@@ -61,48 +62,53 @@ export function UiLayout({
         </a>
       </div>
       {/* DESKTOP */}
-      <div className="h-full hidden md:flex flex-col ">
-        {/* top navbar */}
-        <div className="navbar h-20 bg-main text-textColor-main flex-col md:flex-row space-y-2 md:space-y-0">
-          <div className="flex-1 pr-2">
-            <Link className="btn btn-ghost normal-case text-xl" href="/">
-              <Image
-                className="h-4 md:h-10"
-                alt="Logo"
-                src="/logo_befundr_light.png"
-                width={183}
-                height={40}
-                quality={100}
-              />
-            </Link>
-            <ul className="menu menu-horizontal px-1 space-x-2">
-              {topBarLinks.map(({ label, path }) => (
-                <li key={path}>
-                  <Link
-                    className={pathname.startsWith(path) ? 'active' : ''}
-                    href={path}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <div className="flex-grow mx-10">
-              {/* <SearchField placeholder="Look for a project" /> */}
-            </div>
-            <Link href={'/launchproject'}>
-              <MainButtonLabel label="Launch your project" />
-            </Link>
+    <div className="h-full flex flex-col ">
+      {/* top navbar */}
+      <div className="navbar h-20 bg-main text-textColor-main flex-col md:flex-row space-y-2 md:space-y-0">
+        <div className="flex-1 pr-2">
+          <Link className="btn btn-ghost normal-case text-xl" href="/">
+            <Image
+              className="h-4 md:h-10"
+              alt="Logo"
+              src="/logo_befundr_light.png"
+              width={183}
+              height={40}
+              quality={100}
+            />
+          </Link>
+          <ul className="menu menu-horizontal px-1 space-x-2">
+            {topBarLinks.map(({ label, path }) => (
+              <li key={path}>
+                <Link
+                  className={pathname.startsWith(path) ? 'active' : ''}
+                  href={path}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="flex-grow mx-10">
+            {/* <SearchField placeholder="Look for a project" /> */}
           </div>
-          {publicKey && (
-            <button onClick={() => setIsShowPopup(true)}>
-              <SecondaryButtonLabel label="Claim faucet" />
-            </button>
-          )}
-          <div className="flex-none mx-4">
-            <WalletButton />
-            <ClusterUiSelect />
-          </div>
+          <Link href={'/launchproject'}>
+            <MainButtonLabel label="Launch your project" />
+          </Link>
+        </div>
+        {publicKey && (
+          <button onClick={() => setIsShowPopup(true)}>
+            <SecondaryButtonLabel label="Claim faucet" />
+          </button>
+        )}
+        <div className="bg-main cursor-pointer flex-none mx-2">
+          <AtaBalance />
+        </div>
+        <div className="flex-none mx-2">
+          <WalletButton />
+        </div>
+        <div className="flex-none mx-2">
+          <ClusterUiSelect />
+        </div>
         </div>
         {/* bottom navbar outside profile*/}
         {!pathname.startsWith('/profile') && (
