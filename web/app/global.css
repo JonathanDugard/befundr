@@ -30,6 +30,11 @@ body {
   font-family: inherit !important;
 }
 
+.textStyle-body { /* Replace with your desired color */
+  font-size: 1.2rem; /* Replace with your desired font size */
+  font-weight: 400; /* Replace with your desired font weight */
+}
+
 .mask-logo {
   -webkit-mask-image: url('/svg/logo.svg');
   mask-image: url('/svg/logo.svg');
