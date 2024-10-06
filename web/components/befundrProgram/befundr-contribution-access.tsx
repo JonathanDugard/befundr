@@ -8,6 +8,7 @@ import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
 import { getATA } from '@/utils/functions/AtaFunctions';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { confirmTransaction } from '@/utils/functions/utilFunctions';
 
 //* TYPE
 interface AddContributionArgs {
@@ -113,7 +114,7 @@ export function useBefundrProgramContribution() {
 
   //* MUTATIONS
   //* Add a contribution --------------------
-  const addContribution = useMutation<string, Error, AddContributionArgs>({
+  const addContribution = useMutation<PublicKey, Error, AddContributionArgs>({
     mutationKey: ['befundr', 'addContribution'],
     mutationFn: async ({
       projectPubkey,
@@ -149,7 +150,7 @@ export function useBefundrProgramContribution() {
       const { account: toAta } = await getATA(projectPubkey, connection);
 
       // Call the addContribution method
-      return await program.methods
+      const tx = await program.methods
         .addContribution(
           new BN(amount),
           rewardId !== null ? new BN(rewardId) : null
@@ -165,6 +166,11 @@ export function useBefundrProgramContribution() {
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc(); // Launch the transaction
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return contributionPdaPublicKey;
     },
     onSuccess: async () => {
       toast.success('Contribution made successfully!');

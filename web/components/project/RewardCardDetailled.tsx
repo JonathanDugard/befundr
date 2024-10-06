@@ -11,6 +11,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
+import { WalletButton } from '../solana/solana-provider';
 
 type Props = {
   reward: Reward;
@@ -74,9 +75,13 @@ const RewardCardDetailled = (props: Props) => {
               <Link href={`/marketplace/${props.projectId}`}>
                 <SecondaryButtonLabel label="Go to marketplace" />
               </Link>
-              <button onClick={() => setIsShowPopup(true)}>
-                <MainButtonLabel label="Contribute" />
-              </button>
+              {userEntryAddress ? (
+                <button onClick={() => setIsShowPopup(true)}>
+                  <MainButtonLabel label="Contribute" />
+                </button>
+              ) : (
+                <WalletButton />
+              )}
             </div>
           )}
           {/* button if status realizing */}

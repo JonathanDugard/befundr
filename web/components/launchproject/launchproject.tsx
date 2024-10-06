@@ -53,7 +53,6 @@ const Launchproject = () => {
     endTime: 30, // expressed in nb of days in the UI. To be convert in timestamp before the creation tx
     status: 'Draft',
     contributionCounter: 0,
-    trustScore: 75, //between 75 to 100
     rewards: [],
     safetyDeposit: 50,
     xAccountUrl: '',

@@ -37,7 +37,12 @@ const Page = (props: Props) => {
   }, [projectData]);
 
   if (projectToDisplay)
-    return <ProjectMarketplace project={projectToDisplay} />;
+    return (
+      <ProjectMarketplace
+        project={projectToDisplay}
+        projectId={props.params.projectId}
+      />
+    );
 };
 
 export default Page;

@@ -73,7 +73,6 @@ export const transformAccountToProject = (account: any): Project => {
     endTime: new BN(account.endTime).toNumber(),
     status: status.enum,
     contributionCounter: account.contributionCounter,
-    trustScore: account.trustScore,
     rewards: account.rewards.map((reward: any) => ({
       id: reward.id,
       name: reward.name,
