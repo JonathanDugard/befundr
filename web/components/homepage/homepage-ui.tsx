@@ -44,11 +44,17 @@ export const KeyFigures = () => {
       <div className="grid grid-cols-3 justify-items-stretch items-center w-full">
         <div className="flex flex-col items-start gap-2">
           <p className="text-accent text-5xl font-light">{projectsFunded}</p>
-          <p className="textStyle-subheadline w-full">projects created since the beginning</p>
+          <p className="textStyle-subheadline w-full">
+            projects created since the beginning
+          </p>
         </div>
         <div className="flex flex-col items-start justify-self-center gap-2">
-          <p className="text-accent text-5xl font-light">{formattedTotalAmountRaised}</p>
-          <p className="textStyle-subheadline w-full">raised funds since the beginning</p>
+          <p className="text-accent text-5xl font-light">
+            {formattedTotalAmountRaised}
+          </p>
+          <p className="textStyle-subheadline w-full">
+            raised funds since the beginning
+          </p>
         </div>
         <div className="flex flex-col items-start justify-self-end gap-2">
           <p className="text-accent text-5xl font-light">{contributors}</p>
@@ -161,7 +167,7 @@ export const UserDashboard = () => {
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromWalletPublicKey(publicKey);
 
-  const fundedProjects = userProfile?.createdProjectCounter || 0;
+  const createdProjects = userProfile?.createdProjectCounter || 0;
   const ownedContributions = userContributions?.length || 0;
 
   const [isUserHasAccount, setIsUserHasAccount] = useState(false);
@@ -172,11 +178,11 @@ export const UserDashboard = () => {
       <WhiteBlock>
         <div className="flex justify-start items-baseline gap-4">
           <p className="textStyle-subheadline">
-            <strong className="text-4xl text-accent">{fundedProjects} </strong>
-            {fundedProjects > 1 ? ' projects' : ' project'}
+            <strong className="text-4xl text-accent">{createdProjects} </strong>
+            {createdProjects > 1 ? ' projects' : ' project'}
           </p>
-          <Link href={'/profile/myfundedprojects/'}>
-            <MainButtonLabel label="My projects" />
+          <Link href={'/profile/mycreatedprojects/'}>
+            <MainButtonLabel label="My created projects" />
           </Link>
         </div>
         <div className="flex justify-start items-baseline gap-4">
