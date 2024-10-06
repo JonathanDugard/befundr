@@ -139,15 +139,13 @@ export function UiLayout({
         )}
         {/* bottom navbar inside profile*/}
         {pathname.startsWith('/profile') && (
-          <div className="w-full h-10 bg-accent textStyle-body !text-main flex-col md:flex-row justify-center items-center">
+          <div className="w-full h-10 bg-second textStyle-body  flex-col md:flex-row justify-center items-center">
             <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-2/3 mx-auto">
               {profileBarLinks.map(({ label, path }) => (
                 <li key={path}>
                   <Link
                     className={
-                      pathname.startsWith(path)
-                        ? 'text-textColor-main font-normal'
-                        : ''
+                      pathname.startsWith(path) ? 'text-accent font-normal' : ''
                     }
                     href={path}
                   >
