@@ -7,10 +7,7 @@ const Whypage = (props: Props) => {
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       <h1 className="textStyle-title">Why <strong className="!text-accent">beFundr</strong>?</h1>
-      
-      <h2 className="textStyle-body mb-4">
-        Depending on your role on the platform, discover how <strong className="!text-accent">beFundr</strong> makes crowdfunding better.
-      </h2>
+    
       <Divider />
       <h3 className="textStyle-subtitle">
         As a <strong className="!text-accent">Founder</strong>, earn more if you deliver.
