@@ -7,10 +7,7 @@ import {
   getProjectByRewardId,
   transformAccountToProject,
 } from '@/utils/functions/projectsFunctions';
-import {
-  getContributionById,
-  transformAccountToContribution,
-} from '@/utils/functions/contributionsFunctions';
+import { transformAccountToContribution } from '@/utils/functions/contributionsFunctions';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import Image from 'next/image';
 import {

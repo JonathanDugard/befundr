@@ -1,24 +1,6 @@
 import { ContributionStatus } from '@/data/contributionStatus';
 import { BN } from '@coral-xyz/anchor';
 
-export const getContributionByUserAddress = (
-  contributions: Contribution[],
-  userAddress: string
-): Contribution[] => {
-  return contributions.filter(
-    (contribution) => contribution.currentOwner === userAddress
-  );
-};
-
-export const getContributionById = (
-  contributions: Contribution[],
-  contributionId: string
-): Contribution | undefined => {
-  return contributions.find(
-    (contribution) => contribution.id === contributionId
-  );
-};
-
 //* SERIALIZATION
 // Helper function to transform an contribution account into a Contribution object
 export const transformAccountToContribution = (
