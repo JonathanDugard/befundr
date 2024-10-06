@@ -1,19 +1,6 @@
 import { ContributionStatus } from '@/data/contributionStatus';
 import { BN } from '@coral-xyz/anchor';
 
-// function to get all the contributions based on a user address
-export const getContributionByRewardIdAndUserAddress = (
-  contributions: Contribution[],
-  rewardId: string,
-  userAddress: string
-): Contribution[] => {
-  return contributions.filter(
-    (contribution) =>
-      contribution.currentOwner === userAddress &&
-      contribution.rewardId === rewardId
-  );
-};
-
 export const getContributionByUserAddress = (
   contributions: Contribution[],
   userAddress: string

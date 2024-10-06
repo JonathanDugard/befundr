@@ -4,7 +4,6 @@ import { getSaleTransactionByRewardId } from '@/utils/functions/saleTransactionF
 import { useEffect, useState } from 'react';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Divider from '../z-library/display_elements/Divider';
-import { getContributionByRewardIdAndUserAddress } from '@/utils/functions/contributionsFunctions';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
 import MainButtonLabelDynamic from '../z-library/button/MainButtonLabelDynamic';
