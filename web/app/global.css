@@ -30,9 +30,9 @@ body {
   font-family: inherit !important;
 }
 
-.textStyle-body { /* Replace with your desired color */
-  font-size: 1.2rem; /* Replace with your desired font size */
-  font-weight: 400; /* Replace with your desired font weight */
+.textStyle-body {
+  font-size: 1.2rem;
+  font-weight: 400;
 }
 
 .mask-logo {
