@@ -22,7 +22,7 @@ const Whypage = (props: Props) => {
       <p className="textStyle-body mx--2">See what beFundr brings to you:</p>
       <ul className="list-disc pl-5 mb-4">
         <li className="textStyle-body">
-          <strong className="!text-accent">Drive your success:</strong> Gain access to a transparent, community-driven funding system that rewards you for delivering on your project milestones.
+          <strong className="!text-accent">Community driven success:</strong> Gain access to a transparent, community-driven funding system promoting trust and long-term success for your projects.
         </li>
         <li className="textStyle-body">
           <strong className="!text-accent">Trust at the core:</strong> Build trust through milestone-based funding, giving backers confidence and ensuring you stay focused on your goals.
