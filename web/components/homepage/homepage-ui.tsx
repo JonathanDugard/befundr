@@ -21,7 +21,7 @@ export const KeyFigures = () => {
   const projectsFunded = allProjectsAccounts.data?.length || 0;
   const totalAmountRaised = allProjectsAccounts.data
     ? allProjectsAccounts.data.reduce(
-        (sum, project) => sum + project.account.raisedAmount,
+        (sum, project) => sum + convertSplAmountToNumber(project.account.raisedAmount),
         0
       )
     : 0;
@@ -31,7 +31,9 @@ export const KeyFigures = () => {
       const formattedAmount = new Intl.NumberFormat(navigator.language, {
         style: 'currency',
         currency: 'USD', // Change this to the desired currency
-      }).format(convertSplAmountToNumber(BigInt(totalAmountRaised)));
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(totalAmountRaised);
       setFormattedTotalAmountRaised(formattedAmount);
     };
     formatAmount();
@@ -137,7 +139,7 @@ export const EndingSoonProjects = ({ title }: { title: string }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
       <h2 className="textStyle-subtitle">Ending Soon</h2>
-      <div className="flex justify-between gap-8 w-full overflow-x-auto">
+      <div className="flex justify-left gap-8 w-full overflow-x-auto">
         {endingSoonProjects.map((project: AccountWrapper<Project>, index) => (
           <ProjectCard
             key={index}
