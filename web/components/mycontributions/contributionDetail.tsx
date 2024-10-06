@@ -10,10 +10,7 @@ import {
 import { transformAccountToContribution } from '@/utils/functions/contributionsFunctions';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import Image from 'next/image';
-import {
-  getMinSellingPrice,
-  getSaleTransactionByRewardId,
-} from '@/utils/functions/saleTransactionFunctions';
+import { getMinSellingPrice } from '@/utils/functions/saleTransactionFunctions';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
 import {
   calculateTimeRemaining,
@@ -231,7 +228,6 @@ const ContributionDetail = (props: Props) => {
         {isSalePopup && contribution?.project && (
           <SaleRewardPopup
             reward={rewardToDisplay}
-            // floorPrice={getMinSellingPrice(salesTx)}
             handleClose={() => setIsSalePopup(false)}
             contributionPdaPublicKey={props.contributionId}
             refetchSaleTransaction={refetchSaleTransaction}

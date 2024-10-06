@@ -1,6 +1,5 @@
 'use client';
 
-import { getSaleTransactionByRewardId } from '@/utils/functions/saleTransactionFunctions';
 import { useEffect, useState } from 'react';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Divider from '../z-library/display_elements/Divider';

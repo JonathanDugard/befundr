@@ -1,15 +1,6 @@
 import { BN } from '@coral-xyz/anchor';
 import { convertSplAmountToNumber } from './utilFunctions';
 
-// function to get all the saleTransaction based on a reward id
-export const getSaleTransactionByRewardId = (
-  sales: SaleTransaction[],
-  rewardId: string
-): SaleTransaction[] => {
-  const fileteredSales = sales.filter((sale) => sale.rewardId === rewardId);
-  return fileteredSales;
-};
-
 export const getMinSellingPrice = (
   salesTx: AccountWrapper<SaleTransaction>[] | null
 ): number | null => {
