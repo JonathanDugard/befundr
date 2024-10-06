@@ -5,25 +5,43 @@ import Divider from '../z-library/display_elements/Divider';
 import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import Link from 'next/link';
 import ProjectCard from '../z-library/card/ProjectCard';
-import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useEffect, useState } from 'react';
 import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
+import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
+import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+
 
 export const KeyFigures = () => {
+
+  const { allProjectsAccounts } = useBefundrProgramProject();
+  const { allContributionsAccounts } = useBefundrProgramContribution();
+
+  const projectsFunded = allProjectsAccounts.data?.length || 0;
+  const totalAmountRaised = allProjectsAccounts.data
+    ? allProjectsAccounts.data.reduce((sum, project) => sum + project.account.raisedAmount, 0)
+    : 0;
+
+  const formattedTotalAmountRaised = new Intl.NumberFormat(navigator.language, {
+    style: 'currency',
+    currency: 'USD', // Change this to the desired currency
+  }).format(convertSplAmountToNumber(BigInt(totalAmountRaised)));
+  const contributors = allContributionsAccounts.data?.length || 0;
+
   return (
     <div className="flex flex-col items-center justify-start w-full my-10">
       <div className="grid grid-cols-3 justify-items-stretch items-center w-full">
-        <div className="flex items-end gap-1">
-          <p className="text-accent text-5xl font-light">20</p>
-          <p className="textStyle-subheadline w-32">projects funded</p>
+        <div className="flex flex-col items-start gap-2">
+          <p className="text-accent text-5xl font-light">{projectsFunded}</p>
+          <p className="textStyle-subheadline w-full">projects created since beginning</p>
         </div>
-        <div className="flex items-end gap-1 justify-self-center">
-          <p className="text-accent text-5xl font-light">1250</p>
-          <p className="textStyle-subheadline w-32">contributors</p>
+        <div className="flex flex-col items-start justify-self-center gap-2">
+          <p className="text-accent text-5xl font-light">{formattedTotalAmountRaised}</p>
+          <p className="textStyle-subheadline w-full">raised funds since beginning</p>
         </div>
-        <div className="flex justify-end items-end gap-1">
-          <p className="text-accent text-5xl font-light">210</p>
-          <p className="textStyle-subheadline text-right">rewards available</p>
+        <div className="flex flex-col items-start justify-self-end gap-2">
+          <p className="text-accent text-5xl font-light">{contributors}</p>
+          <p className="textStyle-subheadline w-full">active contributors</p>
         </div>
       </div>
       <Divider />
