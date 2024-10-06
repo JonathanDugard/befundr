@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
+import { getATA, getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {
   confirmTransaction,
@@ -21,6 +21,15 @@ interface CreateSaleTransactionArgs {
   userPdaPublicKey: PublicKey;
   userWallet: PublicKey;
   sellingPrice: number;
+}
+
+interface CompleteSaleTransactionArgs {
+  projectPdaKey: PublicKey;
+  contributionPdaKey: PublicKey;
+  sellerUserPdaKey: PublicKey;
+  buyerUserPdaKey: PublicKey;
+  buyerWallet: PublicKey;
+  sellerPubkey: PublicKey;
 }
 
 export function useBefundrProgramSaleTransaction() {
@@ -125,10 +134,14 @@ export function useBefundrProgramSaleTransaction() {
       userWallet,
       sellingPrice,
     }) => {
-      const [saleTransactionPdaPublicKey] = await PublicKey.findProgramAddress(
-        [Buffer.from('sale_transaction'), contributionPdaPublicKey.toBuffer()],
-        programId
-      );
+      const [saleTransactionPdaPublicKey] =
+        await PublicKey.findProgramAddressSync(
+          [
+            Buffer.from('sale_transaction'),
+            contributionPdaPublicKey.toBuffer(),
+          ],
+          programId
+        );
 
       const [projectSaleTransactionsPdaKey] =
         await PublicKey.findProgramAddressSync(
@@ -160,11 +173,88 @@ export function useBefundrProgramSaleTransaction() {
     onError: () => toast.error('Error selling contribution...'),
   });
 
+  //* Complete sale transaction --------------------
+  const completeSaleTransaction = useMutation<
+    string,
+    Error,
+    CompleteSaleTransactionArgs
+  >({
+    mutationKey: ['befundr', 'completeTransaction'],
+    mutationFn: async ({
+      projectPdaKey,
+      contributionPdaKey,
+      sellerUserPdaKey,
+      buyerUserPdaKey,
+      buyerWallet,
+      sellerPubkey,
+    }) => {
+      const [historyTransactionsPubkey] =
+        await PublicKey.findProgramAddressSync(
+          [Buffer.from('history_transactions'), contributionPdaKey.toBuffer()],
+          programId
+        );
+
+      const [saleTransactionPubkey] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('sale_transaction'), contributionPdaKey.toBuffer()],
+        programId
+      );
+
+      const [buyerContributionsPdaKey] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('user_contributions'), buyerUserPdaKey.toBuffer()],
+        programId
+      );
+
+      const [sellerContributionsPdaKey] =
+        await PublicKey.findProgramAddressSync(
+          [Buffer.from('user_contributions'), sellerUserPdaKey.toBuffer()],
+          programId
+        );
+
+      const [projectSaleTransactionsPdaKey] =
+        await PublicKey.findProgramAddressSync(
+          [Buffer.from('project_sale_transactions'), projectPdaKey.toBuffer()],
+          programId
+        );
+
+      // Get SPL Token transfer accounts
+      const { account: buyerAtaKey } = await getATA(buyerWallet, connection);
+      const { account: sellerAtaKey } = await getATA(sellerPubkey, connection);
+
+      const tx = await program.methods
+        .completeTransaction()
+        .accountsPartial({
+          projectSaleTransactions: projectSaleTransactionsPdaKey,
+          historyTransactions: historyTransactionsPubkey,
+          saleTransaction: saleTransactionPubkey,
+          buyerUserContributions: buyerContributionsPdaKey,
+          sellerUserContributions: sellerContributionsPdaKey,
+          buyerUser: buyerUserPdaKey,
+          sellerUser: sellerUserPdaKey,
+          contribution: contributionPdaKey,
+          buyer: buyerWallet,
+          buyerAta: buyerAtaKey?.address,
+          seller: sellerPubkey,
+          sellerAta: sellerAtaKey?.address,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .rpc();
+
+      await confirmTransaction(program, tx);
+
+      return tx;
+    },
+    onSuccess: async (signature) => {
+      transactionToast(signature, 'Reward purchased ! ');
+    },
+    onError: () => toast.error('Error selling contribution...'),
+  });
+
   return {
     allSaleTransactions,
     getSaleTxFromContributionPdaPublicKey,
     createSaleTransaction,
     getProjectSalesPdaFromProjectPdaKey,
     salesAccountsFromPublicKeysArray,
+    completeSaleTransaction,
   };
 }

@@ -21,14 +21,12 @@ const ProjectMarketplace = (props: Props) => {
   } = useBefundrProgramSaleTransaction();
 
   //* LOCAL STATE
-  const { data: projectSalesPda } = getProjectSalesPdaFromProjectPdaKey(
-    new PublicKey(props.projectId)
-  );
+  const { data: projectSalesPda, refetch: refetchProjectSalesPda } =
+    getProjectSalesPdaFromProjectPdaKey(new PublicKey(props.projectId));
 
   //get all the sale transaction of the project
-  const { data: salesAccount } = salesAccountsFromPublicKeysArray(
-    projectSalesPda?.saleTransactions
-  );
+  const { data: salesAccount, refetch: refetchSalesAccount } =
+    salesAccountsFromPublicKeysArray(projectSalesPda?.saleTransactions);
 
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
@@ -55,6 +53,9 @@ const ProjectMarketplace = (props: Props) => {
               reward={reward}
               projectImageUrl={props.project.imageUrl}
               rewardSales={rewardSales}
+              projectId={new PublicKey(props.projectId)}
+              refetchProjectSalesPda={refetchProjectSalesPda}
+              refetchSalesAccount={refetchSalesAccount}
             />
             <Divider />
           </div>

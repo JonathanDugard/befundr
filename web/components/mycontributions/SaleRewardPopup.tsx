@@ -42,6 +42,9 @@ const SaleRewardPopup = (props: Props) => {
       if (!publicKey) {
         throw new Error('missing user wallet');
       }
+      if (sellingPrice < 1) {
+        throw new Error('Selling price must be at least 1$');
+      }
       await createSaleTransaction.mutateAsync({
         projectPdaPublicKey: props.projectPdaKey,
         contributionPdaPublicKey: new PublicKey(props.contributionPdaPublicKey),
@@ -53,6 +56,11 @@ const SaleRewardPopup = (props: Props) => {
       props.refetchSaleTransaction();
       props.handleClose();
     } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('An unexpected error occurred');
+      }
       console.error('error creating sale :', error);
     } finally {
       setIsLoading(false);

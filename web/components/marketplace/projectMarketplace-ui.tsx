@@ -11,7 +11,7 @@ import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig
 import MainButtonLabelDynamic from '../z-library/button/MainButtonLabelDynamic';
 import SecondaryButtonLabelDynamic from '../z-library/button/SecondaryButtonLabelDynamic';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
-import BuyRewardPopup from '../z-library/popup/BuyRewardPopup';
+import BuyRewardPopup from './BuyRewardPopup';
 import {
   calculateTimeElapsed,
   convertSplAmountToNumber,
@@ -20,15 +20,22 @@ import { BN } from '@coral-xyz/anchor';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { PublicKey } from '@solana/web3.js';
 
 export const RewardMarketplaceBlock = ({
   reward,
   projectImageUrl,
   rewardSales,
+  projectId,
+  refetchProjectSalesPda,
+  refetchSalesAccount,
 }: {
   reward: Reward;
   projectImageUrl: string;
   rewardSales: AccountWrapper<SaleTransaction>[];
+  projectId: PublicKey;
+  refetchProjectSalesPda: () => void;
+  refetchSalesAccount: () => void;
 }) => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
@@ -99,8 +106,13 @@ export const RewardMarketplaceBlock = ({
                 <div className="grid grid-cols-2 justify-items-stretch items-center w-full my-1">
                   <div className="flex justify-start gap-1">
                     <p className="textStyle-body">
-                      {calculateTimeElapsed(saleTx.account.creationTimestamp)}{' '}
-                      days ago
+                      {calculateTimeElapsed(
+                        saleTx.account.creationTimestamp
+                      ) === 0
+                        ? 'Today'
+                        : `${calculateTimeElapsed(
+                            saleTx.account.creationTimestamp
+                          )} days ago`}
                     </p>
                     {saleTx.account.seller === userPdaKey?.toString() && (
                       <div className="textStyle-body !text-custom-red">
@@ -148,6 +160,9 @@ export const RewardMarketplaceBlock = ({
           reward={reward}
           saleTx={selectedSaleTx}
           handleClose={() => setIsShowPopup(false)}
+          projectId={projectId}
+          refetchProjectSalesPda={refetchProjectSalesPda}
+          refetchSalesAccount={refetchSalesAccount}
         />
       )}
     </div>
