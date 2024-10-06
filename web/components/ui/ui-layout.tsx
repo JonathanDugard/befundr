@@ -20,6 +20,7 @@ import Image from 'next/image';
 import { useWallet } from '@solana/wallet-adapter-react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ClaimFaucetPopup from '../z-library/popup/ClaimFaucetPopup';
+import AtaBalance from '../z-library/display_elements/AtaBalance';
 
 export function UiLayout({
   children,
@@ -76,8 +77,13 @@ export function UiLayout({
             <SecondaryButtonLabel label="Claim faucet" />
           </button>
         )}
-        <div className="flex-none mx-4">
+        <div className="bg-main cursor-pointer flex-none mx-2">
+          <AtaBalance />
+        </div>
+        <div className="flex-none mx-2">
           <WalletButton />
+        </div>
+        <div className="flex-none mx-2">
           <ClusterUiSelect />
         </div>
       </div>
