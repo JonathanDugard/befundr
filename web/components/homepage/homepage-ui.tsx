@@ -16,17 +16,26 @@ export const KeyFigures = () => {
 
   const { allProjectsAccounts } = useBefundrProgramProject();
   const { allContributionsAccounts } = useBefundrProgramContribution();
+  const [formattedTotalAmountRaised, setFormattedTotalAmountRaised] = useState<string>('');
+
 
   const projectsFunded = allProjectsAccounts.data?.length || 0;
   const totalAmountRaised = allProjectsAccounts.data
     ? allProjectsAccounts.data.reduce((sum, project) => sum + project.account.raisedAmount, 0)
     : 0;
 
-  const formattedTotalAmountRaised = new Intl.NumberFormat(navigator.language, {
-    style: 'currency',
-    currency: 'USD', // Change this to the desired currency
-  }).format(convertSplAmountToNumber(BigInt(totalAmountRaised)));
-  const contributors = allContributionsAccounts.data?.length || 0;
+    useEffect(() => {
+      const formatAmount = () => {
+        const formattedAmount = new Intl.NumberFormat(navigator.language, {
+          style: 'currency',
+          currency: 'USD', // Change this to the desired currency
+        }).format(convertSplAmountToNumber(BigInt(totalAmountRaised)));
+        setFormattedTotalAmountRaised(formattedAmount);
+      };
+      formatAmount();
+    }, [totalAmountRaised]);
+
+  const contributors = allContributionsAccounts.data?.length || 0; 
 
   return (
     <div className="flex flex-col items-center justify-start w-full my-10">
@@ -91,7 +100,7 @@ export const HighlightSelection = ({ title }: { title: string }) => {
   );
 };
 
-export const EndingSoonProjects = () => {
+export const EndingSoonProjects = ({ title }: { title: string }) => {
   const { allProjectsAccounts } = useBefundrProgramProject();
   const [endingSoonProjects, setEndingSoonProjects] = useState<
     AccountWrapper<Project>[]
