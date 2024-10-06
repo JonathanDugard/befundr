@@ -1,5 +1,4 @@
 'use client';
-import { projects } from '@/data/localdata';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Divider from '../z-library/display_elements/Divider';
 import WhiteBlock from '../z-library/display_elements/WhiteBlock';
@@ -10,7 +9,8 @@ import { transformProgramAccountToProject } from '@/utils/functions/projectsFunc
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
-
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export const KeyFigures = () => {
 
@@ -92,13 +92,30 @@ export const HighlightSelection = ({ title }: { title: string }) => {
 };
 
 export const UserDashboard = () => {
+  
+  const { publicKey } = useWallet();
+  const { userAccountFromWalletPublicKey } = useBefundrProgramUser();
+  const { getUserPdaPublicKey } = useBefundrProgramUser();
+  const { getAllUserContributions } = useBefundrProgramContribution();
+  
+  const { data: userPdaPublicKey } = getUserPdaPublicKey(publicKey);
+  const { data: userContributions } = getAllUserContributions(userPdaPublicKey);
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromWalletPublicKey(publicKey);
+
+  const fundedProjects = userProfile?.createdProjectCounter || 0;
+  const ownedContributions = userContributions?.length || 0;
+
+  const [isUserHasAccount, setIsUserHasAccount] = useState(false);
+
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
       <h2 className="textStyle-subtitle">My dashboard</h2>
       <WhiteBlock>
         <div className="flex justify-start items-baseline gap-4">
           <p className="textStyle-subheadline">
-            <strong className="text-4xl text-accent">8 </strong>funded projects
+            <strong className="text-4xl text-accent">{fundedProjects} </strong>
+            {fundedProjects > 1 ? ' projects' : ' project'}
           </p>
           <Link href={'/profile/myfundedprojects/'}>
             <MainButtonLabel label="My projects" />
@@ -106,8 +123,8 @@ export const UserDashboard = () => {
         </div>
         <div className="flex justify-start items-baseline gap-4">
           <p className="textStyle-subheadline">
-            <strong className="text-4xl text-accent">10 </strong>owned
-            contributions
+            <strong className="text-4xl text-accent">{ownedContributions} </strong>
+            owned {ownedContributions > 1 ? ' contributions' : ' contribution'}
           </p>
           <Link href={'/profile/mycontributions/'}>
             <MainButtonLabel label="My contributions" />
