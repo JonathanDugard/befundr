@@ -159,6 +159,7 @@ export function useBefundrProgramProject() {
         description: reward.description,
         price: new BN(reward.price),
         maxSupply: reward.maxSupply ? new BN(reward.maxSupply) : null, // if unlimited supply, set to null
+        currentSupply: new BN(0),
       }));
 
       // call of the method
