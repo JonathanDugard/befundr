@@ -8,7 +8,6 @@ import {
   getContributionByRewardIdAndUserAddress,
   getContributionByUserAddress,
 } from '@/utils/functions/contributionsFunctions';
-import { contributions, user1 } from '@/data/localdata';
 import { useWallet } from '@solana/wallet-adapter-react';
 import FundedProjectCard from '../z-library/card/FundedProjectCard';
 import Divider from '../z-library/display_elements/Divider';

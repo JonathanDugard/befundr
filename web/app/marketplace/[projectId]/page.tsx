@@ -1,7 +1,6 @@
 'use client';
 import { useBefundrProgramProject } from '@/components/befundrProgram/befundr-project-access';
 import ProjectMarketplace from '@/components/marketplace/projectMarketplace';
-import { projects } from '@/data/localdata';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { PublicKey } from '@solana/web3.js';
 import React, { useEffect, useState } from 'react';

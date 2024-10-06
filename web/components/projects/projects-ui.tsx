@@ -1,4 +1,3 @@
-import { categories } from '@/data/localdata';
 import Selector from '../z-library/button/Selector';
 import ToggleSwitch from '../z-library/button/ToggleSwitch';
 import Divider from '../z-library/display_elements/Divider';

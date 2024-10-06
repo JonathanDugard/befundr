@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import { getRewardByRewardId } from '@/utils/functions/rewardsFunctions';
-import { contributions, projects, rewards, sales } from '@/data/localdata';
 import {
   getProjectByRewardId,
   transformAccountToProject,

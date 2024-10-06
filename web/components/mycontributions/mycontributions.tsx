@@ -4,7 +4,6 @@ import InputField from '../z-library/button/InputField';
 import TextArea from '../z-library/button/TextArea';
 import PicSelector from '../z-library/button/PicSelector';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import { contributions, user1 } from '@/data/localdata';
 import { getContributionByUserAddress } from '@/utils/functions/contributionsFunctions';
 import ContributionCard from '../z-library/card/ContributionCard';
 import { useWallet } from '@solana/wallet-adapter-react';

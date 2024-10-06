@@ -1,6 +1,5 @@
 'use client';
 
-import { contributions, sales, user1 } from '@/data/localdata';
 import { getSaleTransactionByRewardId } from '@/utils/functions/saleTransactionFunctions';
 import { useEffect, useState } from 'react';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
