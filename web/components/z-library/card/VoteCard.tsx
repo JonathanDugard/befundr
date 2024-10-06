@@ -19,13 +19,13 @@ const FundsRequestCard = (props: Props) => {
           <InfoLabel label={props.fundsRequest.status} />
         </div>
         <p className="textStyle-subheadline">
-          Amount ask : {props.fundsRequest.amountAsked}
+          Amount requested: {props.fundsRequest.amountAsked}
         </p>
         <p className="textStyle-subheadline">
           {calculateTimeElapsed(props.fundsRequest.timestamp)} days ago
         </p>
         <p className="textStyle-body !font-normal !text-textColor-main">
-          Expected deliveries :
+          Expected deliveries:
         </p>
         <p className="textStyle-body">{props.fundsRequest.description}</p>
       </div>

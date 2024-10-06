@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Link from 'next/link';
@@ -8,9 +8,9 @@ import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
+import { WalletButton } from '../solana/solana-provider';
 
 type Props = {
   reward: Reward;
@@ -39,8 +39,8 @@ const RewardCardDetailled = (props: Props) => {
         <ImageWithFallback
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
-          classname="w-1/2 md:w-1/3 aspect-square object-cover"
-          src={props.reward.imageUrl}
+          classname=" aspect-square object-cover"
+          src={props.project.imageUrl}
           height={400}
           width={400}
         />
@@ -74,9 +74,13 @@ const RewardCardDetailled = (props: Props) => {
               <Link href={`/marketplace/${props.projectId}`}>
                 <SecondaryButtonLabel label="Go to marketplace" />
               </Link>
-              <button onClick={() => setIsShowPopup(true)}>
-                <MainButtonLabel label="Contribute" />
-              </button>
+              {userEntryAddress ? (
+                <button onClick={() => setIsShowPopup(true)}>
+                  <MainButtonLabel label="Contribute" />
+                </button>
+              ) : (
+                <WalletButton />
+              )}
             </div>
           )}
           {/* button if status realizing */}

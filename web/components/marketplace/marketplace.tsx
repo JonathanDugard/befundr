@@ -1,9 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { ProjectsFilters } from '../projects/projects-ui';
-import { projects } from '@/data/localdata';
-import ProjectCard from '../z-library/card/ProjectCard';
-import RewardCardMarketplace from '../z-library/card/RewardCardMarketplace';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
 import ProjectCardMarketplace from '../z-library/card/ProjectCardMarketplace';
@@ -35,7 +32,7 @@ const Marketplace = (/*props: Props*/) => {
         projects
       </h1>
       <h2 className="textStyle-headline -mt-10">
-        Find available reward to buy for ongoing projects
+        Find available rewards to buy for ongoing projects
       </h2>
       <ProjectsFilters />
       <div

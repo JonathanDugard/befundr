@@ -43,11 +43,6 @@ const FundedProjectCard = (props: Props) => {
       </div>
       {/* second column */}
       <div className="flex flex-col justify-start items-start gap-4 w-2/3">
-        {/* <FundsOverviewBar
-            raisedAmount={props.project.raisedAmount}
-            unlockAmount={getUnlockedFundsForAProject(projectToDisplay)}
-            askForUnlockAmount={getAskedFundsForAProject(projectToDisplay)}
-          /> */}
         <div className="flex justify-between items-start gap-4 w-full">
           {/* key figures */}
           <div className="flex flex-col justify-start items-start gap-4 w-full">
@@ -69,30 +64,12 @@ const FundedProjectCard = (props: Props) => {
               </strong>
               contributors
             </p>
-            {/* <p className="textStyle-body">
-                <strong className="textStyle-subtitle">
-                  {getUnlockedFundsForAProject(projectToDisplay)} ${' '}
-                </strong>
-                unlocked
-              </p> */}
-            {/* <p className="textStyle-body">
-                <strong className="textStyle-subtitle">
-                  {getAskedFundsForAProject(projectToDisplay)} ${' '}
-                </strong>
-                ask for unlock
-              </p> */}
           </div>
           <div className="flex flex-col justify-center items-center gap-4 w-1/3">
             <TrustScore trustValue={trustScore} />
             <p>Trust score : {trustScore.toFixed(0)}</p>
           </div>
         </div>
-        {/* {isProjectHasVoteOngoing(projectToDisplay) && (
-            <p className="w-full flex justify-center items-center gap-2 textStyle-body">
-              <FaCircle className="text-custom-red" />
-              Funds unlock vote ongoing
-            </p>
-          )} */}
         <Link
           href={`/projects/${props.projectId}`}
           className="w-full flex justify-end"

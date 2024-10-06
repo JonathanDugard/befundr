@@ -63,12 +63,12 @@ type Contribution = {
 };
 
 type SaleTransaction = {
-  seller: string;
-  projectId: string;
-  rewardId: string;
+  seller: PublicKey;
+  contribution: PublicKey;
   contributionAmount: number;
   sellingPrice: number;
   creationTimestamp: number;
+  rewardId: number;
 };
 
 type FundsRequest = {

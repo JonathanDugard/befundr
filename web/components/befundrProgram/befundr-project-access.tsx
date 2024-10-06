@@ -10,6 +10,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
+import { confirmTransaction } from '@/utils/functions/utilFunctions';
 
 //* TYPE
 interface CreateProjectArgs {
@@ -158,10 +159,11 @@ export function useBefundrProgramProject() {
         description: reward.description,
         price: new BN(reward.price),
         maxSupply: reward.maxSupply ? new BN(reward.maxSupply) : null, // if unlimited supply, set to null
+        currentSupply: new BN(0),
       }));
 
       // call of the method
-      return await program.methods
+      const tx = await program.methods
         .createProject(
           project.name,
           project.imageUrl,
@@ -181,6 +183,11 @@ export function useBefundrProgramProject() {
           tokenProgram: TOKEN_PROGRAM_ID,
         }) // definition of the PDA address with the seed generated
         .rpc(); // launch the transaction
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return newProjectAddress.toString();
     },
     onSuccess: async (signature) => {
       transactionToast(signature, 'Project created');

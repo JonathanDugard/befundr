@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import InputField from '../z-library/button/InputField';
 import TextArea from '../z-library/button/TextArea';
 import PicSelector from '../z-library/button/PicSelector';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useWallet } from '@solana/wallet-adapter-react';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
@@ -15,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { concatFileName } from '@/utils/functions/utilFunctions';
 import { WalletButton } from '../solana/solana-provider';
+import DisabledButtonLabel from '../z-library/button/DisabledButtonLabel';
 
 const MyProfile = () => {
   //* GLOBAL STATE
@@ -141,6 +141,9 @@ const MyProfile = () => {
         bio: userToDisplay.bio || '',
         city: userToDisplay.city || '',
       });
+
+      // Update the state to reflect that the user now has an account
+      setIsUserHasAccount(true);
     } catch (error) {
       console.error('Error creating profile:', error);
     }
@@ -162,62 +165,69 @@ const MyProfile = () => {
         <h2 className="textStyle-headline">
           Set the public information of your profile
         </h2>
-        <button
-          onClick={
-            isUserHasAccount ? handleProfileUpdate : handleProfileCreation
-          }
-          disabled={isLoading}
-        >
-          <MainButtonLabelAsync
-            label={isUserHasAccount ? 'Update my profile' : 'Create my profile'}
-            isLoading={isLoading}
-            loadingLabel={
-              isUserHasAccount ? 'Updating profile' : 'Creating profile'
-            }
-          />
-        </button>
       </div>
+
       {!isUserHasAccount && (
         <InfoLabel label="You don't have public profile yet" />
       )}
-      <div className="flex flex-col justify-start items-start gap-4">
-        <PicSelector
-          label="Your profile picture"
-          placeholder="Select your profile picture"
-          setSelectedPic={handleProfilePicChange}
-          maxSize={2}
-          objectFit="cover"
-          defaultImage={userToDisplay.avatarUrl}
-        />
-        <InputField
-          label="Your complete name"
-          placeholder="Type your firstname and lastname"
-          type="text"
-          value={userToDisplay.name || ''}
-          handleChange={handleChange}
-          inputName="name"
-        />
-        <InputField
-          label="Your city"
-          placeholder="Type your city"
-          type="text"
-          value={userToDisplay.city || ''}
-          handleChange={handleChange}
-          inputName="city"
-        />
-        <TextArea
-          label="Quick presentation"
-          placeholder="Bring as more details as possible (mainly for founder)"
-          rows={5}
-          value={userToDisplay.bio || ''}
-          handleChange={handleChange}
-          inputName="bio"
-        />
-        <div className="flex justify-start items-center gap-2">
-          <p>Your DID profile status</p>
-          <button>
-            <MainButtonLabel label="Sync my DID" />
-          </button>
+
+      <div className="relative inline-flex items-center">
+        <DisabledButtonLabel label="Connect my DID" displaySoonBadge />
+      </div>
+      <div className="flex flex-row justify-start items-start gap-4 w-full">
+        <div className="w-1/5 max-w-3xl">
+          <PicSelector
+            label="Profile picture"
+            placeholder="Select your profile picture"
+            setSelectedPic={handleProfilePicChange}
+            maxSize={2}
+            objectFit="cover"
+            defaultImage={userToDisplay.avatarUrl}
+          />
+        </div>
+        <div className="flex flex-col justify-start items-start gap-4 w-2/5">
+          <InputField
+            label="Complete name"
+            placeholder="Type your Firstname and Lastname"
+            type="text"
+            value={userToDisplay.name || ''}
+            handleChange={handleChange}
+            inputName="name"
+          />
+          <InputField
+            label="City"
+            placeholder="Type your city"
+            type="text"
+            value={userToDisplay.city || ''}
+            handleChange={handleChange}
+            inputName="city"
+          />
+          <TextArea
+            label="Quick presentation"
+            placeholder="Who are you?"
+            rows={5}
+            value={userToDisplay.bio || ''}
+            handleChange={handleChange}
+            inputName="bio"
+          />
+          <div className="flex justify-end items-center gap-2 w-full mt-6">
+            <button
+              onClick={
+                isUserHasAccount ? handleProfileUpdate : handleProfileCreation
+              }
+              disabled={isLoading}
+            >
+              <MainButtonLabelAsync
+                label={
+                  isUserHasAccount ? 'Update my profile' : 'Create my profile'
+                }
+                isLoading={isLoading}
+                loadingLabel={
+                  isUserHasAccount ? 'Updating profile' : 'Creating profile'
+                }
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

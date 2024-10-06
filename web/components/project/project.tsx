@@ -1,6 +1,5 @@
 'use client';
-import { project1, user1 } from '@/data/localdata';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import Divider from '../z-library/display_elements/Divider';
@@ -22,14 +21,13 @@ import {
   FundsRequestBlock,
 } from './project-ui';
 import Link from 'next/link';
-import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
 import { ProjectStatus } from '@/data/projectStatus';
 import { BN } from '@coral-xyz/anchor';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 type Props = {
   project: Project;
@@ -40,7 +38,9 @@ type Props = {
 const Project = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
-  const { userAccountFromAccountPublicKey } = useBefundrProgramUser();
+  const { publicKey } = useWallet();
+  const { userAccountFromAccountPublicKey, getUserPdaPublicKey } =
+    useBefundrProgramUser();
 
   //* LOCAL STATE
   const [selectedMenu, setSelectedMenu] = useState<
@@ -59,6 +59,8 @@ const Project = (props: Props) => {
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromAccountPublicKey(new PublicKey(props.project.user));
+
+  const { data: userPdaKey } = getUserPdaPublicKey(publicKey);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -97,7 +99,7 @@ const Project = (props: Props) => {
                   {convertSplAmountToNumber(new BN(props.project.raisedAmount))}{' '}
                   $
                 </strong>{' '}
-                on {convertSplAmountToNumber(new BN(props.project.goalAmount))}$
+                out of {convertSplAmountToNumber(new BN(props.project.goalAmount))}$
                 goal
               </p>
               <p className="textStyle-subheadline">
@@ -201,7 +203,7 @@ const Project = (props: Props) => {
           </button>
         )}
       </div>
-      {props.project.user === user1.owner && (
+      {props.project.user === userPdaKey?.toString() && (
         <div className="w-full h-10 bg-accent flex justify-center items-center px-4  -mt-14 mb-10">
           {selectedMenu === 'update' && (
             <button>

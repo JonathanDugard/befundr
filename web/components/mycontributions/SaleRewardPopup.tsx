@@ -10,7 +10,6 @@ import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-sale
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import toast from 'react-hot-toast';
-import { convertNumberToSplAmount } from '@/utils/functions/utilFunctions';
 
 type Props = {
   reward: Reward;
@@ -18,6 +17,7 @@ type Props = {
   handleClose: () => void;
   contributionPdaPublicKey: string;
   refetchSaleTransaction: () => void;
+  projectPdaKey: PublicKey;
 };
 
 const SaleRewardPopup = (props: Props) => {
@@ -41,7 +41,11 @@ const SaleRewardPopup = (props: Props) => {
       if (!publicKey) {
         throw new Error('missing user wallet');
       }
+      if (sellingPrice < 1) {
+        throw new Error('Selling price must be at least 1$');
+      }
       await createSaleTransaction.mutateAsync({
+        projectPdaPublicKey: props.projectPdaKey,
         contributionPdaPublicKey: new PublicKey(props.contributionPdaPublicKey),
         userPdaPublicKey,
         userWallet: publicKey,
@@ -51,6 +55,11 @@ const SaleRewardPopup = (props: Props) => {
       props.refetchSaleTransaction();
       props.handleClose();
     } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('An unexpected error occurred');
+      }
       console.error('error creating sale :', error);
     } finally {
       setIsLoading(false);

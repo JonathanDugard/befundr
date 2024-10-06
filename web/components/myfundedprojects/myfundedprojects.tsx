@@ -1,14 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import InputField from '../z-library/button/InputField';
-import TextArea from '../z-library/button/TextArea';
-import PicSelector from '../z-library/button/PicSelector';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import {
-  getContributionByRewardIdAndUserAddress,
-  getContributionByUserAddress,
-} from '@/utils/functions/contributionsFunctions';
-import { contributions, user1 } from '@/data/localdata';
+import React, { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import FundedProjectCard from '../z-library/card/FundedProjectCard';
 import Divider from '../z-library/display_elements/Divider';

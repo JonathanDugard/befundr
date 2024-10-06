@@ -1,5 +1,4 @@
 import Help from '@/components/help/Help';
-import Whypage from '@/components/whypage/Whypage';
 import React from 'react';
 
 type Props = {};

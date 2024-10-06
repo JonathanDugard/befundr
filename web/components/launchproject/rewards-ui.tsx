@@ -23,7 +23,7 @@ export const RewardsBlock = (props: RewardsProps) => {
   const [isAddReward, setIsAddReward] = useState(false);
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
-      <h3 className="textStyle-headline">Step 3 : Contribution rewards</h3>
+      <h3 className="textStyle-headline">Step 3: Contribution Rewards</h3>
       <p className="textStyle-subheadline -mt-4">
         Define between one to four rewards
       </p>

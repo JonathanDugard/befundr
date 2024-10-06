@@ -64,24 +64,24 @@ const ProjectCard = (props: Props) => {
         </div>
         {/* project infos */}
         <div className="flex flex-col justify-start items-stretch w-1/2 p-2 h-full ">
-          <p className="textStyle-headline !font-normal">
+          <p className="textStyle-subheadline !text-textColor-main !font-normal truncate">
             {props.project.name}
           </p>
           {userProfile && (
-            <p className="textStyle-subheadline">By {userProfile.name}</p>
+            <p className="textStyle-body">By {userProfile.name}</p>
           )}
           <div className="my-1">
             <Divider />
           </div>
-          <p className="textStyle-subheadline">
+          <p className="textStyle-body">
             {convertSplAmountToNumber(new BN(props.project.raisedAmount))}$
             raised
           </p>
-          <p className="textStyle-subheadline">
+          <p className="textStyle-body">
             {calculateTimeRemaining(props.project.endTime)} days remaining
           </p>
 
-          <p className="textStyle-subheadline">
+          <p className="textStyle-body">
             Trust score :{' '}
             {calculateTrustScore(
               props.project.safetyDeposit,

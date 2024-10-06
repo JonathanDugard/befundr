@@ -3,7 +3,6 @@ import PopupLayout from './PopupLayout';
 import SecondaryButtonLabel from '../button/SecondaryButtonLabel';
 import MainButtonLabel from '../button/MainButtonLabel';
 import Image from 'next/image';
-import InputField from '../button/InputField';
 
 type Props = {
   reward: Reward;

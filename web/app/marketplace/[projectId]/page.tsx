@@ -1,7 +1,6 @@
 'use client';
 import { useBefundrProgramProject } from '@/components/befundrProgram/befundr-project-access';
 import ProjectMarketplace from '@/components/marketplace/projectMarketplace';
-import { projects } from '@/data/localdata';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { PublicKey } from '@solana/web3.js';
 import React, { useEffect, useState } from 'react';
@@ -37,7 +36,12 @@ const Page = (props: Props) => {
   }, [projectData]);
 
   if (projectToDisplay)
-    return <ProjectMarketplace project={projectToDisplay} />;
+    return (
+      <ProjectMarketplace
+        project={projectToDisplay}
+        projectId={props.params.projectId}
+      />
+    );
 };
 
 export default Page;

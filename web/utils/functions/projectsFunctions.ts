@@ -12,24 +12,6 @@ export const getProjectsByOwnerId = (
   return projects.filter((project) => project.user === ownerId);
 };
 
-export const getUnlockedFundsForAProject = (project: Project): number => {
-  return project.fundsRequests
-    .filter((fundRequest) => fundRequest.status === 'accepted')
-    .reduce((total, fundRequest) => total + fundRequest.amountAsked, 0);
-};
-
-export const getAskedFundsForAProject = (project: Project): number => {
-  return project.fundsRequests
-    .filter((fundRequest) => fundRequest.status === 'ongoing')
-    .reduce((total, fundRequest) => total + fundRequest.amountAsked, 0);
-};
-
-export const isProjectHasVoteOngoing = (project: Project): boolean => {
-  return project.fundsRequests.some(
-    (fundRequest) => fundRequest.status === 'ongoing'
-  );
-};
-
 export const getProgressPercentage = (start: number, end: number) => {
   return Math.min(Math.round((start / end) * 100), 100);
 };
@@ -73,7 +55,6 @@ export const transformAccountToProject = (account: any): Project => {
     endTime: new BN(account.endTime).toNumber(),
     status: status.enum,
     contributionCounter: account.contributionCounter,
-    trustScore: account.trustScore,
     rewards: account.rewards.map((reward: any) => ({
       id: reward.id,
       name: reward.name,
