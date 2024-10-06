@@ -1,6 +1,5 @@
 import Selector from '../z-library/button/Selector';
 import ToggleSwitch from '../z-library/button/ToggleSwitch';
-import Divider from '../z-library/display_elements/Divider';
 import DividerLight from '../z-library/display_elements/DividerLight';
 import SearchField from '../z-library/button/SearchField';
 import WhiteBlock from '../z-library/display_elements/WhiteBlock';

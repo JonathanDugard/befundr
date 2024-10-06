@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Link from 'next/link';
@@ -8,7 +8,6 @@ import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
 import { WalletButton } from '../solana/solana-provider';

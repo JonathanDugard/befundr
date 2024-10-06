@@ -10,7 +10,6 @@ import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-sale
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import toast from 'react-hot-toast';
-import { convertNumberToSplAmount } from '@/utils/functions/utilFunctions';
 
 type Props = {
   reward: Reward;

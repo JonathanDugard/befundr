@@ -1,7 +1,5 @@
 'use client';
 import Image from 'next/image';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import { FaRegIdCard } from 'react-icons/fa';
 import Slider from '../z-library/button/Slider';
 import TrustScore from '../z-library/display_elements/TrustScore';
 import InputField from '../z-library/button/InputField';

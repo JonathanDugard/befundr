@@ -1,12 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
+import { useState } from 'react';
 import Divider from '../z-library/display_elements/Divider';
-import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
-import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
 import MainButtonLabelDynamic from '../z-library/button/MainButtonLabelDynamic';
-import SecondaryButtonLabelDynamic from '../z-library/button/SecondaryButtonLabelDynamic';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import BuyRewardPopup from './BuyRewardPopup';
 import {

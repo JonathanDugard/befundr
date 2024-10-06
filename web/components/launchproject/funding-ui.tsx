@@ -1,7 +1,4 @@
-import {
-  convertTimestampToDateString,
-  getDateFromTimestamp,
-} from '@/utils/functions/utilFunctions';
+import { getDateFromTimestamp } from '@/utils/functions/utilFunctions';
 import InputField from '../z-library/button/InputField';
 
 type FundingProps = {

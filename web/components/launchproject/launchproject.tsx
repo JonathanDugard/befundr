@@ -16,10 +16,7 @@ import { ValidationBlock } from './validation-ui';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
-import { PublicKey } from '@solana/web3.js';
 import { ProjectCategory } from '@/data/category';
-import Link from 'next/link';
-import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import { getATA } from '@/utils/functions/AtaFunctions';
 import { useBefundrProgramGlobal } from '../befundrProgram/befundr-global-access';
 import { prepareDataForProjectCreation } from './utils';
@@ -27,14 +24,12 @@ import { prepareDataForProjectCreation } from './utils';
 const Launchproject = () => {
   //* GENERAL STATE
   const router = useRouter();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey } = useWallet();
   const { connection } = useBefundrProgramGlobal();
   const { createProject } = useBefundrProgramProject();
   const {
-    userAccountFromAccountPublicKey,
     userAccountFromWalletPublicKey,
     getUserPdaPublicKey: getUserEntryAddress,
-    getUserWalletAtaBalance,
   } = useBefundrProgramUser();
 
   //* LOCAL STATE

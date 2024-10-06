@@ -8,7 +8,6 @@ import ImageWithFallback from '../display_elements/ImageWithFallback';
 import Divider from '../display_elements/Divider';
 import { useBefundrProgramSaleTransaction } from '@/components/befundrProgram/befundr-saleTransaction-access';
 import { PublicKey } from '@solana/web3.js';
-import InfoLabel from '../display_elements/InfoLabel';
 
 type Props = {
   contribution: Contribution;

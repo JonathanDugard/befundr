@@ -21,8 +21,6 @@ import {
   FundsRequestBlock,
 } from './project-ui';
 import Link from 'next/link';
-import { Button } from '@solana/wallet-adapter-react-ui/lib/types/Button';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';

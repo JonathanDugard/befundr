@@ -1,8 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { ProjectsFilters } from '../projects/projects-ui';
-import ProjectCard from '../z-library/card/ProjectCard';
-import RewardCardMarketplace from '../z-library/card/RewardCardMarketplace';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
 import ProjectCardMarketplace from '../z-library/card/ProjectCardMarketplace';

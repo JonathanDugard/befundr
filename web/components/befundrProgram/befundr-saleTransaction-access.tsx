@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { getATA, getOrCreateATA } from '@/utils/functions/AtaFunctions';
+import { getATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {
   confirmTransaction,

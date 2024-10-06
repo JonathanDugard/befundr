@@ -2,20 +2,13 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
-import { getRewardByRewardId } from '@/utils/functions/rewardsFunctions';
-import {
-  getProjectByRewardId,
-  transformAccountToProject,
-} from '@/utils/functions/projectsFunctions';
+import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { transformAccountToContribution } from '@/utils/functions/contributionsFunctions';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import Image from 'next/image';
 import { getMinSellingPrice } from '@/utils/functions/saleTransactionFunctions';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
-import {
-  calculateTimeRemaining,
-  convertSplAmountToNumber,
-} from '@/utils/functions/utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
 import RedeemRewardPopup from '../z-library/popup/RedeemRewardPopup';
 import CancelRewardSalePopup from '../z-library/popup/CancelRewardSalePopup';
@@ -25,7 +18,6 @@ import { useBefundrProgramProject } from '../befundrProgram/befundr-project-acce
 import { BN } from '@coral-xyz/anchor';
 import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
 import SaleRewardPopup from './SaleRewardPopup';
-import toast from 'react-hot-toast';
 import { soonToast } from '../z-library/display_elements/SoonToast';
 
 type Props = {
