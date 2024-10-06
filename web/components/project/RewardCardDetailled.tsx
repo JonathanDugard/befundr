@@ -39,8 +39,8 @@ const RewardCardDetailled = (props: Props) => {
         <ImageWithFallback
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
-          classname="w-1/2 md:w-1/3 aspect-square object-cover"
-          src={props.reward.imageUrl}
+          classname=" aspect-square object-cover"
+          src={props.project.imageUrl}
           height={400}
           width={400}
         />
