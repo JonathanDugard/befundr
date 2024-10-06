@@ -39,6 +39,29 @@ export function UiLayout({
   const [isShowPopup, setIsShowPopup] = React.useState(false);
 
   return (
+      <>
+      {/* MOBILE */}
+      <div className="h-full md:hidden flex  flex-col items-center justify-center p-4">
+        <div className="relative w-full  h-28">
+          <Image
+            className="absolute object-contain"
+            alt="Logo"
+            src="/logo_befundr_light.png"
+            quality={100}
+            fill
+          />
+        </div>
+        <p className="textStyle-subheadline text-center">
+          beFUNDR is only available on desktop at the moment.
+        </p>
+        <p className="textStyle-subheadline text-center">
+          To learn more on the project, visit our landing page
+        </p>
+        <a href="https://befundr.xyz/" className="my-10" target="_blank">
+          <MainButtonLabel label="Visit our landing page" />
+        </a>
+      </div>
+      {/* DESKTOP */}
     <div className="h-full flex flex-col ">
       {/* top navbar */}
       <div className="navbar h-20 bg-main text-textColor-main flex-col md:flex-row space-y-2 md:space-y-0">
@@ -86,99 +109,98 @@ export function UiLayout({
         <div className="flex-none mx-2">
           <ClusterUiSelect />
         </div>
-      </div>
-      {/* bottom navbar outside profile*/}
-      {!pathname.startsWith('/profile') && (
-        <div className="w-full h-10 bg-second textStyle-body-black flex-col md:flex-row justify-center items-center">
-          <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-1/2 mx-auto">
-            {bottomBarLinks.map(({ label, path }) => (
-              <li key={path}>
-                <Link
-                  className={
-                    pathname.startsWith(path) ? 'text-accent font-normal' : ''
-                  }
-                  href={path}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-            {publicKey && (
-              <li key={'profile'}>
-                <Link
-                  className={
-                    pathname.startsWith('/profile')
-                      ? 'text-accent font-normal'
-                      : ''
-                  }
-                  href={'/profile/myprofile'}
-                >
-                  Your profile
-                </Link>
-              </li>
-            )}
-          </ul>
         </div>
-      )}
-      {/* bottom navbar inside profile*/}
-      {pathname.startsWith('/profile') && (
-        <div className="w-full h-10 bg-accent textStyle-body !text-main flex-col md:flex-row justify-center items-center">
-          <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-2/3 mx-auto">
-            {profileBarLinks.map(({ label, path }) => (
-              <li key={path}>
-                <Link
-                  className={
-                    pathname.startsWith(path)
-                      ? 'text-textColor-main font-normal'
-                      : ''
-                  }
-                  href={path}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-            <Link href={'/'}>
-              <SecondaryButtonLabel label="Leave profile" />
-            </Link>
-          </ul>
+        {/* bottom navbar outside profile*/}
+        {!pathname.startsWith('/profile') && (
+          <div className="w-full h-10 bg-second textStyle-body-black flex-col md:flex-row justify-center items-center">
+            <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-1/2 mx-auto">
+              {bottomBarLinks.map(({ label, path }) => (
+                <li key={path}>
+                  <Link
+                    className={
+                      pathname.startsWith(path) ? 'text-accent font-normal' : ''
+                    }
+                    href={path}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+              {publicKey && (
+                <li key={'profile'}>
+                  <Link
+                    className={
+                      pathname.startsWith('/profile')
+                        ? 'text-accent font-normal'
+                        : ''
+                    }
+                    href={'/profile/myprofile'}
+                  >
+                    Your profile
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+        {/* bottom navbar inside profile*/}
+        {pathname.startsWith('/profile') && (
+          <div className="w-full h-10 bg-second textStyle-body  flex-col md:flex-row justify-center items-center">
+            <ul className="menu flex justify-center items-center px-1 space-x-2 h-10 w-2/3 mx-auto">
+              {profileBarLinks.map(({ label, path }) => (
+                <li key={path}>
+                  <Link
+                    className={
+                      pathname.startsWith(path) ? 'text-accent font-normal' : ''
+                    }
+                    href={path}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+              <Link href={'/'}>
+                <SecondaryButtonLabel label="Leave profile" />
+              </Link>
+            </ul>
+          </div>
+        )}
+        <ClusterChecker>
+          <AccountChecker />
+        </ClusterChecker>
+        {/* set the global ui constrain here */}
+        <div className="flex-grow mx-4 my-4 md:my-10 lg:mx-auto w-full px-4 md:px-60">
+          <Suspense
+            fallback={
+              <div className="text-center my-32">
+                <span className="loading loading-spinner loading-lg"></span>
+              </div>
+            }
+          >
+            {children}
+          </Suspense>
+          <Toaster position="bottom-right" />
         </div>
-      )}
-      <ClusterChecker>
-        <AccountChecker />
-      </ClusterChecker>
-      {/* set the global ui constrain here */}
-      <div className="flex-grow mx-4 my-4 md:my-10 lg:mx-auto w-full px-4 md:px-60">
-        <Suspense
-          fallback={
-            <div className="text-center my-32">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
-        <Toaster position="bottom-right" />
+        <footer className="footer footer-center p-4 bg-main textStyle-body-black">
+          <aside>
+            <p>
+              Generated by{' '}
+              <a
+                className="link hover:text-white"
+                href="https://github.com/solana-developers/create-solana-dapp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                create-solana-dapp
+              </a>
+            </p>
+          </aside>
+        </footer>
+        {isShowPopup && (
+          <ClaimFaucetPopup handleClose={() => setIsShowPopup(false)} />
+        )}
       </div>
-      <footer className="footer footer-center p-4 bg-main textStyle-body-black">
-        <aside>
-          <p>
-            Generated by{' '}
-            <a
-              className="link hover:text-white"
-              href="https://github.com/solana-developers/create-solana-dapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              create-solana-dapp
-            </a>
-          </p>
-        </aside>
-      </footer>
-      {isShowPopup && (
-        <ClaimFaucetPopup handleClose={() => setIsShowPopup(false)} />
-      )}
-    </div>
+    </>
   );
 }
 

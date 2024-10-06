@@ -12,9 +12,20 @@ import MainButtonLabelDynamic from '../z-library/button/MainButtonLabelDynamic';
 import SecondaryButtonLabelDynamic from '../z-library/button/SecondaryButtonLabelDynamic';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import BuyRewardPopup from '../z-library/popup/BuyRewardPopup';
-import { calculateTimeElapsed } from '@/utils/functions/utilFunctions';
+import {
+  calculateTimeElapsed,
+  convertSplAmountToNumber,
+} from '@/utils/functions/utilFunctions';
+import { BN } from '@coral-xyz/anchor';
+import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 
-export const RewardMarketplaceBlock = ({ reward }: { reward: Reward }) => {
+export const RewardMarketplaceBlock = ({
+  reward,
+  projectImageUrl,
+}: {
+  reward: Reward;
+  projectImageUrl: string;
+}) => {
   //* LOCAL DATA
   const [saleTxToDisplay, setSaleTxToDisplay] = useState<
     SaleTransaction[] | null
@@ -42,18 +53,29 @@ export const RewardMarketplaceBlock = ({ reward }: { reward: Reward }) => {
   }, [reward.id]);
 
   // Check if at least on contribution could be sold
-  const hasNonSaleContributions = ownedContributions?.some(
-    (contribution) => !contribution.isForSale
-  );
+  // const hasNonSaleContributions = ownedContributions?.some(
+  //   (contribution) => !contribution.isForSale
+  // );
 
   return (
-    <div className="flex justify-between w-full h-80 gap-6">
+    <div className="flex justify-between w-full  gap-6">
       {/* image */}
-      <div className="w-1/3 aspect-square bg-neutral-400"></div>
+      <div className="w-[200px] h-[200px]">
+        <ImageWithFallback
+          alt="image"
+          classname="object-cover aspect-square"
+          fallbackImageSrc="/images/default_project_image.jpg"
+          height={200}
+          width={200}
+          src={projectImageUrl}
+        />
+      </div>
       {/* infos */}
       <div className="flex flex-col items-start justify-start w-1/3">
         <p className="textStyle-headline">{reward.name}</p>
-        <p className="textStyle-subheadline">Initial price - {reward.price}$</p>
+        <p className="textStyle-subheadline">
+          Initial price - {convertSplAmountToNumber(new BN(reward.price))}$
+        </p>
         <p className="textStyle-subheadline">
           Supply - {reward.currentSupply} rewards
         </p>
@@ -110,20 +132,20 @@ export const RewardMarketplaceBlock = ({ reward }: { reward: Reward }) => {
         </div>
         {/* if no sale offer */}
         {saleTxToDisplay?.length === 0 && (
-          <div className="flex justify-center items-center w-full h-full flex-grow ">
+          <div className="flex justify-center items-center w-full h-full flex-grow mt-10 ">
             <InfoLabel label="No sale offer available" />
           </div>
         )}
         {/* spacer */}
         <div className="flex-grow"></div>
         {/* sell button */}
-        {hasNonSaleContributions && (
+        {/* {hasNonSaleContributions && (
           <div className="mt-4 w-full">
             <button className="w-full">
               <SecondaryButtonLabelDynamic label="Sell your reward" />
             </button>
           </div>
-        )}
+        )} */}
       </div>
       {isShowPopup && selectedSaleTx && (
         <BuyRewardPopup

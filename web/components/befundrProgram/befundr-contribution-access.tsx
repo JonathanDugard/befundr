@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -31,7 +32,9 @@ export function useBefundrProgramContribution() {
   });
 
   //* Fetch user contributions PDA --------------
-  const getUserContributionsPda = (userPdaPublicKey: PublicKey | null) => {
+  const getUserContributionsPda = (
+    userPdaPublicKey: PublicKey | null | undefined
+  ) => {
     return useQuery({
       queryKey: ['userContributionsPda', userPdaPublicKey?.toString()],
       queryFn: async () => {

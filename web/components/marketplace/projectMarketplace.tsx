@@ -31,7 +31,10 @@ const ProjectMarketplace = (props: Props) => {
       {/* rewards */}
       {props.project.rewards.map((reward: Reward, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
-          <RewardMarketplaceBlock reward={reward} />
+          <RewardMarketplaceBlock
+            reward={reward}
+            projectImageUrl={props.project.imageUrl}
+          />
           <Divider />
         </div>
       ))}
