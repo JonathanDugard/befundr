@@ -9,7 +9,7 @@ pub mod utils;
 use instructions::*;
 use state::{ProjectCategory, Reward};
 
-declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
+declare_id!("96wTDUBBReTTxkHzsf3ehi73qqEX97n4JWoV8mcH7gNp");
 
 #[program]
 pub mod befundr {
