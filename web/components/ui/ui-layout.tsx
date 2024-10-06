@@ -56,7 +56,7 @@ export function UiLayout({
         <p className="textStyle-subheadline text-center">
           To learn more on the project, visit our landing page
         </p>
-        <a href="https://befundr.xyz/" className="my-10" target="_blank">
+        <a href="https://www.befundr.xyz/" className="my-10" target="_blank">
           <MainButtonLabel label="Visit our landing page" />
         </a>
       </div>
