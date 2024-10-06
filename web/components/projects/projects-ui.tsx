@@ -7,8 +7,8 @@ import SearchField from '../z-library/button/SearchField';
 import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import ToggleButton from '../z-library/button/ToggleButton';
 import Slider from '../z-library/button/Slider';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import { soonToast } from '../z-library/display_elements/SoonToast';
+import { projectCategoryOptions } from '@/data/category';
+import DisabledButtonLabel from '../z-library/button/DisabledButtonLabel';
 
 export const ProjectsFilters = () => {
   return (
@@ -29,8 +29,10 @@ export const ProjectsFilters = () => {
             </div>
             <Selector
               label="Category"
-              options={categories}
-              onChange={() => {}}
+              options={projectCategoryOptions}
+              handleChange={() => {}}
+              inputName=""
+              value=""
             />
           </div>
           {/* reward filters */}
@@ -44,18 +46,20 @@ export const ProjectsFilters = () => {
                 max={1000}
                 min={0}
                 initValue={50}
-                onChange={() => {}}
+                handleChange={() => {}}
                 step={1}
+                name=""
+                value={0}
               />
             </div>
             <div className="flex justify-between items-end w-full flex-grow pb-2">
               <div className="flex justify-start gap-2">
                 <p className="textStyle-body">Limited supply</p>
-                <ToggleButton />
+                <ToggleButton isSelected={true} />
               </div>
               <div className="flex justify-end gap-2">
                 <p className="textStyle-body">Claimable rewards</p>
-                <ToggleButton />
+                <ToggleButton isSelected={false} />
               </div>
             </div>
           </div>
@@ -70,17 +74,17 @@ export const ProjectsFilters = () => {
                 max={4}
                 min={1}
                 initValue={3}
-                onChange={() => {}}
+                handleChange={() => {}}
                 step={1}
+                name=""
+                value={0}
               />
             </div>
           </div>
         </div>
         <DividerLight />
-        <div className="w-full flex justify-end">
-          <button onClick={soonToast}>
-            <MainButtonLabel label="Apply filter" />
-          </button>
+        <div className="inline-flex items-center w-full justify-end">
+          <DisabledButtonLabel label="Apply filter" displaySoonBadge />
         </div>
       </div>
     </WhiteBlock>
