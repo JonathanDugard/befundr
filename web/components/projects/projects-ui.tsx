@@ -18,12 +18,12 @@ export const ProjectsFilters = () => {
           {/* project filters */}
           <div className="flex flex-col items-start justify-start gap-2 border-r-[1px] border-second pr-2">
             <p className="textStyle-subheadline !text-textColor-main !font-normal">
-              Project status
+              Project Status
             </p>
             <div className="flex justify-center items-center gap-2">
-              <p className="textStyle-body">Funding on going</p>
+              <p className="textStyle-body">Funding ongoing</p>
               <ToggleSwitch />
-              <p className="textStyle-body">Realisation on going</p>
+              <p className="textStyle-body">Realization ongoing</p>
             </div>
             <Selector
               label="Category"

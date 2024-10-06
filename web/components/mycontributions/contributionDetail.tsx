@@ -165,7 +165,7 @@ const ContributionDetail = (props: Props) => {
                     className="w-full mt-4"
                     onClick={() => setIsSalePopup(true)}
                   >
-                    <SecondaryButtonLabelBig label="Sale" />
+                    <SecondaryButtonLabelBig label="Sell" />
                   </button>
                 </>
               ) : (

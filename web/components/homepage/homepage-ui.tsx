@@ -44,17 +44,11 @@ export const KeyFigures = () => {
       <div className="grid grid-cols-3 justify-items-stretch items-center w-full">
         <div className="flex flex-col items-start gap-2">
           <p className="text-accent text-5xl font-light">{projectsFunded}</p>
-          <p className="textStyle-subheadline w-full">
-            projects created since beginning
-          </p>
+          <p className="textStyle-subheadline w-full">projects created since the beginning</p>
         </div>
         <div className="flex flex-col items-start justify-self-center gap-2">
-          <p className="text-accent text-5xl font-light">
-            {formattedTotalAmountRaised}
-          </p>
-          <p className="textStyle-subheadline w-full">
-            raised funds since beginning
-          </p>
+          <p className="text-accent text-5xl font-light">{formattedTotalAmountRaised}</p>
+          <p className="textStyle-subheadline w-full">raised funds since the beginning</p>
         </div>
         <div className="flex flex-col items-start justify-self-end gap-2">
           <p className="text-accent text-5xl font-light">{contributors}</p>

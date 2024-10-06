@@ -12,7 +12,7 @@ type DescriptionProps = {
 export const DescriptionBLock = (props: DescriptionProps) => {
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
-      <h3 className="textStyle-headline">Step 4 : Detailed description</h3>
+      <h3 className="textStyle-headline">Step 4: Detailed Description</h3>
       <TextArea
         label="Detailled description of your project (10 to 500 characters)"
         placeholder="Bring as more detail as possible"

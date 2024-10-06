@@ -11,7 +11,7 @@ type FundingProps = {
 export const FundingBlock = (props: FundingProps) => {
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
-      <h3 className="textStyle-headline">Step 2 : Funding informations</h3>
+      <h3 className="textStyle-headline">Step 2: Funding Information</h3>
       <InputField
         label="Funding campain duration"
         placeholder="Select the duration (between 1 to 90 days)"

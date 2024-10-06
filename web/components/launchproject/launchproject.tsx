@@ -233,14 +233,13 @@ const Launchproject = () => {
       <button onClick={() => router.back()}>
         <BackButton />
       </button>
-      <h1 className="textStyle-title">
+      <h1 className="textStyle-title -mt-10">
         <strong className="text-accent">Launch</strong> your project
       </h1>
       <h2 className="textStyle-headline -mt-10">
-        Your about to start your founder journey ! Exiting ! <br />
-        Follow the step by step process
+        You're about to start your founder journey! Exciting! <br />
+        Follow the step-by-step process
       </h2>
-      <Divider />
       {/* menu */}
       <ProjectLaunchMenu
         selectedStep={selectedStep}
@@ -299,7 +298,7 @@ const Launchproject = () => {
           <div className="w-full flex justify-end">
             {selectedStep !== 5 && (
               <button onClick={() => setSelectedStep(selectedStep + 1)}>
-                <MainButtonLabel label="Contrinue" />
+                <MainButtonLabel label="Continue" />
               </button>
             )}
             {selectedStep === 5 && (
@@ -315,7 +314,7 @@ const Launchproject = () => {
                   />
                 </button>
                 <p className="textStyle-body">
-                  You will have to sign two transactions to launch your project
+                  You will need to sign two transactions to launch your project
                 </p>
               </div>
             )}

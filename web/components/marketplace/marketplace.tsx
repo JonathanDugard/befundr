@@ -32,7 +32,7 @@ const Marketplace = (/*props: Props*/) => {
         projects
       </h1>
       <h2 className="textStyle-headline -mt-10">
-        Find available reward to buy for ongoing projects
+        Find available rewards to buy for ongoing projects
       </h2>
       <ProjectsFilters />
       <div

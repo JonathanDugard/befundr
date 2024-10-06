@@ -99,7 +99,7 @@ const Project = (props: Props) => {
                   {convertSplAmountToNumber(new BN(props.project.raisedAmount))}{' '}
                   $
                 </strong>{' '}
-                on {convertSplAmountToNumber(new BN(props.project.goalAmount))}$
+                out of {convertSplAmountToNumber(new BN(props.project.goalAmount))}$
                 goal
               </p>
               <p className="textStyle-subheadline">
