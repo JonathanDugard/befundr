@@ -172,7 +172,10 @@ const MyProfile = () => {
       <InfoLabel label="You don't have public profile yet" />
     )}
 
-    <DisabledButtonLabel label="Connect my DID" />
+<div className="relative inline-flex items-center">
+  <DisabledButtonLabel label="Connect my DID" displaySoonBadge />
+
+</div>
     <div className="flex flex-row justify-start items-start gap-4 w-full">
       <div className="w-1/5 max-w-3xl">
         <PicSelector
