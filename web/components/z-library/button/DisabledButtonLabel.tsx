@@ -13,7 +13,7 @@ const DisabledButtonLabel = (props: Props) => {
       <div className="text-main text-center">
         {props.label}
         { props.displaySoonBadge && (
-        <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-main border border-accent text-accent font-normal text-sm font-medium px-2.5 py-0.5 rounded shadow-lg">
+        <span className="absolute -top-2.5 -right-3 bg-main border border-accent text-accent font-normal text-xs font-medium px-1.5 py-0.3 rounded shadow-lg">
           Coming Soon
         </span>
         )}
