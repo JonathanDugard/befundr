@@ -13,40 +13,48 @@ import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 export const KeyFigures = () => {
-
   const { allProjectsAccounts } = useBefundrProgramProject();
   const { allContributionsAccounts } = useBefundrProgramContribution();
-  const [formattedTotalAmountRaised, setFormattedTotalAmountRaised] = useState<string>('');
-
+  const [formattedTotalAmountRaised, setFormattedTotalAmountRaised] =
+    useState<string>('');
 
   const projectsFunded = allProjectsAccounts.data?.length || 0;
   const totalAmountRaised = allProjectsAccounts.data
-    ? allProjectsAccounts.data.reduce((sum, project) => sum + project.account.raisedAmount, 0)
+    ? allProjectsAccounts.data.reduce(
+        (sum, project) => sum + project.account.raisedAmount,
+        0
+      )
     : 0;
 
-    useEffect(() => {
-      const formatAmount = () => {
-        const formattedAmount = new Intl.NumberFormat(navigator.language, {
-          style: 'currency',
-          currency: 'USD', // Change this to the desired currency
-        }).format(convertSplAmountToNumber(BigInt(totalAmountRaised)));
-        setFormattedTotalAmountRaised(formattedAmount);
-      };
-      formatAmount();
-    }, [totalAmountRaised]);
+  useEffect(() => {
+    const formatAmount = () => {
+      const formattedAmount = new Intl.NumberFormat(navigator.language, {
+        style: 'currency',
+        currency: 'USD', // Change this to the desired currency
+      }).format(convertSplAmountToNumber(BigInt(totalAmountRaised)));
+      setFormattedTotalAmountRaised(formattedAmount);
+    };
+    formatAmount();
+  }, [totalAmountRaised]);
 
-  const contributors = allContributionsAccounts.data?.length || 0; 
+  const contributors = allContributionsAccounts.data?.length || 0;
 
   return (
     <div className="flex flex-col items-center justify-start w-full my-10">
       <div className="grid grid-cols-3 justify-items-stretch items-center w-full">
         <div className="flex flex-col items-start gap-2">
           <p className="text-accent text-5xl font-light">{projectsFunded}</p>
-          <p className="textStyle-subheadline w-full">projects created since beginning</p>
+          <p className="textStyle-subheadline w-full">
+            projects created since beginning
+          </p>
         </div>
         <div className="flex flex-col items-start justify-self-center gap-2">
-          <p className="text-accent text-5xl font-light">{formattedTotalAmountRaised}</p>
-          <p className="textStyle-subheadline w-full">raised funds since beginning</p>
+          <p className="text-accent text-5xl font-light">
+            {formattedTotalAmountRaised}
+          </p>
+          <p className="textStyle-subheadline w-full">
+            raised funds since beginning
+          </p>
         </div>
         <div className="flex flex-col items-start justify-self-end gap-2">
           <p className="text-accent text-5xl font-light">{contributors}</p>
@@ -71,8 +79,10 @@ export const HighlightSelection = ({ title }: { title: string }) => {
   useEffect(() => {
     if (allProjectsAccounts.data) {
       const transformedProjects = allProjectsAccounts.data
-      .sort((a, b) => b.account.raisedAmount - a.account.raisedAmount)
-      .map((programAccount) => transformProgramAccountToProject(programAccount));
+        .sort((a, b) => b.account.raisedAmount - a.account.raisedAmount)
+        .map((programAccount) =>
+          transformProgramAccountToProject(programAccount)
+        );
 
       setProjectsSelection(transformedProjects.slice(0, 3));
     }
@@ -116,7 +126,9 @@ export const EndingSoonProjects = ({ title }: { title: string }) => {
           return timeRemaining > 0 && timeRemaining <= 7 * 24 * 60 * 60 * 1000; // Projects ending in the next 7 days
         })
         .sort((a, b) => a.account.endTime - b.account.endTime) // Sort by closest end time
-        .map((programAccount) => transformProgramAccountToProject(programAccount));
+        .map((programAccount) =>
+          transformProgramAccountToProject(programAccount)
+        );
 
       setEndingSoonProjects(soonEndingProjects.slice(0, 3));
     }
@@ -145,12 +157,11 @@ export const EndingSoonProjects = ({ title }: { title: string }) => {
 };
 
 export const UserDashboard = () => {
-  
   const { publicKey } = useWallet();
   const { userAccountFromWalletPublicKey } = useBefundrProgramUser();
   const { getUserPdaPublicKey } = useBefundrProgramUser();
   const { getAllUserContributions } = useBefundrProgramContribution();
-  
+
   const { data: userPdaPublicKey } = getUserPdaPublicKey(publicKey);
   const { data: userContributions } = getAllUserContributions(userPdaPublicKey);
   const { data: userProfile, isLoading: isFetchingUser } =
@@ -176,7 +187,9 @@ export const UserDashboard = () => {
         </div>
         <div className="flex justify-start items-baseline gap-4">
           <p className="textStyle-subheadline">
-            <strong className="text-4xl text-accent">{ownedContributions} </strong>
+            <strong className="text-4xl text-accent">
+              {ownedContributions}{' '}
+            </strong>
             owned {ownedContributions > 1 ? ' contributions' : ' contribution'}
           </p>
           <Link href={'/profile/mycontributions/'}>
