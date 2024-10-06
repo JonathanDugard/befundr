@@ -29,6 +29,13 @@ export function useBefundrProgramUser() {
     staleTime: 60000,
   });
 
+  //* Fetch all users contributions lists
+  const allUsersContributionsAccounts = useQuery({
+    queryKey: ['user', 'all'],
+    queryFn: () => program.account.userContributions.all(),
+    staleTime: 60000,
+  });
+
   //* get user entry address
   const getUserPdaPublicKey = (publicKey: PublicKey | null) => {
     return useQuery({
