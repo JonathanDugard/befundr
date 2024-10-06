@@ -38,7 +38,9 @@ const ProjectCardMarketplace = (props: Props) => {
           src={props.project.imageUrl}
         />
         <div className="flex flex-col justify-stretch items-start p-2 h-full gap-2">
-          <p className="textStyle-headline">{props.project.name}</p>
+          <p className="textStyle-subheadline !font-normal !text-textColor-main truncate">
+            {props.project.name}
+          </p>
           {/* <Divider /> */}
           <div className="mt-auto">
             <InfoLabel
