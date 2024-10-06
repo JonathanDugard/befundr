@@ -118,7 +118,7 @@ export const TrustBlock = (props: TrustProps) => {
         <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
       </div>
       <div className="flex justify-start items-center gap-2 w-full">
-        <ataBalance />
+        <AtaBalance />
         {ataBalance < props.projectToCreate.safetyDeposit && (
           <>
             <p className="textStyle-body !text-custom-red">
