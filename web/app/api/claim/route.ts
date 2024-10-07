@@ -7,6 +7,7 @@ import {
 } from '@solana/spl-token';
 import {
   Cluster,
+  ConfirmOptions,
   Connection,
   Keypair,
   PublicKey,
@@ -63,13 +64,21 @@ export async function POST(req: NextRequest) {
     );
 
     try {
+      const confirmOptions: ConfirmOptions = {
+        skipPreflight: false,
+        commitment: 'confirmed',
+        preflightCommitment: 'processed',
+        maxRetries: 5,
+      };
       await mintTo(
         connection, // connection — Connection to use
         keyPair, // payer — Payer of the transaction fees
         new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT), // token account to mint from
         associatedToken, // Le compte de token associé vers lequel on veut mint
         keyPair, // authority — Minting authority
-        convertedAmount // amount — Amount to mint
+        convertedAmount,
+        undefined,
+        confirmOptions
       );
 
       return NextResponse.json(
