@@ -74,7 +74,7 @@ export const getOrCreateATA = async (
     account = await getAccount(
       connection, // connection — Connection to use
       associatedToken, // address — Token account
-      /*commitment*/ 'single', // commitment — Desired level of commitment for querying the state
+      'confirmed', // commitment — Desired level of commitment for querying the state
       TOKEN_PROGRAM_ID // programId — SPL Token program account
     );
   } catch (error: unknown) {
@@ -97,7 +97,7 @@ export const getOrCreateATA = async (
 
         // wait for TX confirmation
         const signature = await sendTransaction(transaction, connection);
-        await connection.confirmTransaction(signature, 'finalized');
+        await connection.confirmTransaction(signature, 'confirmed');
       } catch (error: unknown) {
         /* empty */
       }
@@ -105,7 +105,7 @@ export const getOrCreateATA = async (
       account = await getAccount(
         connection, // connection — Connection to use
         associatedToken, // address — Token account
-        /*commitment*/ 'single', // commitment — Desired level of commitment for querying the state
+        /*commitment*/ 'confirmed', // commitment — Desired level of commitment for querying the state
         TOKEN_PROGRAM_ID // programId — SPL Token program account
       );
     } else {
