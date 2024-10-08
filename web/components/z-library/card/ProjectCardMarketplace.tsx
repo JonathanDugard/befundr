@@ -27,7 +27,7 @@ const ProjectCardMarketplace = (props: Props) => {
 
   return (
     <Link href={`/marketplace/${props.projectId}`} className="relative">
-      <div className="flex flex-col w-[200px] h-[300px] bg-second">
+      <div className="flex flex-col w-[200px] h-[325px] bg-second">
         {/* project image */}
         <ImageWithFallback
           alt="image"
@@ -38,15 +38,14 @@ const ProjectCardMarketplace = (props: Props) => {
           src={props.project.imageUrl}
         />
         <div className="flex flex-col justify-stretch items-start p-2 h-full gap-2">
-          <p className="textStyle-subheadline !font-normal !text-textColor-main truncate">
+          <p className="textStyle-subheadline !font-normal !text-textColor-main line-clamp-2">
             {props.project.name}
           </p>
           {/* <Divider /> */}
           <div className="mt-auto">
             <InfoLabel
-              label={`${numberOfSales} reward${
-                numberOfSales && numberOfSales > 1 ? 's' : ''
-              } on sale`}
+              label={`${numberOfSales} reward${numberOfSales && numberOfSales > 1 ? 's' : ''
+                } on sale`}
             />
           </div>
         </div>
