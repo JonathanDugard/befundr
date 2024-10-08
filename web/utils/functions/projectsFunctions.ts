@@ -68,9 +68,7 @@ export const transformAccountToProject = (account: any): Project => {
         ? new BN(reward.redeemLimitTime).toNumber()
         : undefined,
     })),
-    safetyDeposit: convertSplAmountToNumber(
-      new BN(account.safetyDeposit).toNumber()
-    ),
+    safetyDeposit: new BN(account.safetyDeposit).toNumber(),
     xAccountUrl: account.xAccountUrl,
   };
 };
