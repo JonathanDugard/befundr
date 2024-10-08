@@ -51,7 +51,7 @@ const SaleRewardPopup = (props: Props) => {
         userWallet: publicKey,
         sellingPrice,
       });
-      toast.success('Contribution on sale !');
+      toast.success('Contribution listed for sale !');
       props.refetchSaleTransaction();
       props.handleClose();
     } catch (error) {

@@ -45,7 +45,7 @@ const ProjectCardMarketplace = (props: Props) => {
           <div className="mt-auto">
             <InfoLabel
               label={`${numberOfSales} reward${numberOfSales && numberOfSales > 1 ? 's' : ''
-                } on sale`}
+                } for sale`}
             />
           </div>
         </div>

@@ -76,7 +76,7 @@ const ContributionCard = (props: Props) => {
           bg-none rounded-md h-8  px-2 py-1 border border-accent
           textStyle-body-accent text-center bg-main"
           >
-            On sale
+            For sale
           </div>
         )}
       </Link>
