@@ -4,7 +4,7 @@ export const ValidationBlock = () => {
       <h3 className="textStyle-headline">Step 6: Project Launch Validation</h3>
       {/* verifeid info */}
       <p className="textStyle-subheadline !text-textColor-main">
-        Check the informations you provided before launching your project
+        Check the information you provided before launching your project
       </p>
       <p className="textStyle-subheadline">
         This is the final step, and the project will be immediately launched after

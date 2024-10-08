@@ -54,7 +54,7 @@ const RewardCardDetailled = (props: Props) => {
         {props.reward.maxSupply ? (
           <p className="textStyle-body">
             Limited supply :{' '}
-            {props.reward.maxSupply - props.reward.currentSupply} availables
+            {props.reward.maxSupply - props.reward.currentSupply} available
             {props.reward.currentSupply >= props.reward.maxSupply && (
               <strong className="ml-4 !text-custom-red">Supply reached</strong>
             )}

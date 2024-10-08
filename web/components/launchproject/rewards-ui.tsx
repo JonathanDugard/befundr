@@ -195,7 +195,7 @@ export const AddRewardBlock = (props: AddRewardProps) => {
           <MainButtonLabel label="Add the reward" disabled={!allInfoSetted} />
         </button>
         {/* alert if missing info */}
-        {!allInfoSetted && <AlertInfoLabel label="Missing informations" />}
+        {!allInfoSetted && <AlertInfoLabel label="Missing information" />}
       </div>
     </div>
   );

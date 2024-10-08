@@ -60,7 +60,7 @@ export const TrustBlock = (props: TrustProps) => {
       <h3 className="textStyle-headline">Step 5 : Trustworthiness elements</h3>
       {/* verifeid info */}
       <p className="textStyle-subheadline !text-textColor-main">
-        Your verified informations
+        Your verified information
       </p>
       <p className="textStyle-subheadline">
         Befundr is based on confidence. The more information you provide, the
@@ -148,7 +148,7 @@ export const TrustBlock = (props: TrustProps) => {
           </p>
         </div>
         <p className="textStyle-body border border-accent rounded-md p-2">
-          Aggregated trust level that will be displayed to contributors. An
+          Aggregated trust level that will be displayed to contributors. A
           higher score is better{' '}
         </p>
       </div>
