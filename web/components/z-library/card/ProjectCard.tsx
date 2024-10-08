@@ -48,6 +48,7 @@ const ProjectCard = (props: Props) => {
           src={props.project.imageUrl}
         />
         {/* progress bar */}
+        {/*
         <div className="w-10 h-full bg-custom-green">
           <div
             className="bg-second h-full"
@@ -62,6 +63,7 @@ const ProjectCard = (props: Props) => {
             }}
           ></div>
         </div>
+        */}
         {/* project infos */}
         <div className="flex flex-col justify-start items-stretch w-1/2 p-2 h-full ">
           <p className="textStyle-subheadline !text-textColor-main !font-normal truncate">
