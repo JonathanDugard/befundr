@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/befundr.json`.
  */
 export type Befundr = {
-  "address": "GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk",
+  "address": "96wTDUBBReTTxkHzsf3ehi73qqEX97n4JWoV8mcH7gNp",
   "metadata": {
     "name": "befundr",
     "version": "0.1.0",
