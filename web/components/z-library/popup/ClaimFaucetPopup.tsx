@@ -8,7 +8,7 @@ import MainButtonLabelAsync from '../button/MainButtonLabelAsync';
 import toast from 'react-hot-toast';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
-import AtaBalance from '../display elements/AtaBalance';
+import AtaBalance from '../display_elements/AtaBalance';
 
 type Props = {
   handleClose: () => void;
@@ -18,7 +18,7 @@ const ClaimFaucetPopup = (props: Props) => {
   //* GLOBAL STATE
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useBefundrProgramGlobal();
-  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { getUserWalletAtaBalance } = useBefundrProgramUser();
   //* LOCAL STATE
   const [selectedAmount, setSelectedAmount] = useState<number | ''>(50);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +35,7 @@ const ClaimFaucetPopup = (props: Props) => {
 
   const amountChoices = [50, 100, 500];
 
-  const { data: userAta, refetch } = getUserWalletATABalance(publicKey);
+  const { data: userAta, refetch } = getUserWalletAtaBalance(publicKey);
 
   const handleClaim = async () => {
     if (!publicKey || !selectedAmount) {
@@ -82,7 +82,7 @@ const ClaimFaucetPopup = (props: Props) => {
 
     try {
       setIsLoading(true);
-      await getOrCreateATA(publicKey, connection, sendTransaction);
+      await getOrCreateATA(publicKey, publicKey, connection, sendTransaction);
       toast.success(`account successfully created`);
       refetch();
     } catch (e) {

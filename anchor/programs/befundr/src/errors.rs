@@ -40,7 +40,7 @@ pub enum RewardError {
     CurrentSupplyInvalid,
     #[msg("Max supply must be greater than or equal to current supply.")]
     MaxSupplyInvalid,
-    #[msg("Reward maximum supply reached.")]
+    #[msg("Reward supply has reached its maximum limit.")]
     RewardSupplyReached,
     #[msg("Supply is empty.")]
     RewardSupplyEmpty,
@@ -86,6 +86,8 @@ pub enum CreateUnlockRequestError {
 pub enum MarketplaceError {
     #[msg("Signer is not the contribution owner")]
     NotContributionOwner,
+    #[msg("Wrong project sale transactions PDA")]
+    WrongProjectSaleTransactions,
     #[msg("The reward has been already claimed")]
     RewardAlreadyClaimed,
     #[msg("No reward associated to this contribution")]
@@ -94,10 +96,28 @@ pub enum MarketplaceError {
     ContributionNotActive,
     #[msg("Incorrect selling price")]
     IncorrectSellingPrice,
+    #[msg("Buyer is not the user")]
+    BuyerNotUser,
+    #[msg("Seller is not the user")]
+    SellerNotUser,
+    #[msg("The seller is not the contribution owner")]
+    SellerNotContributionOwner,
+}
+
+#[error_code]
+pub enum UserContributionsError {
+    #[msg("Contribution not found")]
+    ContributionNotFound,
 }
 
 #[error_code]
 pub enum AtaError {
     #[msg("Wrong owner for the given ATA")]
     WrongAtaOwner,
+}
+
+#[error_code]
+pub enum ProjectSaleTransactionError {
+    #[msg("Sale Transaction not found")]
+    SaleTransactionNotFound,
 }

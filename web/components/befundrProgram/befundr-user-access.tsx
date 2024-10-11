@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
-
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getATA } from '@/utils/functions/AtaFunctions';
+import { confirmTransaction } from '@/utils/functions/utilFunctions';
 
 //* TYPE
 interface CreateUserArgs {
@@ -30,7 +31,7 @@ export function useBefundrProgramUser() {
   });
 
   //* get user entry address
-  const getUserEntryAddress = (publicKey: PublicKey | null) => {
+  const getUserPdaPublicKey = (publicKey: PublicKey | null) => {
     return useQuery({
       queryKey: ['userEntryAddress', publicKey?.toString()],
       queryFn: async () => {
@@ -46,16 +47,12 @@ export function useBefundrProgramUser() {
   };
 
   //* get user wallet ATA balance
-  const getUserWalletATABalance = (walletPublicKey: PublicKey | null) => {
+  const getUserWalletAtaBalance = (walletPublicKey: PublicKey | null) => {
     return useQuery({
-      queryKey: ['userATABalance', walletPublicKey?.toString()],
+      queryKey: ['userAtaBalance', walletPublicKey?.toString()],
       queryFn: async () => {
         if (!walletPublicKey) throw new Error('PublicKey is required');
-        const { account } = await getATA(
-          walletPublicKey,
-          connection,
-          sendTransaction
-        );
+        const { account } = await getATA(walletPublicKey, connection);
         return account;
       },
       staleTime: 6000,
@@ -101,10 +98,15 @@ export function useBefundrProgramUser() {
         [Buffer.from('user'), signer.toBuffer()],
         programId
       );
-      return await program.methods
+      const tx = await program.methods
         .createUser(name, avatarUrl, bio, city)
         .accountsPartial({ user: userEntryAddress })
         .rpc();
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return userEntryAddress.toString();
     },
     onSuccess: async (signature) => {
       transactionToast(signature, 'Profile created');
@@ -122,10 +124,15 @@ export function useBefundrProgramUser() {
         [Buffer.from('user'), signer.toBuffer()],
         programId
       );
-      return await program.methods
+      const tx = await program.methods
         .updateUser(name, avatarUrl, bio, city)
         .accountsPartial({ user: userEntryAddress, owner: signer })
         .rpc();
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return userEntryAddress.toString();
     },
     onSuccess: async (signature) => {
       transactionToast(signature, 'Profile updated');
@@ -137,8 +144,8 @@ export function useBefundrProgramUser() {
 
   return {
     allUsersAccounts,
-    getUserEntryAddress,
-    getUserWalletATABalance,
+    getUserPdaPublicKey,
+    getUserWalletAtaBalance,
     userAccountFromWalletPublicKey,
     userAccountFromAccountPublicKey,
     createUser,

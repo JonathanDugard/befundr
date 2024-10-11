@@ -1,16 +1,14 @@
 'use client';
 import Image from 'next/image';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import { FaRegIdCard } from 'react-icons/fa';
 import Slider from '../z-library/button/Slider';
-import TrustScore from '../z-library/display elements/TrustScore';
+import TrustScore from '../z-library/display_elements/TrustScore';
 import InputField from '../z-library/button/InputField';
 import {
   calculateTrustScore,
-  convertAtaAmount,
+  convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import { useEffect, useMemo } from 'react';
-import AtaBalance from '../z-library/display elements/AtaBalance';
+import AtaBalance from '../z-library/display_elements/AtaBalance';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
@@ -43,18 +41,18 @@ export const TrustBlock = (props: TrustProps) => {
   }, [collateralRatio]);
 
   // get user wallet ATA balance ----
-  const { getUserWalletATABalance } = useBefundrProgramUser();
+  const { getUserWalletAtaBalance } = useBefundrProgramUser();
   const { publicKey } = useWallet();
 
-  const { data: userWalletATABalance } = getUserWalletATABalance(publicKey);
+  const { data: userWalletAtaBalance } = getUserWalletAtaBalance(publicKey);
 
-  const ATABalance = useMemo(() => {
-    if (userWalletATABalance) {
-      return convertAtaAmount(userWalletATABalance.amount);
+  const ataBalance = useMemo(() => {
+    if (userWalletAtaBalance) {
+      return convertSplAmountToNumber(userWalletAtaBalance.amount);
     } else {
       return 0;
     }
-  }, [userWalletATABalance]);
+  }, [userWalletAtaBalance]);
   // ---- get user wallet ATA balance
 
   return (
@@ -65,7 +63,7 @@ export const TrustBlock = (props: TrustProps) => {
         Your verified informations
       </p>
       <p className="textStyle-subheadline">
-        Befundr is based on confidance. The more informations you provide, the
+        Befundr is based on confidence. The more information you provide, the
         more contributors will trust you and your project.
       </p>
       <div className="flex justify-start gap-2 w-full">
@@ -91,19 +89,19 @@ export const TrustBlock = (props: TrustProps) => {
         Safety deposit
       </p>
       <p className="textStyle-body">
-        A minimum amount of 50$ is needed to start a funding campain. These
-        funds are escrowed to show your personal engagement in the project and
-        to promote legitimate project. With funds will get back to you if the
-        project is cancelled due to lack of initial contributions or when the
-        project is successfull.
+        A minimum amount of $50 is needed to start a funding campaign. These
+        funds are escrowed to show your personal commitment to the project and
+        to promote legitimate projects. The funds will be returned to you if the
+        project is canceled due to lack of initial contributions or when the
+        project is successful.
         <br />
-        In case of non delivery of the rewards expected for your project, these
+        In case of non-delivery of the expected rewards for your project, these
         funds will be used to refund contributors.
-        <br /> You can set an amount superior to 50$. It will insure
-        contributors of your engagement.
+        <br /> You can set an amount higher than $50. It will assure
+        contributors of your commitment.
         <br /> A 5% ratio between your safety deposit and your fundraising goal
-        will dive you a 100% trust score. This trust score will evolve during
-        the project function of the community vote regarding your project.
+        will give you a 100% trust score. This trust score will evolve during
+        the project based on community votes regarding your project.
       </p>
       <div className="flex justify-start items-center gap-2 w-full">
         <Slider
@@ -119,7 +117,7 @@ export const TrustBlock = (props: TrustProps) => {
       </div>
       <div className="flex justify-start items-center gap-2 w-full">
         <AtaBalance />
-        {ATABalance < props.projectToCreate.safetyDeposit && (
+        {ataBalance < props.projectToCreate.safetyDeposit && (
           <>
             <p className="textStyle-body !text-custom-red">
               you don&apos;t have enough faucet $

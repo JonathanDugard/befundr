@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
+
 //* MENU
 type MenuProps = {
   selectedStep: number;
@@ -6,7 +9,7 @@ type MenuProps = {
 
 export const ProjectLaunchMenu = (props: MenuProps) => {
   return (
-    <div className="w-full h-10 bg-second flex justify-between items-center px-4 mt-10">
+    <div className="w-full h-10 bg-second flex justify-between items-center px-4">
       <button
         className={`${
           props.selectedStep === 0
@@ -15,7 +18,7 @@ export const ProjectLaunchMenu = (props: MenuProps) => {
         }`}
         onClick={() => props.setSelectedStep(0)}
       >
-        Main informations
+        Overview Information
       </button>
       <button
         className={`${
@@ -67,6 +70,19 @@ export const ProjectLaunchMenu = (props: MenuProps) => {
       >
         Validation
       </button>
+    </div>
+  );
+};
+
+export const ProfileCreationAlert = () => {
+  return (
+    <div className="flex flex-col justify-start items-start gap-4">
+      <p className="textStyle-body">
+        Before launching a project, you need to create your user profile
+      </p>
+      <Link href={'/profile/myprofile'}>
+        <SecondaryButtonLabel label="Create your profile" />
+      </Link>
     </div>
   );
 };

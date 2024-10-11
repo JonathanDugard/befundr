@@ -1,3 +1,4 @@
+import { convertAmountToDecimals } from "../token/token_config";
 import { Reward } from "./reward_type";
 
 export const reward1: Reward = {

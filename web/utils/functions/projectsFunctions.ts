@@ -12,32 +12,15 @@ export const getProjectsByOwnerId = (
   return projects.filter((project) => project.user === ownerId);
 };
 
-export const getUnlockedFundsForAProject = (project: Project): number => {
-  return project.fundsRequests
-    .filter((fundRequest) => fundRequest.status === 'accepted')
-    .reduce((total, fundRequest) => total + fundRequest.amountAsked, 0);
-};
-
-export const getAskedFundsForAProject = (project: Project): number => {
-  return project.fundsRequests
-    .filter((fundRequest) => fundRequest.status === 'ongoing')
-    .reduce((total, fundRequest) => total + fundRequest.amountAsked, 0);
-};
-
-export const isProjectHasVoteOngoing = (project: Project): boolean => {
-  return project.fundsRequests.some(
-    (fundRequest) => fundRequest.status === 'ongoing'
-  );
-};
-
 export const getProgressPercentage = (start: number, end: number) => {
-  return Math.floor((start / end) * 100);
+  return Math.min(Math.round((start / end) * 100), 100);
 };
 
 //* SERIALIZATION
 import { ProjectCategory } from '@/data/category';
 import { ProjectStatus } from '@/data/projectStatus';
 import { BN, ProgramAccount } from '@coral-xyz/anchor';
+import { convertSplAmountToNumber } from './utilFunctions';
 
 export const transformProgramAccountToProject = (
   programAccount: ProgramAccount<any>
@@ -72,7 +55,6 @@ export const transformAccountToProject = (account: any): Project => {
     endTime: new BN(account.endTime).toNumber(),
     status: status.enum,
     contributionCounter: account.contributionCounter,
-    trustScore: account.trustScore,
     rewards: account.rewards.map((reward: any) => ({
       id: reward.id,
       name: reward.name,
@@ -86,7 +68,9 @@ export const transformAccountToProject = (account: any): Project => {
         ? new BN(reward.redeemLimitTime).toNumber()
         : undefined,
     })),
-    safetyDeposit: new BN(account.safetyDeposit).toNumber(),
+    safetyDeposit: convertSplAmountToNumber(
+      new BN(account.safetyDeposit).toNumber()
+    ),
     xAccountUrl: account.xAccountUrl,
   };
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoLabel from '../display elements/InfoLabel';
+import InfoLabel from '../display_elements/InfoLabel';
 import { calculateTimeElapsed } from '@/utils/functions/utilFunctions';
 
 type Props = {

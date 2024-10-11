@@ -1,3 +1,13 @@
+import { SPL_DECIMAL } from '@/data/constants';
+import { Befundr } from '@befundr/anchor';
+import { Program } from '@coral-xyz/anchor';
+import {
+  BlockheightBasedTransactionConfirmationStrategy,
+  RpcResponseAndContext,
+  SignatureResult,
+  TransactionSignature,
+} from '@solana/web3.js';
+
 /**
  * Returns a timestamp for the current time plus the given number of days.
  *
@@ -115,6 +125,25 @@ export function calculateTrustScore(
   );
 }
 
-export const convertAtaAmount = (amount: bigint): number => {
-  return Number(amount) / Math.pow(10, 6);
+export const convertSplAmountToNumber = (amount: bigint): number => {
+  return Number(amount) / Math.pow(10, SPL_DECIMAL);
+};
+
+export const convertNumberToSplAmount = (number: number): number => {
+  return Math.round(number * Math.pow(10, SPL_DECIMAL));
+};
+
+export const confirmTransaction = async (
+  program: Program<Befundr>,
+  tx: TransactionSignature
+): Promise<RpcResponseAndContext<SignatureResult>> => {
+  const latestBlockhash =
+    await program.provider.connection.getLatestBlockhash();
+  const confirmationStrategy: BlockheightBasedTransactionConfirmationStrategy =
+    { ...latestBlockhash, signature: tx };
+
+  return await program.provider.connection.confirmTransaction(
+    confirmationStrategy,
+    'confirmed'
+  );
 };

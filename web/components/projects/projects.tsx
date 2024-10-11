@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { ProjectsFilters } from './projects-ui';
-import { projects } from '@/data/localdata';
 import ProjectCard from '../z-library/card/ProjectCard';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';

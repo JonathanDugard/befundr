@@ -21,6 +21,10 @@ pub mod project_contributions {
     pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 300;
 }
 
+pub mod project_sale_transactions {
+    pub const MAX_SALE_TRANSACTIONS_NUMBER: u32 = 100;
+}
+
 pub mod user_contributions {
     pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 100;
 }
@@ -35,6 +39,10 @@ pub mod unlock_request {
     pub const VOTING_PERIOD: i64 = 86400 * 7;
     pub const REQUEST_COOLDOWN: i64 = 86400 * 7;
     pub const REJECTED_REQUEST_COOLDOWN: i64 = 86400 * 14;
+}
+
+pub mod marketplace {
+    pub const MAX_HISTORY_TRANSACTIONS_NUMBER: u32 = 85;
 }
 
 // Temporary admins keys const

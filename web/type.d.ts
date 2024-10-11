@@ -16,7 +16,7 @@ type Project = {
   endTime: number;
   status: ProjectStatus;
   contributionCounter: number;
-  trustScore: number; // init between 75 to 100
+  // trustScore: number; // init between 75 to 100
   rewards: Reward[];
   safetyDeposit: number;
   xAccountUrl: string;
@@ -52,23 +52,23 @@ type Feed = {
 };
 
 type Contribution = {
-  id: string;
-  initialOwner: string;
-  currentOwner: string;
+  initialOwner: PublicKey;
+  currentOwner: PublicKey;
   amount: number;
-  rewardId: string;
-  timestamp: number;
-  isForSale: boolean;
-  sellingPrice?: number;
+  rewardId: number;
+  creationTimestamp: number;
+  status: ContributionStatus;
+  project: PublicKey;
+  isClaimed: boolean | null;
 };
 
 type SaleTransaction = {
-  seller: string;
-  projectId: string;
-  rewardId: string;
+  seller: PublicKey;
+  contribution: PublicKey;
   contributionAmount: number;
   sellingPrice: number;
   creationTimestamp: number;
+  rewardId: number;
 };
 
 type FundsRequest = {

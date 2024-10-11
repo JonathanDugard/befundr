@@ -1,7 +1,4 @@
-import {
-  convertTimestampToDateString,
-  getDateFromTimestamp,
-} from '@/utils/functions/utilFunctions';
+import { getDateFromTimestamp } from '@/utils/functions/utilFunctions';
 import InputField from '../z-library/button/InputField';
 
 type FundingProps = {
@@ -14,15 +11,7 @@ type FundingProps = {
 export const FundingBlock = (props: FundingProps) => {
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
-      <h3 className="textStyle-headline">Step 2 : Funding informations</h3>
-      {/* <InputField
-        label="Funding campain starting date"
-        placeholder="Pick the starting date"
-        type="date"
-        inputName="timestamp"
-        handleChange={props.handleChange}
-        value={convertTimestampToDateString(props.projectToCreate.timestamp)}
-      /> */}
+      <h3 className="textStyle-headline">Step 2: Funding Information</h3>
       <InputField
         label="Funding campain duration"
         placeholder="Select the duration (between 1 to 90 days)"
@@ -34,7 +23,7 @@ export const FundingBlock = (props: FundingProps) => {
         max={90}
       />
       <p className="textStyle-body text-right -mt-4 w-full">
-        endind date :{' '}
+        ending date :{' '}
         {getDateFromTimestamp(
           props.projectToCreate.timestamp,
           props.projectToCreate.endTime

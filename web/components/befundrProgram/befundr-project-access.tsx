@@ -6,17 +6,24 @@ import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
-import { useState } from 'react';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
+import { confirmTransaction } from '@/utils/functions/utilFunctions';
 
 //* TYPE
 interface CreateProjectArgs {
+  userWalletPublicKey: PublicKey;
   userAccountPDA: PublicKey;
   project: Project;
   userProjectCounter: number;
+  userWalletAtaPubkey: PublicKey;
 }
 
 export function useBefundrProgramProject() {
-  const { program, programId, transactionToast, router } =
+  const { sendTransaction } = useWallet();
+  const { program, programId, transactionToast, router, connection } =
     useBefundrProgramGlobal();
 
   //* QUERIES
@@ -28,7 +35,9 @@ export function useBefundrProgramProject() {
   });
 
   //* Fetch single project by public key --------------------
-  const projectAccountFromAccountPublicKey = (publicKey: PublicKey | null) => {
+  const projectAccountFromAccountPublicKey = (
+    publicKey: PublicKey | null | undefined
+  ) => {
     return useQuery({
       queryKey: ['project', publicKey?.toString()],
       queryFn: async () => {
@@ -37,6 +46,33 @@ export function useBefundrProgramProject() {
       },
       staleTime: 60000,
       enabled: !!publicKey,
+    });
+  };
+
+  //* Fetch an array of project --------------------
+  const projectsAccountsFromPublicKeysArray = (
+    publicKeys: PublicKey[] | null | undefined
+  ) => {
+    return useQuery({
+      queryKey: ['project', 'array', publicKeys?.[0]?.toString()],
+      queryFn: async () => {
+        if (!publicKeys || publicKeys.length === 0)
+          throw new Error('PublicKeys are required');
+
+        const projects = await Promise.all(
+          publicKeys.map(async (key) => {
+            const projectAccount = await program.account.project.fetch(key);
+            return {
+              publicKey: key,
+              account: transformAccountToProject(projectAccount), // Transformation en type Project
+            };
+          })
+        );
+
+        return projects as AccountWrapper<Project>[];
+      },
+      staleTime: 60000,
+      enabled: !!publicKeys,
     });
   };
 
@@ -92,8 +128,14 @@ export function useBefundrProgramProject() {
   //* Create project --------------------
   const createProject = useMutation<string, Error, CreateProjectArgs>({
     mutationKey: ['befundr', 'createProject'],
-    mutationFn: async ({ userAccountPDA, project, userProjectCounter }) => {
-      // generation of the seeds for the PDA
+    mutationFn: async ({
+      userWalletPublicKey,
+      userAccountPDA,
+      project,
+      userProjectCounter,
+      userWalletAtaPubkey,
+    }) => {
+      // generation of the seeds for the project PDA
       const [newProjectAddress] = await PublicKey.findProgramAddress(
         [
           Buffer.from('project'), // seeds: "project"
@@ -103,16 +145,25 @@ export function useBefundrProgramProject() {
         programId
       );
 
+      // generate the ATA for the project PDA
+      const { account: projectAtaAccount } = await getOrCreateATA(
+        userWalletPublicKey,
+        newProjectAddress,
+        connection,
+        sendTransaction
+      );
+
       // Rewards serialization
       const serializedRewards = project.rewards.map((reward) => ({
         name: reward.name,
         description: reward.description,
         price: new BN(reward.price),
         maxSupply: reward.maxSupply ? new BN(reward.maxSupply) : null, // if unlimited supply, set to null
+        currentSupply: new BN(0),
       }));
 
       // call of the method
-      return await program.methods
+      const tx = await program.methods
         .createProject(
           project.name,
           project.imageUrl,
@@ -127,8 +178,16 @@ export function useBefundrProgramProject() {
         .accountsPartial({
           user: userAccountPDA,
           project: newProjectAddress,
+          fromAta: userWalletAtaPubkey,
+          toAta: projectAtaAccount.address,
+          tokenProgram: TOKEN_PROGRAM_ID,
         }) // definition of the PDA address with the seed generated
         .rpc(); // launch the transaction
+
+      // wait for the confirmation of the tx
+      await confirmTransaction(program, tx);
+
+      return newProjectAddress.toString();
     },
     onSuccess: async (signature) => {
       transactionToast(signature, 'Project created');
@@ -139,8 +198,9 @@ export function useBefundrProgramProject() {
   });
 
   return {
-    projectAccountFromPublicKey: projectAccountFromAccountPublicKey,
+    projectAccountFromAccountPublicKey,
     allProjectsAccounts,
+    projectsAccountsFromPublicKeysArray,
     createProject,
     getProjectsByCreator,
   };

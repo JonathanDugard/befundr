@@ -90,6 +90,10 @@ pub mod befundr {
     pub fn create_transaction(ctx: Context<CreateTransaction>, selling_price: u64) -> Result<()> {
         instructions::create_transaction(ctx, selling_price)
     }
+
+    pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
+        instructions::complete_transaction(ctx)
+    }
 }
 
 #[derive(Accounts)]

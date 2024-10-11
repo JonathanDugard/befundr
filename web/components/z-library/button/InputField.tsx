@@ -13,6 +13,9 @@ type Props = {
 };
 
 const InputField = (props: Props) => {
+  // Define min value as 0 if it's not provided
+  const min = props.min ?? 0;
+
   return (
     <div className="flex flex-col items-start justify-start w-full">
       <p className="textStyle-subheadline !text-textColor-main !font-normal">
@@ -30,7 +33,7 @@ const InputField = (props: Props) => {
         disabled={props.isDisabled}
         minLength={props.min}
         maxLength={props.max}
-        min={props.min}
+        min={min}
         max={props.max}
       />
     </div>

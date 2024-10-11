@@ -6,7 +6,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { useRouter } from 'next/navigation';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
-import { PublicKey } from '@solana/web3.js';
 
 type Props = {};
 
@@ -14,8 +13,10 @@ const MyCreatedProjects = (props: Props) => {
   //* GLOBAL STATE
   const { getProjectsByCreator: getAllCreatedProjectsByAUser } =
     useBefundrProgramProject();
-  const { getUserEntryAddress, userAccountFromWalletPublicKey } =
-    useBefundrProgramUser();
+  const {
+    getUserPdaPublicKey: getUserEntryAddress,
+    userAccountFromWalletPublicKey,
+  } = useBefundrProgramUser();
   const { publicKey } = useWallet();
   const router = useRouter();
 

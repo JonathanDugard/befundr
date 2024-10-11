@@ -1,28 +1,49 @@
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import RewardCardDetailled from '../z-library/card/RewardCardDetailled';
+import RewardCardDetailled from './RewardCardDetailled';
 import FeedCard from '../z-library/card/FeedCard';
-import Divider from '../z-library/display elements/Divider';
+import Divider from '../z-library/display_elements/Divider';
 import FundsRequestCard from '../z-library/card/VoteCard';
-import ImageWithFallback from '../z-library/display elements/ImageWithFallback';
+import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
+import Image from 'next/image';
 
-export const AboutBlock = ({ description }: { description: string }) => {
-  return <p className="textStyle-body">{description}</p>;
+export const AboutBlock = ({
+  description,
+  xAccount,
+}: {
+  description: string;
+  xAccount: string;
+}) => {
+  return (
+    <div className="flex flex-col justify-start items-start gap-4">
+      <a href={xAccount} className="flex gap-2" target="_blank">
+        <Image
+          alt="x"
+          src={'/x.jpg'}
+          width={30}
+          height={30}
+          className="rounded-full object-contain"
+        />
+        <p className="textStyle-subheadline underline">Project page on X</p>
+      </a>
+      <p className="textStyle-body">{description}</p>
+    </div>
+  );
 };
 
 export const RewardBlock = ({
-  rewards,
-  projectStatus,
+  project,
   projectId,
+  refetchProject,
 }: {
-  rewards: Reward[];
-  projectStatus: string;
+  project: Project;
   projectId: string;
+  refetchProject: () => void;
 }) => {
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
-      {projectStatus === ProjectStatus.Fundraising.enum && (
+      {project.status === ProjectStatus.Fundraising.enum && (
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col items-start justify-between gap-2 w-full ">
             <p className="textStyle-subheadline">Donation</p>
@@ -36,12 +57,14 @@ export const RewardBlock = ({
       )}
       <Divider />
       {/* rewars level */}
-      {rewards.map((reward: Reward, index) => (
+      {project.rewards.map((reward: Reward, index) => (
         <div key={index} className="flex flex-col gap-6 w-full h-full">
           <RewardCardDetailled
+            project={project}
             reward={reward}
-            projectStatus={projectStatus}
             projectId={projectId}
+            rewardId={index}
+            refetchProject={refetchProject}
           />
           <Divider />
         </div>
@@ -86,11 +109,11 @@ export const FounderBlock = ({
         <p className="textStyle-headline">Safety deposit</p>
         <p className="textStyle-title">{safetyDeposit} $</p>
         <p className="textStyle-footnote-black text-right">
-          Safety deposit are escrowed and will get back to the founder if the
-          project is cancelled due to lack of initial contributions or when the
-          project is successfull.
+          Safety deposits are escrowed and will be returned to the founder if the
+          project is canceled due to lack of initial contributions or when the
+          project is successful.
           <br />
-          In case of non delivery of the rewards expected for this project,
+          In case of non-delivery of the expected rewards for this project,
           these funds will be used to refund contributors.
         </p>
       </div>

@@ -1,13 +1,12 @@
-import { categories } from '@/data/localdata';
 import Selector from '../z-library/button/Selector';
 import ToggleSwitch from '../z-library/button/ToggleSwitch';
-import Divider from '../z-library/display elements/Divider';
-import DividerLight from '../z-library/display elements/DividerLight';
+import DividerLight from '../z-library/display_elements/DividerLight';
 import SearchField from '../z-library/button/SearchField';
-import WhiteBlock from '../z-library/display elements/WhiteBlock';
+import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import ToggleButton from '../z-library/button/ToggleButton';
 import Slider from '../z-library/button/Slider';
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
+import { projectCategoryOptions } from '@/data/category';
+import DisabledButtonLabel from '../z-library/button/DisabledButtonLabel';
 
 export const ProjectsFilters = () => {
   return (
@@ -19,17 +18,19 @@ export const ProjectsFilters = () => {
           {/* project filters */}
           <div className="flex flex-col items-start justify-start gap-2 border-r-[1px] border-second pr-2">
             <p className="textStyle-subheadline !text-textColor-main !font-normal">
-              Project status
+              Project Status
             </p>
             <div className="flex justify-center items-center gap-2">
-              <p className="textStyle-body">Funding on going</p>
+              <p className="textStyle-body">Funding ongoing</p>
               <ToggleSwitch />
-              <p className="textStyle-body">Realisation on going</p>
+              <p className="textStyle-body">Realization ongoing</p>
             </div>
             <Selector
               label="Category"
-              options={categories}
-              onChange={() => {}}
+              options={projectCategoryOptions}
+              handleChange={() => {}}
+              inputName=""
+              value=""
             />
           </div>
           {/* reward filters */}
@@ -43,18 +44,20 @@ export const ProjectsFilters = () => {
                 max={1000}
                 min={0}
                 initValue={50}
-                onChange={() => {}}
+                handleChange={() => {}}
                 step={1}
+                name=""
+                value={0}
               />
             </div>
             <div className="flex justify-between items-end w-full flex-grow pb-2">
               <div className="flex justify-start gap-2">
                 <p className="textStyle-body">Limited supply</p>
-                <ToggleButton />
+                <ToggleButton isSelected={true} />
               </div>
               <div className="flex justify-end gap-2">
                 <p className="textStyle-body">Claimable rewards</p>
-                <ToggleButton />
+                <ToggleButton isSelected={false} />
               </div>
             </div>
           </div>
@@ -69,17 +72,17 @@ export const ProjectsFilters = () => {
                 max={4}
                 min={1}
                 initValue={3}
-                onChange={() => {}}
+                handleChange={() => {}}
                 step={1}
+                name=""
+                value={0}
               />
             </div>
           </div>
         </div>
         <DividerLight />
-        <div className="w-full flex justify-end">
-          <button>
-            <MainButtonLabel label="Apply filter" />
-          </button>
+        <div className="inline-flex items-center w-full justify-end">
+          <DisabledButtonLabel label="Apply filter" displaySoonBadge />
         </div>
       </div>
     </WhiteBlock>

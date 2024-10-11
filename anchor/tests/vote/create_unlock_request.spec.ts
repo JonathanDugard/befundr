@@ -112,7 +112,6 @@ describe('createUnlockRequest', () => {
     it("should reject as the project status is not Realising", async () => {
         const { projectPdaKey } = await createProject(projectData2, 0, creatorUserPdaKey, creatorWallet)
         const projectPda = await program.account.project.fetch(projectPdaKey);
-        console.log("DEBUG counter = ", projectPda.contributionCounter, typeof projectPda.contributionCounter)
         const projectContributionCounter = new BN(projectPda.contributionCounter);
         const contributionAmount = convertAmountToDecimals(100);
         const expectedUnlockAmount = convertAmountToDecimals(10);

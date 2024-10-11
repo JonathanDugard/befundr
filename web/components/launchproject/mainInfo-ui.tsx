@@ -14,7 +14,7 @@ type MainInfoProps = {
 export const MainInfoBlock = (props: MainInfoProps) => {
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
-      <h3 className="textStyle-headline">Step 1 : main informations</h3>
+      <h3 className="textStyle-headline">Step 1: Overview Information:</h3>
       <InputField
         label="Project name"
         placeholder="Your project name"

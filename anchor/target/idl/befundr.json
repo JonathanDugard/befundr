@@ -71,9 +71,21 @@
           "writable": true
         },
         {
+          "name": "from_ata",
+          "writable": true
+        },
+        {
+          "name": "to_ata",
+          "writable": true
+        },
+        {
           "name": "signer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "system_program",
@@ -130,6 +142,144 @@
       "args": []
     },
     {
+      "name": "complete_transaction",
+      "discriminator": [
+        34,
+        152,
+        198,
+        211,
+        120,
+        165,
+        66,
+        161
+      ],
+      "accounts": [
+        {
+          "name": "history_transactions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  105,
+                  115,
+                  116,
+                  111,
+                  114,
+                  121,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sale_transaction",
+          "writable": true
+        },
+        {
+          "name": "project_sale_transactions",
+          "writable": true
+        },
+        {
+          "name": "buyer_user_contributions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer_user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller_user_contributions",
+          "writable": true
+        },
+        {
+          "name": "buyer_user"
+        },
+        {
+          "name": "seller_user"
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "relations": [
+            "sale_transaction"
+          ]
+        },
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "buyer_ata",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "seller_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "create_project",
       "discriminator": [
         148,
@@ -149,6 +299,48 @@
         {
           "name": "project",
           "writable": true
+        },
+        {
+          "name": "project_sale_transactions",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116,
+                  95,
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
         },
         {
           "name": "project_contributions",
@@ -234,6 +426,18 @@
           "signer": true
         },
         {
+          "name": "from_ata",
+          "writable": true
+        },
+        {
+          "name": "to_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
@@ -284,6 +488,83 @@
               "name": "ProjectCategory"
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "create_transaction",
+      "discriminator": [
+        227,
+        193,
+        53,
+        239,
+        55,
+        126,
+        112,
+        105
+      ],
+      "accounts": [
+        {
+          "name": "sale_transaction",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  108,
+                  101,
+                  95,
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  97,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "project_sale_transactions",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true
+        },
+        {
+          "name": "contribution"
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "user"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "selling_price",
+          "type": "u64"
         }
       ]
     },
@@ -575,6 +856,19 @@
       ]
     },
     {
+      "name": "HistoryTransactions",
+      "discriminator": [
+        184,
+        17,
+        28,
+        110,
+        11,
+        241,
+        1,
+        42
+      ]
+    },
+    {
       "name": "Project",
       "discriminator": [
         205,
@@ -598,6 +892,32 @@
         187,
         160,
         150
+      ]
+    },
+    {
+      "name": "ProjectSaleTransactions",
+      "discriminator": [
+        220,
+        186,
+        205,
+        79,
+        189,
+        231,
+        72,
+        3
+      ]
+    },
+    {
+      "name": "SaleTransaction",
+      "discriminator": [
+        104,
+        200,
+        226,
+        139,
+        191,
+        134,
+        207,
+        37
       ]
     },
     {
@@ -656,58 +976,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "NameTooShort",
-      "msg": "Project name is too short (min 5 characters)."
-    },
-    {
-      "code": 6001,
-      "name": "NameTooLong",
-      "msg": "Project name is too long (max 64 characters)."
-    },
-    {
-      "code": 6002,
-      "name": "ImageUrlTooLong",
-      "msg": "Image URL is too long (max 256 characters)."
-    },
-    {
-      "code": 6003,
-      "name": "UrlTooLong",
-      "msg": "URL is too long (max 128 characters)."
-    },
-    {
-      "code": 6004,
-      "name": "DescriptionTooShort",
-      "msg": "Description is too short (min 10 characters)."
-    },
-    {
-      "code": 6005,
-      "name": "DescriptionTooLong",
-      "msg": "Description is too long (max 500 characters)."
-    },
-    {
-      "code": 6006,
-      "name": "GoalAmountBelowLimit",
-      "msg": "Goal amount is too low (min $1)."
-    },
-    {
-      "code": 6007,
-      "name": "EndTimeInPast",
-      "msg": "End time is in the past."
-    },
-    {
-      "code": 6008,
-      "name": "ExceedingEndTime",
-      "msg": "End time beyond the limit."
-    },
-    {
-      "code": 6009,
-      "name": "NotEnoughRewards",
-      "msg": "Not enough rewards (min 1)."
-    },
-    {
-      "code": 6010,
-      "name": "TooManyRewards",
-      "msg": "Too many rewards (max 10)."
+      "name": "ContributionNotFound",
+      "msg": "Contribution not found"
     }
   ],
   "types": [
@@ -769,6 +1039,56 @@
           },
           {
             "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HistoryTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "selling_price",
+            "type": "u64"
+          },
+          {
+            "name": "creation_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "sale_timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HistoryTransactions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transactions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "HistoryTransaction"
+                }
+              }
+            }
           }
         ]
       }
@@ -916,6 +1236,24 @@
       }
     },
     {
+      "name": "ProjectSaleTransactions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "sale_transactions",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "ProjectStatus",
       "type": {
         "kind": "enum",
@@ -967,6 +1305,38 @@
           {
             "name": "current_supply",
             "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SaleTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "contribution_amount",
+            "type": "u64"
+          },
+          {
+            "name": "selling_price",
+            "type": "u64"
+          },
+          {
+            "name": "creation_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "reward_id",
+            "type": "u64"
           }
         ]
       }

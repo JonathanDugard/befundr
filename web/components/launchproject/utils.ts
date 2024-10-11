@@ -1,7 +1,6 @@
-'use client';
-
 import { uploadImageToFirebase } from '@/utils/functions/firebaseFunctions';
 import {
+  convertNumberToSplAmount,
   getTimestampInFuture,
   toCamelCase,
 } from '@/utils/functions/utilFunctions';
@@ -9,7 +8,7 @@ import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 
 // function to prepare the project object to use in the blockchain TX
-export const handleProjectCreation = async (
+export const prepareDataForProjectCreation = async (
   project: Project,
   projectImage: File | null,
   userPublicKey: PublicKey
@@ -55,7 +54,8 @@ export const handleProjectCreation = async (
           // convert stringify number to real number
           let convertedSupply = null;
           if (reward.maxSupply) convertedSupply = Number(reward.maxSupply);
-          const convertedPrice = Number(reward.price);
+          // convert string to number with SPL decimal
+          const convertedPrice = convertNumberToSplAmount(Number(reward.price));
           // Return updated reward with the image URL
           return {
             ...reward,
@@ -78,9 +78,14 @@ export const handleProjectCreation = async (
   );
 
   //* Prepare final data for blockchain transaction
-  // convert stringify number to real number
-  const convertedSafetyDeposit = Number(project.safetyDeposit);
-  const convertedGoalAmount = Number(project.goalAmount);
+  // convert string to number with SPL decimal
+  const convertedSafetyDeposit = convertNumberToSplAmount(
+    Number(project.safetyDeposit)
+  );
+  // convert string to number with SPL decimal
+  const convertedGoalAmount = convertNumberToSplAmount(
+    Number(project.goalAmount)
+  );
   // convert endtime number to timestamp
   const convertedEndTime = getTimestampInFuture(project.endTime);
   const convertedEndTimeInSecond = Math.floor(convertedEndTime / 1000); // convertion from millisecond to second for BE compatibility
@@ -156,6 +161,11 @@ const validateProjectToCreate = (
     projectToCreate.rewards.length > 4
   ) {
     return 'Number of reward must be between 1 to 4';
+  }
+
+  // Safety deposit check
+  if (projectToCreate.safetyDeposit < 50) {
+    return 'Safety deposit has to be of 50$ minimum';
   }
 
   // If everything is good, return true

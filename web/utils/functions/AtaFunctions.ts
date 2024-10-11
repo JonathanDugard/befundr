@@ -14,8 +14,7 @@ import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 //* function to get existing ATA
 export const getATA = async (
   walletPublicKey: PublicKey,
-  connection: Connection,
-  sendTransaction: any
+  connection: Connection
 ): Promise<{ account: Account | null; associatedToken: PublicKey }> => {
   // checks
   if (!process.env.NEXT_PUBLIC_MINT_ACCOUNT) {
@@ -49,7 +48,8 @@ export const getATA = async (
 
 //* function to get ATA or create is needed
 export const getOrCreateATA = async (
-  walletPublicKey: PublicKey,
+  payerPublicKey: PublicKey,
+  ownerPublicKey: PublicKey,
   connection: Connection,
   sendTransaction: any
 ) => {
@@ -61,7 +61,7 @@ export const getOrCreateATA = async (
   // get the token account publickey
   const associatedToken = await getAssociatedTokenAddress(
     new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT),
-    walletPublicKey,
+    ownerPublicKey,
     true,
     TOKEN_PROGRAM_ID, //programId
     ASSOCIATED_TOKEN_PROGRAM_ID
@@ -86,9 +86,9 @@ export const getOrCreateATA = async (
       try {
         const transaction = new Transaction().add(
           createAssociatedTokenAccountInstruction(
-            walletPublicKey, // payer
+            payerPublicKey, // payer
             associatedToken, // associated token
-            walletPublicKey, // owner
+            ownerPublicKey, // owner
             new PublicKey(process.env.NEXT_PUBLIC_MINT_ACCOUNT), // token mint account
             TOKEN_PROGRAM_ID, // programId — SPL Token program account
             ASSOCIATED_TOKEN_PROGRAM_ID // associatedTokenProgramId — SPL Associated Token program account
