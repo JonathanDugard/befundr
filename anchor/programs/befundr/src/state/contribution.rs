@@ -18,6 +18,7 @@ pub struct Contribution {
     pub creation_timestamp: i64,
     pub is_claimed: Option<bool>,
     status: ContributionStatus,
+    pub reward: Pubkey,
 }
 
 impl Contribution {

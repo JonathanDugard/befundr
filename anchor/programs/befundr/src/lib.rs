@@ -50,30 +50,15 @@ pub mod befundr {
         metadata_uri: String,
         goal_amount: u64,
         end_time: i64,
-        rewards: Vec<Reward>,
         safety_deposit: u64,
-        category: ProjectCategory,
     ) -> Result<()> {
-        instructions::create_project(
-            ctx,
-            name,
-            metadata_uri,
-            goal_amount,
-            end_time,
-            rewards,
-            safety_deposit,
-            category,
-        )
+        instructions::create_project(ctx, name, metadata_uri, goal_amount, end_time, safety_deposit)
     }
 
     /* Contribution */
 
-    pub fn add_contribution(
-        ctx: Context<AddContribution>,
-        amount: u64,
-        reward_id: Option<u64>,
-    ) -> Result<()> {
-        instructions::add_contribution(ctx, amount, reward_id)
+    pub fn add_contribution(ctx: Context<AddContribution>, amount: u64) -> Result<()> {
+        instructions::add_contribution(ctx, amount)
     }
 
     pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {

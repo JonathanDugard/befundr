@@ -54,6 +54,8 @@ pub enum ContributionError {
     SignerNotUser,
     #[msg("Reward does not exist.")]
     RewardError,
+    #[msg("Incorrect reward")]
+    IncorrectReward,
     #[msg("Reward already reserved.")]
     RewardAlreadyReserved,
     #[msg("Contribution amount is insufficient for the selected reward.")]
