@@ -5,7 +5,8 @@ use crate::{
     errors::{CreateProjectError, RewardError},
 };
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
+#[account]
+#[derive(InitSpace)]
 pub struct Reward {
     pub project: Pubkey,
     #[max_len(MAX_URI_LENGTH)]

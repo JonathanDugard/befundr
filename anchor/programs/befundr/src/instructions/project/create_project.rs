@@ -8,7 +8,8 @@ use crate::{
     },
     errors::{AtaError, CreateProjectError},
     state::{
-        Project, ProjectContributions, ProjectSaleTransactions, ProjectStatus, UnlockRequests, User,
+        Project, ProjectContributions, ProjectSaleTransactions, ProjectStatus, Rewards,
+        UnlockRequests, User,
     },
     utils::transfer_spl_token,
 };
@@ -82,6 +83,15 @@ pub struct CreateProject<'info> {
     bump
     )]
     pub project: Box<Account<'info, Project>>,
+
+    #[account(
+    init,
+    payer = signer,
+    space = 8 + Rewards::INIT_SPACE,
+    seeds = [b"rewards", project.key().as_ref()],
+    bump
+    )]
+    pub rewards: Box<Account<'info, Rewards>>,
 
     #[account(
     init,

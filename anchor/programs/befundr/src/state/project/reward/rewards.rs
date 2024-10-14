@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
+#[account]
+#[derive(InitSpace)]
 pub struct Rewards {
     pub project: Pubkey,
     pub rewards_counter: u16,
