@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 
 use crate::{
-    constants::project::MAX_URI_LENGTH,
-    errors::{CreateProjectError, RewardError},
+    constants::common::MAX_URI_LENGTH,
+    errors::{CommonError, RewardError},
 };
 
 #[account]
@@ -19,10 +19,10 @@ pub struct Reward {
 impl Reward {
     pub fn validate(&self) -> Result<()> {
         // Validate name length
-        require!(self.metadata_uri.len() as u64 <= MAX_URI_LENGTH, CreateProjectError::UriTooLong);
+        require!(self.metadata_uri.len() as u64 <= MAX_URI_LENGTH, CommonError::UriTooLong);
 
         // Validate price
-        require!(self.price > 0, RewardError::PriceInvalid);
+        require!(self.price > 0, RewardError::InvalidPrice);
 
         // Validate current supply if max_supply is defined
         if let Some(max) = self.max_supply {

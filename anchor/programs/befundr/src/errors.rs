@@ -16,8 +16,6 @@ pub enum CreateProjectError {
     NameTooShort,
     #[msg("Project name is too long (max 64 characters).")]
     NameTooLong,
-    #[msg("URI is too long (max 256 characters).")]
-    UriTooLong,
     #[msg("Goal amount is too low (min $1).")]
     GoalAmountBelowLimit,
     #[msg("End time is in the past.")]
@@ -35,7 +33,7 @@ pub enum CreateProjectError {
 #[error_code]
 pub enum RewardError {
     #[msg("Price must be greater than 0.")]
-    PriceInvalid,
+    InvalidPrice,
     #[msg("Current supply must be greater than 0.")]
     CurrentSupplyInvalid,
     #[msg("Max supply must be greater than or equal to current supply.")]
@@ -122,4 +120,10 @@ pub enum AtaError {
 pub enum ProjectSaleTransactionError {
     #[msg("Sale Transaction not found")]
     SaleTransactionNotFound,
+}
+
+#[error_code]
+pub enum CommonError {
+    #[msg("URI is too long (max 256 characters).")]
+    UriTooLong,
 }

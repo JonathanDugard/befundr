@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 #[derive(InitSpace)]
 pub struct Rewards {
     pub project: Pubkey,
-    pub rewards_counter: u16,
+    pub reward_counter: u16,
 }
 
 impl Rewards {}

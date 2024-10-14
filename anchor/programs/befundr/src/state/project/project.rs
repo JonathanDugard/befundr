@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::constants::project::MAX_URI_LENGTH;
+use crate::constants::common::MAX_URI_LENGTH;
 
 #[account]
 #[derive(InitSpace)]

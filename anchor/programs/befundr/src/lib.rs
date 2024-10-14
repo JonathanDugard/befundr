@@ -7,7 +7,6 @@ pub mod state;
 pub mod utils;
 
 use instructions::*;
-use state::{ProjectCategory, Reward};
 
 declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
 

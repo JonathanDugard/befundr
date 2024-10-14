@@ -2,11 +2,14 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{Token, TokenAccount};
 
 use crate::{
-    constants::project::{
-        MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_URI_LENGTH, MIN_NAME_LENGTH,
-        MIN_PROJECT_GOAL_AMOUNT, MIN_SAFETY_DEPOSIT,
+    constants::{
+        common::MAX_URI_LENGTH,
+        project::{
+            MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MIN_NAME_LENGTH,
+            MIN_PROJECT_GOAL_AMOUNT, MIN_SAFETY_DEPOSIT,
+        },
     },
-    errors::{AtaError, CreateProjectError},
+    errors::{AtaError, CommonError, CreateProjectError},
     state::{
         Project, ProjectContributions, ProjectSaleTransactions, ProjectStatus, Rewards,
         UnlockRequests, User,
@@ -28,7 +31,7 @@ pub fn create_project(
     require!(name_length >= MIN_NAME_LENGTH, CreateProjectError::NameTooShort);
     require!(name_length <= MAX_NAME_LENGTH, CreateProjectError::NameTooLong);
 
-    require!(metadata_uri.len() as u64 <= MAX_URI_LENGTH, CreateProjectError::UriTooLong);
+    require!(metadata_uri.len() as u64 <= MAX_URI_LENGTH, CommonError::UriTooLong);
 
     require!(goal_amount > MIN_PROJECT_GOAL_AMOUNT, CreateProjectError::GoalAmountBelowLimit);
     require!(end_time > now, CreateProjectError::EndTimeInPast);
