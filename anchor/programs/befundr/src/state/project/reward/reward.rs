@@ -7,6 +7,7 @@ use crate::{
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
 pub struct Reward {
+    pub project: Pubkey,
     #[max_len(MAX_URI_LENGTH)]
     pub metadata_uri: String,
     pub price: u64,
