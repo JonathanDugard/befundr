@@ -3,13 +3,12 @@ use anchor_spl::token::{Token, TokenAccount};
 
 use crate::{
     constants::project::{
-        MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_REWARDS_NUMBER, MAX_URI_LENGTH,
-        MIN_NAME_LENGTH, MIN_PROJECT_GOAL_AMOUNT, MIN_REWARDS_NUMBER, MIN_SAFETY_DEPOSIT,
+        MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MAX_URI_LENGTH, MIN_NAME_LENGTH,
+        MIN_PROJECT_GOAL_AMOUNT, MIN_SAFETY_DEPOSIT,
     },
     errors::{AtaError, CreateProjectError},
     state::{
-        Project, ProjectCategory, ProjectContributions, ProjectSaleTransactions, ProjectStatus,
-        Reward, UnlockRequests, User,
+        Project, ProjectContributions, ProjectSaleTransactions, ProjectStatus, UnlockRequests, User,
     },
     utils::transfer_spl_token,
 };
@@ -20,9 +19,7 @@ pub fn create_project(
     metadata_uri: String,
     goal_amount: u64,
     end_time: i64,
-    rewards: Vec<Reward>,
     safety_deposit: u64,
-    category: ProjectCategory,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
@@ -38,31 +35,22 @@ pub fn create_project(
         end_time < now + MAX_PROJECT_CAMPAIGN_DURATION,
         CreateProjectError::ExceedingEndTime
     );
-    require!(rewards.len() as u16 >= MIN_REWARDS_NUMBER, CreateProjectError::NotEnoughRewards);
-    require!(rewards.len() as u16 <= MAX_REWARDS_NUMBER, CreateProjectError::TooManyRewards);
     require!(
         safety_deposit >= MIN_SAFETY_DEPOSIT,
         CreateProjectError::InsufficientSafetyDeposit
     );
-
-    for reward in rewards.iter() {
-        reward.validate()?;
-    }
 
     let signer = &ctx.accounts.signer;
     let project = &mut ctx.accounts.project;
 
     project.owner = ctx.accounts.signer.key();
     project.user = ctx.accounts.user.key();
-    project.name = name;
     project.metadata_uri = metadata_uri;
     project.goal_amount = goal_amount;
     project.raised_amount = 0;
     project.created_time = now;
     project.end_time = end_time;
     project.status = ProjectStatus::Fundraising;
-    project.rewards = rewards;
-    project.category = category;
 
     let to_ata = &ctx.accounts.to_ata;
     let from_ata = &ctx.accounts.from_ata;

@@ -9,7 +9,6 @@ use crate::{
 pub struct Reward {
     #[max_len(MAX_URI_LENGTH)]
     pub metadata_uri: String,
-
     pub price: u64,
     pub max_supply: Option<u16>,
     pub current_supply: u32,
