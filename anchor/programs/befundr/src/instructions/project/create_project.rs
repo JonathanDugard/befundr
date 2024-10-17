@@ -4,10 +4,7 @@ use anchor_spl::token::{Token, TokenAccount};
 use crate::{
     constants::{
         common::MAX_URI_LENGTH,
-        project::{
-            MAX_NAME_LENGTH, MAX_PROJECT_CAMPAIGN_DURATION, MIN_NAME_LENGTH,
-            MIN_PROJECT_GOAL_AMOUNT, MIN_SAFETY_DEPOSIT,
-        },
+        project::{MAX_PROJECT_CAMPAIGN_DURATION, MIN_PROJECT_GOAL_AMOUNT, MIN_SAFETY_DEPOSIT},
     },
     errors::{AtaError, CommonError, CreateProjectError},
     state::{
@@ -19,17 +16,12 @@ use crate::{
 
 pub fn create_project(
     ctx: Context<CreateProject>,
-    name: String,
     metadata_uri: String,
     goal_amount: u64,
     end_time: i64,
     safety_deposit: u64,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
-
-    let name_length = name.len() as u64;
-    require!(name_length >= MIN_NAME_LENGTH, CreateProjectError::NameTooShort);
-    require!(name_length <= MAX_NAME_LENGTH, CreateProjectError::NameTooLong);
 
     require!(metadata_uri.len() as u64 <= MAX_URI_LENGTH, CommonError::UriTooLong);
 
@@ -69,6 +61,8 @@ pub fn create_project(
     ctx.accounts.user.created_project_counter += 1;
     ctx.accounts.unlock_requests.project = project.key();
     ctx.accounts.project_sale_transactions.project = project.key();
+    ctx.accounts.project_contributions.project = project.key();
+    ctx.accounts.rewards.project = project.key();
 
     Ok(())
 }

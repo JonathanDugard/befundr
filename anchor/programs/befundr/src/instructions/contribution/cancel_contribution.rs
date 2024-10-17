@@ -38,8 +38,8 @@ pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
     project.raised_amount -= contribution.amount; // Todo: handle USDC ATA
 
     // Update project reward current supply
-    if let Some(reward) = reward {
-        require!(reward.key() == contribution.reward, ContributionError::IncorrectReward);
+    if let (Some(reward), Some(contribution_reward)) = (reward, contribution.reward) {
+        require!(reward.key() == contribution_reward, ContributionError::IncorrectReward);
         reward.remove_supply()?;
     }
 

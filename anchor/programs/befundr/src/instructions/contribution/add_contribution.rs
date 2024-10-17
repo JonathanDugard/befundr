@@ -39,7 +39,7 @@ pub fn add_contribution(ctx: Context<AddContribution>, amount: u64) -> Result<()
         }
         reward.add_supply()?;
         contribution.is_claimed = Some(false);
-        contribution.reward = reward.key();
+        contribution.reward = Some(reward.key());
     }
 
     // Initialize the Contribution PDA if all checks pass

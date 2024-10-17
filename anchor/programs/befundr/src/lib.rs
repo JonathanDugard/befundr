@@ -45,13 +45,12 @@ pub mod befundr {
 
     pub fn create_project(
         ctx: Context<CreateProject>,
-        name: String,
         metadata_uri: String,
         goal_amount: u64,
         end_time: i64,
         safety_deposit: u64,
     ) -> Result<()> {
-        instructions::create_project(ctx, name, metadata_uri, goal_amount, end_time, safety_deposit)
+        instructions::create_project(ctx, metadata_uri, goal_amount, end_time, safety_deposit)
     }
 
     /* Contribution */
@@ -77,6 +76,15 @@ pub mod befundr {
 
     pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
         instructions::complete_transaction(ctx)
+    }
+
+    pub fn create_reward(
+        ctx: Context<CreateReward>,
+        metadata_uri: String,
+        max_supply: Option<u16>,
+        price: u64,
+    ) -> Result<()> {
+        instructions::create_reward(ctx, metadata_uri, max_supply, price)
     }
 }
 

@@ -30,7 +30,6 @@ describe('createProject', () => {
         const projectAtaBalanceAfter = await getAtaBalance(projectAtaKey);
         const projectPda = await program.account.project.fetch(projectPdaKey);
 
-        expect(projectPda.name).toEqual(projectData1.name);
         expect(projectPda.metadataUri).toEqual(projectData1.metadataUri);
         expect(projectPda.owner).toEqual(userWallet.publicKey);
         expect(projectPda.user).toEqual(userPdaKey);
@@ -39,24 +38,6 @@ describe('createProject', () => {
         expect(projectPda.safetyDeposit.toString()).toEqual(projectData1.safetyDeposit.toString());
         expect(userWalletAtaBalanceAfter.toString()).toEqual((INITIAL_USER_ATA_BALANCE - convertAmountToDecimals(50)).toString());
         expect(projectAtaBalanceAfter.toString()).toEqual(projectData1.safetyDeposit.toString());
-    });
-
-    it("should throw an error if the name is too short", async () => {
-        const expectedError = /Error Code: NameTooShort\. Error Number: .*\. Error Message: Project name is too short \(min 5 characters\).*/;
-        const MIN_NAME_LENGTH = 5;
-        const projectData = { ...projectData1, name: "a".repeat(Math.max(0, MIN_NAME_LENGTH - 1)) };
-
-        await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
-            .toThrow(expectedError);
-    });
-
-    it("should throw an error if the name is too long", async () => {
-        const expectedError = /Error Code: NameTooLong\. Error Number: .*\. Error Message: Project name is too long \(max 64 characters\).*/;
-        const MAX_NAME_LENGTH = 64;
-        const projectData = { ...projectData1, name: "a".repeat(MAX_NAME_LENGTH + 1) };
-
-        await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
-            .toThrow(expectedError);
     });
 
     /**
@@ -92,24 +73,6 @@ describe('createProject', () => {
         const expectedError = /Error Code: ExceedingEndTime\. Error Number: .*\. Error Message: End time beyond the limit.*/;
         const MAX_PROJECT_CAMPAIGN_DURATION = ONE_DAY_MILLISECONDS * 90;
         const projectData = { ...projectData1, endTime: new BN(Date.now() + MAX_PROJECT_CAMPAIGN_DURATION * 2) };
-
-        await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
-            .toThrow(expectedError);
-    });
-
-    it("should throw an error if there are not enough rewards", async () => {
-        const expectedError = /Error Code: NotEnoughRewards\. Error Number: .*\. Error Message: Not enough rewards \(min 1\).*/;
-        const MIN_REWARDS_NUMBER = 1;
-        const projectData = { ...projectData1, rewards: projectData1.rewards.slice(0, Math.max(0, MIN_REWARDS_NUMBER - 1)) };
-
-        await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
-            .toThrow(expectedError);
-    });
-
-    it("should throw an error if there are too many rewards", async () => {
-        const expectedError = /Error Code: TooManyRewards\. Error Number: .*\. Error Message: Too many rewards \(max 10\).*/;
-        const MAX_REWARDS_NUMBER = 5;
-        const projectData = { ...projectData1, rewards: Array(MAX_REWARDS_NUMBER + 1).fill(projectData1.rewards.at(0)) };
 
         await expect(createProject(projectData, 0, userPdaKey, userWallet)).rejects
             .toThrow(expectedError);
