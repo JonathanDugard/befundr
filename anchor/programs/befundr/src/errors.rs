@@ -16,14 +16,6 @@ pub enum CreateProjectError {
     NameTooShort,
     #[msg("Project name is too long (max 64 characters).")]
     NameTooLong,
-    #[msg("Image URL is too long (max 256 characters).")]
-    ImageUrlTooLong,
-    #[msg("URL is too long (max 128 characters).")]
-    UrlTooLong,
-    #[msg("Description is too short (min 10 characters).")]
-    DescriptionTooShort,
-    #[msg("Description is too long (max 500 characters).")]
-    DescriptionTooLong,
     #[msg("Goal amount is too low (min $1).")]
     GoalAmountBelowLimit,
     #[msg("End time is in the past.")]
@@ -40,12 +32,8 @@ pub enum CreateProjectError {
 
 #[error_code]
 pub enum RewardError {
-    #[msg("Name cannot exceed 64 characters.")]
-    NameTooLong,
-    #[msg("Description cannot exceed 100 characters.")]
-    DescriptionTooLong,
     #[msg("Price must be greater than 0.")]
-    PriceInvalid,
+    InvalidPrice,
     #[msg("Current supply must be greater than 0.")]
     CurrentSupplyInvalid,
     #[msg("Max supply must be greater than or equal to current supply.")]
@@ -64,6 +52,8 @@ pub enum ContributionError {
     SignerNotUser,
     #[msg("Reward does not exist.")]
     RewardError,
+    #[msg("Incorrect reward")]
+    IncorrectReward,
     #[msg("Reward already reserved.")]
     RewardAlreadyReserved,
     #[msg("Contribution amount is insufficient for the selected reward.")]
@@ -130,4 +120,10 @@ pub enum AtaError {
 pub enum ProjectSaleTransactionError {
     #[msg("Sale Transaction not found")]
     SaleTransactionNotFound,
+}
+
+#[error_code]
+pub enum CommonError {
+    #[msg("URI is too long (max 256 characters).")]
+    UriTooLong,
 }

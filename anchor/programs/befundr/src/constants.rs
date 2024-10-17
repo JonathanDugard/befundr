@@ -8,9 +8,6 @@ pub mod user {
 pub mod project {
     pub const MIN_NAME_LENGTH: u64 = 5;
     pub const MAX_NAME_LENGTH: u64 = 64;
-    pub const MIN_DESCRIPTION_LENGTH: u64 = 10;
-    pub const MAX_DESCRIPTION_LENGTH: u64 = 500;
-    pub const MAX_URL_LENGTH: u64 = 256;
     pub const MIN_SAFETY_DEPOSIT: u64 = 50_000_000;
     pub const MIN_PROJECT_GOAL_AMOUNT: u64 = 0; //USD
     pub const MIN_PROJECT_CAMPAIGN_DURATION: i64 = 86400; // 1 day
@@ -31,11 +28,6 @@ pub mod user_contributions {
     pub const MAX_CONTRIBUTIONS_NUMBER: u32 = 100;
 }
 
-pub mod reward {
-    pub const MAX_NAME_LENGTH: u64 = 64;
-    pub const MAX_DESCRIPTION_LENGTH: u64 = 100;
-}
-
 pub mod unlock_request_vote {
     pub const MAX_VOTE_NUMBER: u64 = 100;
 }
@@ -50,6 +42,10 @@ pub mod unlock_request {
 
 pub mod marketplace {
     pub const MAX_HISTORY_TRANSACTIONS_NUMBER: u32 = 85;
+}
+
+pub mod common {
+    pub const MAX_URI_LENGTH: u64 = 256;
 }
 
 // Temporary admins keys const
