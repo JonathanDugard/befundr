@@ -21,3 +21,6 @@ pub use marketplace::*;
 
 pub mod vote;
 pub use vote::*;
+
+pub mod reward;
+pub use reward::*;

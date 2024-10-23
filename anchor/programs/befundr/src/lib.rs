@@ -7,7 +7,6 @@ pub mod state;
 pub mod utils;
 
 use instructions::*;
-use state::{ProjectCategory, Reward};
 
 declare_id!("GwhXp6uzcsDPb8Git18t1pKAqE7zb9Jmviay6ffBdXfk");
 
@@ -46,38 +45,18 @@ pub mod befundr {
 
     pub fn create_project(
         ctx: Context<CreateProject>,
-        name: String,
-        image_url: String,
-        description: String,
+        metadata_uri: String,
         goal_amount: u64,
         end_time: i64,
-        rewards: Vec<Reward>,
         safety_deposit: u64,
-        x_account_url: String,
-        category: ProjectCategory,
     ) -> Result<()> {
-        instructions::create_project(
-            ctx,
-            name,
-            image_url,
-            description,
-            goal_amount,
-            end_time,
-            rewards,
-            safety_deposit,
-            x_account_url,
-            category,
-        )
+        instructions::create_project(ctx, metadata_uri, goal_amount, end_time, safety_deposit)
     }
 
     /* Contribution */
 
-    pub fn add_contribution(
-        ctx: Context<AddContribution>,
-        amount: u64,
-        reward_id: Option<u64>,
-    ) -> Result<()> {
-        instructions::add_contribution(ctx, amount, reward_id)
+    pub fn add_contribution(ctx: Context<AddContribution>, amount: u64) -> Result<()> {
+        instructions::add_contribution(ctx, amount)
     }
 
     pub fn cancel_contribution(ctx: Context<CancelContribution>) -> Result<()> {
@@ -97,6 +76,15 @@ pub mod befundr {
 
     pub fn complete_transaction(ctx: Context<CompleteTransaction>) -> Result<()> {
         instructions::complete_transaction(ctx)
+    }
+
+    pub fn create_reward(
+        ctx: Context<CreateReward>,
+        metadata_uri: String,
+        max_supply: Option<u16>,
+        price: u64,
+    ) -> Result<()> {
+        instructions::create_reward(ctx, metadata_uri, max_supply, price)
     }
 }
 
