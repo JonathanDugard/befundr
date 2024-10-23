@@ -12,20 +12,12 @@ pub enum DeleteUserError {
 
 #[error_code]
 pub enum CreateProjectError {
-    #[msg("Project name is too short (min 5 characters).")]
-    NameTooShort,
-    #[msg("Project name is too long (max 64 characters).")]
-    NameTooLong,
     #[msg("Goal amount is too low (min $1).")]
     GoalAmountBelowLimit,
     #[msg("End time is in the past.")]
     EndTimeInPast,
     #[msg("End time beyond the limit.")]
     ExceedingEndTime,
-    #[msg("Not enough rewards (min 1).")]
-    NotEnoughRewards,
-    #[msg("Too many rewards (max 10).")]
-    TooManyRewards,
     #[msg("Safety deposit is too low (min $50).")]
     InsufficientSafetyDeposit,
 }
