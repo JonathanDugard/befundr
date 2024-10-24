@@ -63,7 +63,7 @@ describe('createProject', () => {
     /**
      * TODO Refactor
      */
-    it.skip("should throw an error if the image url is too long", async () => {
+    it("should throw an error if the image url is too long", async () => {
         const expectedError = /Error Code: ImageUrlTooLong\. Error Number: .*\. Error Message: Image URL is too long \(max 256 characters\).*/;
         const MAX_URL_LENGTH = 256;
         const projectData = { ...projectData1, imageUrl: "a".repeat(MAX_URL_LENGTH + 1) };
@@ -84,7 +84,7 @@ describe('createProject', () => {
     /**
      * TODO Refactor
      */
-    it.skip("should throw an error if the description is too long", async () => {
+    it("should throw an error if the description is too long", async () => {
         const expectedError = /Error Code: DescriptionTooLong\. Error Number: .*\. Error Message: Description is too long \(max 500 characters\).*/;
         const MAX_DESCRIPTION_LENGTH = 500;
         const projectData = { ...projectData1, description: "a".repeat(MAX_DESCRIPTION_LENGTH + 1) };

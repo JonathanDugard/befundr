@@ -17,7 +17,7 @@ import {
 
 describe('createContribution', () => {
 
-    let creatorWallet: Keypair, creatorWalletAta: Account, creatorUserPdaKey: PublicKey, 
+    let creatorWallet: Keypair, creatorWalletAta: Account, creatorUserPdaKey: PublicKey,
         userWallet: Keypair, userWalletAta: Account, userPdaKey: PublicKey;
 
     beforeEach(async () => {
@@ -148,7 +148,7 @@ describe('createContribution', () => {
     });
 
     it('should fail if the contribution amount is negative or equal to 0', async () => {
-        
+
         const INITIAL_PAID_AMOUNT = 0;
         const expectedErrorMessage = new RegExp('Contribution amount is insufficient for the selected reward.');
 
@@ -266,7 +266,7 @@ describe('createContribution', () => {
     });
 
     it('should update the User and Project contributions list', async () => {
-        
+
         const INITIAL_PAID_AMOUNT = 5;
         const SELECTED_REWARD = 0; // [0,1,2]        
 
