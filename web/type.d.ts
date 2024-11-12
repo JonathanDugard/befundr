@@ -3,25 +3,6 @@ type AccountWrapper<T> = {
   account: T;
 };
 
-type Project = {
-  owner: PublicKey;
-  user: string;
-  name: string;
-  category: ProjectCategory;
-  imageUrl: string;
-  description: string;
-  goalAmount: number;
-  raisedAmount: number;
-  timestamp: number;
-  endTime: number;
-  status: ProjectStatus;
-  contributionCounter: number;
-  // trustScore: number; // init between 75 to 100
-  rewards: Reward[];
-  safetyDeposit: number;
-  xAccountUrl: string;
-};
-
 type Reward = {
   id: string;
   name: string;
