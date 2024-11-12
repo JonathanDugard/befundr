@@ -243,4 +243,4 @@ const ProjectView = (props: Props) => {
   );
 };
 
-export default Project;
+export default ProjectView;
