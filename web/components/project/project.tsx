@@ -23,7 +23,7 @@ import {
 import Link from 'next/link';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
-import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
 import { ProjectStatus, Project } from '@/types';
 import { BN } from '@coral-xyz/anchor';
@@ -35,7 +35,7 @@ type Props = {
   refetchProject: () => void;
 };
 
-const Project = (props: Props) => {
+const ProjectView = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
   const { publicKey } = useWallet();

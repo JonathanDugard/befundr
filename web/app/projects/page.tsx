@@ -1,10 +1,10 @@
-import Projects from '@/components/projects/projects'
+import ProjectView from '@/components/projects/projects'
 import React from 'react'
 
 type Props = {}
 
 const page = (props: Props) => {
-  return <Projects/>
+  return <ProjectView />
 }
 
 export default page

@@ -1,6 +1,6 @@
 'use client';
 import { useBefundrProgramProject } from '@/components/befundrProgram/befundr-project-access';
-import Project from '@/components/project/project';
+import ProjectView from '@/components/project/project';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { PublicKey } from '@solana/web3.js';
 import React, { useEffect, useState } from 'react';
@@ -38,7 +38,7 @@ const Page = (props: Props) => {
 
   if (projectToDisplay)
     return (
-      <Project
+      <ProjectView
         project={projectToDisplay}
         projectId={props.params.projectId}
         refetchProject={refetch}
