@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./web/*"],
-      "@befundr/anchor": ["anchor/src/index.ts"]
+      "@/types/*": ["web/types/*"],
+      "@befundr/anchor": ["anchor/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]
