@@ -15,6 +15,7 @@ import { useBefundrProgramContribution } from '../befundrProgram/befundr-contrib
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { BN } from '@coral-xyz/anchor';
 import Link from 'next/link';
+import { Project } from '@/types';
 
 type Props = {
   reward: Reward;

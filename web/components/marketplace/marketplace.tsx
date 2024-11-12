@@ -4,6 +4,7 @@ import { ProjectsFilters } from '../projects/projects-ui';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
 import ProjectCardMarketplace from '../z-library/card/ProjectCardMarketplace';
+import { Project } from '@/types';
 
 // type Props = {}
 

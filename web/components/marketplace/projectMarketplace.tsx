@@ -6,6 +6,7 @@ import Divider from '../z-library/display_elements/Divider';
 import { RewardMarketplaceBlock } from './projectMarketplace-ui';
 import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
 import { PublicKey } from '@solana/web3.js';
+import { Project } from '@/types';
 
 type Props = {
   project: Project;

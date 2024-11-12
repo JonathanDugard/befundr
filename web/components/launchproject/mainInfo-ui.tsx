@@ -1,6 +1,6 @@
 import InputField from '../z-library/button/InputField';
 import PicSelector from '../z-library/button/PicSelector';
-import { projectCategoryOptions } from '@/data/category';
+import { Project, projectCategoryOptions } from '@/types';
 import CategorySelector from '../z-library/button/CategorySelector';
 
 type MainInfoProps = {

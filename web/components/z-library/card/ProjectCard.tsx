@@ -13,6 +13,7 @@ import {
 } from '@/utils/functions/utilFunctions';
 import Divider from '../display_elements/Divider';
 import { BN } from '@coral-xyz/anchor';
+import { Project } from '@/types';
 
 type Props = {
   project: Project;

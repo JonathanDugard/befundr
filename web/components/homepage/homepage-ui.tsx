@@ -11,6 +11,7 @@ import { useBefundrProgramContribution } from '../befundrProgram/befundr-contrib
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Project } from '@/types';
 
 export const KeyFigures = () => {
   const { allProjectsAccounts } = useBefundrProgramProject();

@@ -1,5 +1,6 @@
 import { getDateFromTimestamp } from '@/utils/functions/utilFunctions';
 import InputField from '../z-library/button/InputField';
+import { Project } from '@/types';
 
 type FundingProps = {
   handleChange: (

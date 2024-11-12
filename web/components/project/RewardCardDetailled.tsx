@@ -5,7 +5,7 @@ import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import Link from 'next/link';
 import MakeContributionPopup from './MakeContributionPopup';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
-import { ProjectStatus } from '@/data/projectStatus';
+import { Project, ProjectStatus } from '@/types';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';

@@ -12,6 +12,7 @@ import AtaBalance from '../z-library/display_elements/AtaBalance';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
+import { Project } from '@/types';
 
 type TrustProps = {
   handleChange: (

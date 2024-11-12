@@ -1,4 +1,4 @@
-import { ProjectStatus } from '@/data/projectStatus';
+import { Project, ProjectStatus } from "@/types";
 
 export const requiresCheckBeforeAddContribution = (
   project: Project,

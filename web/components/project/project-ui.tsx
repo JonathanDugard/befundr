@@ -4,7 +4,7 @@ import FeedCard from '../z-library/card/FeedCard';
 import Divider from '../z-library/display_elements/Divider';
 import FundsRequestCard from '../z-library/card/VoteCard';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
-import { ProjectStatus } from '@/data/projectStatus';
+import { Project, ProjectStatus } from '@/types';
 import Image from 'next/image';
 
 export const AboutBlock = ({

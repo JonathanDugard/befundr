@@ -20,6 +20,7 @@ import { ProjectCategory } from '@/data/category';
 import { getATA } from '@/utils/functions/AtaFunctions';
 import { useBefundrProgramGlobal } from '../befundrProgram/befundr-global-access';
 import { prepareDataForProjectCreation } from './utils';
+import { Project, ProjectDefault } from '@/types';
 
 const Launchproject = () => {
   //* GENERAL STATE

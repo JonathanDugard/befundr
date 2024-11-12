@@ -9,6 +9,7 @@ import {
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
+import { Project } from '@/types';
 
 type Props = {
   project: Project;

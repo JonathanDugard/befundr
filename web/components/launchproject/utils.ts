@@ -6,6 +6,7 @@ import {
 } from '@/utils/functions/utilFunctions';
 import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
+import { Project } from '@/types';
 
 // function to prepare the project object to use in the blockchain TX
 export const prepareDataForProjectCreation = async (

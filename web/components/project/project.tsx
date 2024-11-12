@@ -25,7 +25,7 @@ import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { PublicKey } from '@solana/web3.js';
-import { ProjectStatus } from '@/data/projectStatus';
+import { ProjectStatus, Project } from '@/types';
 import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 

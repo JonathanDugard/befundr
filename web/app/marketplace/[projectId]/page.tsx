@@ -4,6 +4,7 @@ import ProjectMarketplace from '@/components/marketplace/projectMarketplace';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { PublicKey } from '@solana/web3.js';
 import React, { useEffect, useState } from 'react';
+import { Project } from '@/types';
 
 type Props = {
   params: {

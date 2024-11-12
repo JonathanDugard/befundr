@@ -19,6 +19,7 @@ import { BN } from '@coral-xyz/anchor';
 import { useBefundrProgramSaleTransaction } from '../befundrProgram/befundr-saleTransaction-access';
 import SaleRewardPopup from './SaleRewardPopup';
 import { soonToast } from '../z-library/display_elements/SoonToast';
+import { Project } from '@/types';
 
 type Props = {
   contributionId: string;

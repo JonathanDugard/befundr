@@ -5,7 +5,7 @@ import SearchField from '../z-library/button/SearchField';
 import WhiteBlock from '../z-library/display_elements/WhiteBlock';
 import ToggleButton from '../z-library/button/ToggleButton';
 import Slider from '../z-library/button/Slider';
-import { projectCategoryOptions } from '@/data/category';
+import { projectCategoryOptions } from '@/types';
 import DisabledButtonLabel from '../z-library/button/DisabledButtonLabel';
 
 export const ProjectsFilters = () => {
