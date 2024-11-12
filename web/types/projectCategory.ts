@@ -15,6 +15,7 @@ export class ProjectCategory extends Enum {
   static Science = new ProjectCategory({ science: 'science' });
   static Finance = new ProjectCategory({ finance: 'finance' });
   static Sports = new ProjectCategory({ sports: 'sports' });
+  static Undefined = new ProjectCategory({ undefined: 'undefined' });
 
   static fromAccountCategory(category: any): ProjectCategory {
     const key = Object.keys(category).find(k => category[k]);
@@ -29,6 +30,7 @@ export class ProjectCategory extends Enum {
 }
 
 export const projectCategoryOptions = [
+  { label: 'Select a category', value: 'Undefined' },
   { label: 'Technology', value: 'Technology' },
   { label: 'Art', value: 'Art' },
   { label: 'Education', value: 'Education' },

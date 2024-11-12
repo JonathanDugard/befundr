@@ -1,6 +1,6 @@
 import InputField from '../z-library/button/InputField';
 import PicSelector from '../z-library/button/PicSelector';
-import { Project, projectCategoryOptions } from '@/types';
+import { Project, projectCategoryOptions, ProjectMetadata, ProjectMetadataDefault } from '@/types';
 import CategorySelector from '../z-library/button/CategorySelector';
 
 type MainInfoProps = {
@@ -8,6 +8,7 @@ type MainInfoProps = {
   handleCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   setSelectedPic: (file: File | null) => void;
   projectToCreate: Project;
+  projectMetadata: ProjectMetadata;
   displayedSelectedCategory: string;
 };
 
@@ -20,7 +21,7 @@ export const MainInfoBlock = (props: MainInfoProps) => {
         placeholder="Your project name"
         type="text"
         inputName="name"
-        value={props.projectToCreate.name}
+        value={props.projectMetadata.name}
         handleChange={props.handleChange}
         min={5}
         max={64}
@@ -30,7 +31,7 @@ export const MainInfoBlock = (props: MainInfoProps) => {
         options={projectCategoryOptions}
         handleChange={props.handleCategoryChange}
         inputName="category"
-        value={props.projectToCreate.category}
+        value={props.projectMetadata.category.enum}
         displayedSelectedCategory={props.displayedSelectedCategory}
       />
       <PicSelector
@@ -39,7 +40,7 @@ export const MainInfoBlock = (props: MainInfoProps) => {
         setSelectedPic={props.setSelectedPic}
         maxSize={2}
         objectFit="cover"
-        defaultImage={props.projectToCreate.imageUrl}
+        defaultImage={props.projectMetadata.imageUrl}
       />
     </div>
   );

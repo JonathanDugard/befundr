@@ -19,7 +19,13 @@ import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-
 import { getATA } from '@/utils/functions/AtaFunctions';
 import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
 import { prepareDataForProjectCreation } from './utils';
-import { Project, ProjectDefault } from '@/types';
+import { 
+  Project, 
+  ProjectDefault, 
+  ProjectMetadata, 
+  ProjectMetadataDefault, 
+  ProjectCategory 
+} from '@/types';
 
 const Launchproject = () => {
   //* GENERAL STATE
@@ -34,29 +40,11 @@ const Launchproject = () => {
 
   //* LOCAL STATE
   const [selectedStep, setSelectedStep] = useState<number>(0);
-  const [projectToCreate, setProjectToCreate] = useState<Project>({
-    // init with an empty project
-    owner: '',
-    user: '',
-    name: '',
-    category: ProjectCategory.Technology,
-    imageUrl: '',
-    description: '',
-    goalAmount: 0,
-    raisedAmount: 0,
-    timestamp: Date.now(),
-    endTime: 30, // expressed in nb of days in the UI. To be convert in timestamp before the creation tx
-    status: 'Draft',
-    contributionCounter: 0,
-    rewards: [],
-    safetyDeposit: 50,
-    xAccountUrl: '',
-  });
+  const [projectToCreate, setProjectToCreate] = useState<Project>({...ProjectDefault});
+  const [projectMetadata, setProjectMetadata] = useState<ProjectMetadata>({...ProjectMetadataDefault});
   const [projectImageUrl, setProjectImageUrl] = useState<File | null>(null);
-  const [displayedSelectedCategory, setDisplayedSelectedCategory] =
-    useState('Technology');
+  const [displayedSelectedCategory, setDisplayedSelectedCategory] = useState('Undefined');
   const [isCreationLoading, setIsCreationLoading] = useState(false);
-
   const [userProjectCounter, setUserProjectCounter] = useState(0);
 
   //* USER DATA MNGT
@@ -78,29 +66,36 @@ const Launchproject = () => {
   //* PROJECT DATA MNGT
   // handle project input field modifications
   const handleProjectChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
 
     // handle date type to keep a timestamp format
     const finalValue = type === 'date' ? new Date(value).getTime() : value;
 
-    setProjectToCreate((prevProfile) => ({
-      ...prevProfile,
-      [name]: finalValue,
-    }));
+    if (projectMetadata && projectMetadata.hasOwnProperty(name)) {
+      // If the key exists in projectMetadata, update projectMetadata
+      setProjectMetadata((prevMetadata) => ({
+        ...prevMetadata,
+        [name]: finalValue,
+      }));
+    } else {
+      // Otherwise, update projectToCreate
+      setProjectToCreate((prevProject) => ({
+        ...prevProject,
+        [name]: finalValue,
+      }));
+    };
+    console.log(projectToCreate);
   };
-
   // handle profile pic modification
   const handleProjectPicChange = (file: File | null) => {
     if (file) {
       setProjectImageUrl(file);
 
       const imageUrl = URL.createObjectURL(file);
-      setProjectToCreate((prevProject) => ({
-        ...prevProject,
+      setProjectMetadata((prevMetadata) => ({
+        ...prevMetadata,
         imageUrl: imageUrl,
       }));
     }
@@ -110,51 +105,14 @@ const Launchproject = () => {
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+
     const selectedValue = event.target.value;
-    setDisplayedSelectedCategory(event.target.value);
-
-    // Utilisez une fonction de mappage pour obtenir l'instance de ProjectCategory
-    let selectedCategory: ProjectCategory | undefined;
-
-    switch (selectedValue) {
-      case 'Technology':
-        selectedCategory = ProjectCategory.Technology;
-        break;
-      case 'Art':
-        selectedCategory = ProjectCategory.Art;
-        break;
-      case 'Education':
-        selectedCategory = ProjectCategory.Education;
-        break;
-      case 'Health':
-        selectedCategory = ProjectCategory.Health;
-        break;
-      case 'Environment':
-        selectedCategory = ProjectCategory.Environment;
-        break;
-      case 'SocialImpact':
-        selectedCategory = ProjectCategory.SocialImpact;
-        break;
-      case 'Entertainment':
-        selectedCategory = ProjectCategory.Entertainment;
-        break;
-      case 'Science':
-        selectedCategory = ProjectCategory.Science;
-        break;
-      case 'Finance':
-        selectedCategory = ProjectCategory.Finance;
-        break;
-      case 'Sports':
-        selectedCategory = ProjectCategory.Sports;
-        break;
-      default:
-        break;
-    }
-
-    if (selectedCategory) {
-      setProjectToCreate((prevProject) => ({
-        ...prevProject,
-        category: selectedCategory,
+  
+    if (selectedValue) {
+      setDisplayedSelectedCategory(selectedValue);
+      setProjectMetadata((prevMetadata) => ({
+        ...prevMetadata,
+        category: ProjectCategory[selectedValue as keyof typeof ProjectCategory] as ProjectCategory,
       }));
     }
   };
@@ -262,6 +220,7 @@ const Launchproject = () => {
                 handleCategoryChange={handleCategoryChange}
                 setSelectedPic={handleProjectPicChange}
                 projectToCreate={projectToCreate}
+                projectMetadata={projectMetadata}
                 displayedSelectedCategory={displayedSelectedCategory}
               />
             )}

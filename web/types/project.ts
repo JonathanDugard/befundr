@@ -4,8 +4,8 @@ import { ProjectCategory } from './projectCategory';
 import { Metadata } from './metadata';
 
 export class Project {
-  owner: PublicKey;
-  user: string;
+  owner: PublicKey | null;
+  user: PublicKey | null;
   goalAmount: number;
   raisedAmount: number;
   timestamp: number;
@@ -13,11 +13,11 @@ export class Project {
   status: ProjectStatus;
   contributionCounter: number;
   safetyDeposit: number;
-  metadata: Metadata<ProjectMetadata>;
+  metadata: Metadata<ProjectMetadata> | null;
 
   constructor(
     owner: PublicKey,
-    user: string,
+    user: PublicKey,
     goalAmount: number,
     raisedAmount: number,
     timestamp: number,
@@ -48,9 +48,17 @@ export type ProjectMetadata = {
   xAccountUrl: string;
 };
 
+export const ProjectMetadataDefault = {
+  name: '',
+  category: ProjectCategory.Undefined,
+  imageUrl: '',
+  description: '',
+  xAccountUrl: '',
+}
+
 export const ProjectDefault = {
-  owner: PublicKey,
-  user: PublicKey,
+  owner: null,
+  user: null,
   goalAmount: 0,
   raisedAmount: 0,
   timestamp: 0,

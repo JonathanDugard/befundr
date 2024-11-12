@@ -50,7 +50,16 @@ export class Metadata<T> {
       return this.uri;
     }
   
-    getData(): T | null {
-      return this.data;
+    getData<K extends keyof T>(key: K): T[K] | null;
+    getData(): T | null;
+    getData<K extends keyof T>(key?: K): T[K] | T | null {
+      if (!this.data) {
+        return null;
+      }
+      return key ? this.data[key] : this.data;
+    }
+
+    setData(newData: T): void {
+      this.data = newData;
     }
 }
