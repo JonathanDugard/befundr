@@ -9,7 +9,7 @@ import {
   calculateTimeRemaining,
   calculateTrustScore,
   convertSplAmountToNumber,
-} from '@/utils/functions/utilFunctions';
+} from '@/utils/functions/genericTools';
 import TrustScore from '../z-library/display_elements/TrustScore';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';

@@ -8,7 +8,7 @@ import InfoLabel from '../z-library/display_elements/InfoLabel';
 import Image from 'next/image';
 import { getMinSellingPrice } from '@/utils/functions/saleTransactionFunctions';
 import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
 import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
 import RedeemRewardPopup from '../z-library/popup/RedeemRewardPopup';
 import CancelRewardSalePopup from '../z-library/popup/CancelRewardSalePopup';

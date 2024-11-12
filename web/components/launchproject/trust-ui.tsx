@@ -6,7 +6,7 @@ import InputField from '../z-library/button/InputField';
 import {
   calculateTrustScore,
   convertSplAmountToNumber,
-} from '@/utils/functions/utilFunctions';
+} from '@/utils/functions/genericTools';
 import { useEffect, useMemo } from 'react';
 import AtaBalance from '../z-library/display_elements/AtaBalance';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';

@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import PopupLayout from '../z-library/popup/PopupLayout';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
 import { BN } from '@coral-xyz/anchor';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import toast from 'react-hot-toast';

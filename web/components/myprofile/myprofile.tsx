@@ -12,7 +12,7 @@ import {
 } from '@/utils/functions/firebaseFunctions';
 import { useRouter } from 'next/navigation';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
-import { concatFileName } from '@/utils/functions/utilFunctions';
+import { concatFileName } from '@/utils/functions/genericTools';
 import { WalletButton } from '../solana/solana-provider';
 import DisabledButtonLabel from '../z-library/button/DisabledButtonLabel';
 

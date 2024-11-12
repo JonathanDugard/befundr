@@ -1,4 +1,4 @@
-import { calculateTimeElapsed } from '@/utils/functions/utilFunctions';
+import { calculateTimeElapsed } from '@/utils/functions/genericTools';
 import React from 'react';
 import VoteProgressBar from '../display_elements/VoteProgressBar';
 import MainButtonLabel from '../button/MainButtonLabel';

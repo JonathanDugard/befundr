@@ -11,7 +11,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import {
   confirmTransaction,
   convertNumberToSplAmount,
-} from '@/utils/functions/utilFunctions';
+} from '@/utils/functions/genericTools';
 import { transformAccountToSaleTransaction } from '@/utils/functions/saleTransactionFunctions';
 
 //* TYPE

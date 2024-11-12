@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getATA } from '@/utils/functions/AtaFunctions';
-import { confirmTransaction } from '@/utils/functions/utilFunctions';
+import { confirmTransaction } from '@/utils/functions/genericTools';
 
 //* TYPE
 interface CreateUserArgs {

@@ -14,11 +14,10 @@ import { DescriptionBLock } from './description-ui';
 import { TrustBlock } from './trust-ui';
 import { ValidationBlock } from './validation-ui';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
-import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
-import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
-import { ProjectCategory } from '@/data/category';
+import { useBefundrProgramProject } from '@/components/befundrProgram/befundr-project-access';
+import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { getATA } from '@/utils/functions/AtaFunctions';
-import { useBefundrProgramGlobal } from '../befundrProgram/befundr-global-access';
+import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
 import { prepareDataForProjectCreation } from './utils';
 import { Project, ProjectDefault } from '@/types';
 

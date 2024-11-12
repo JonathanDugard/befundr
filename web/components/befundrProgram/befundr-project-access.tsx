@@ -10,7 +10,8 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
-import { confirmTransaction } from '@/utils/functions/utilFunctions';
+import { confirmTransaction } from '@/utils/functions/genericTools';
+import { Project } from '@/types';
 
 //* TYPE
 interface CreateProjectArgs {

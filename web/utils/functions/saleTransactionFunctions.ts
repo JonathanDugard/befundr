@@ -1,5 +1,5 @@
 import { BN } from '@coral-xyz/anchor';
-import { convertSplAmountToNumber } from './utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
 
 export const getMinSellingPrice = (
   salesTx: AccountWrapper<SaleTransaction>[] | null

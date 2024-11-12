@@ -1,6 +1,6 @@
 import React from 'react';
 import InfoLabel from '../display_elements/InfoLabel';
-import { calculateTimeElapsed } from '@/utils/functions/utilFunctions';
+import { calculateTimeElapsed } from '@/utils/functions/genericTools';
 
 type Props = {
   feed: Feed;

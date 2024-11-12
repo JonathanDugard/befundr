@@ -5,7 +5,7 @@ import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
 import AtaBalance from '../z-library/display_elements/AtaBalance';
 import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
 import { requiresCheckBeforeAddContribution } from './utils';

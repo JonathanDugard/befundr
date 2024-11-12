@@ -8,7 +8,7 @@ import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { Project, ProjectStatus } from '@/types';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
 import { BN } from '@coral-xyz/anchor';
 import { WalletButton } from '../solana/solana-provider';
 

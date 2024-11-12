@@ -8,7 +8,7 @@ import BuyRewardPopup from './BuyRewardPopup';
 import {
   calculateTimeElapsed,
   convertSplAmountToNumber,
-} from '@/utils/functions/utilFunctions';
+} from '@/utils/functions/genericTools';
 import { BN } from '@coral-xyz/anchor';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useWallet } from '@solana/wallet-adapter-react';

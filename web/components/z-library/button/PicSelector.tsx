@@ -1,5 +1,5 @@
 'use client';
-import { concatFileName } from '@/utils/functions/utilFunctions';
+import { concatFileName } from '@/utils/functions/genericTools';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';

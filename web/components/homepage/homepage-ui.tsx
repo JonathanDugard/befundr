@@ -6,10 +6,10 @@ import Link from 'next/link';
 import ProjectCard from '../z-library/card/ProjectCard';
 import { useEffect, useState } from 'react';
 import { transformProgramAccountToProject } from '@/utils/functions/projectsFunctions';
-import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
-import { useBefundrProgramContribution } from '../befundrProgram/befundr-contribution-access';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
-import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useBefundrProgramProject } from '@/components/befundrProgram/befundr-project-access';
+import { useBefundrProgramContribution } from '@/components/befundrProgram/befundr-contribution-access';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
+import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Project } from '@/types';
 

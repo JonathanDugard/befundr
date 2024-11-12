@@ -3,7 +3,7 @@ import {
   convertNumberToSplAmount,
   getTimestampInFuture,
   toCamelCase,
-} from '@/utils/functions/utilFunctions';
+} from '@/utils/functions/genericTools';
 import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 import { Project } from '@/types';

@@ -4,11 +4,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PublicKey } from '@solana/web3.js';
-import { useBefundrProgramGlobal } from './befundr-global-access';
+import { useBefundrProgramGlobal } from '@/components/befundrProgram/befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
 import { getATA } from '@/utils/functions/AtaFunctions';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { confirmTransaction } from '@/utils/functions/utilFunctions';
+import { confirmTransaction } from '@/utils/functions/genericTools';
 
 //* TYPE
 interface AddContributionArgs {

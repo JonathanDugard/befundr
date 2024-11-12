@@ -7,7 +7,7 @@ import TrustScore from '../display_elements/TrustScore';
 import {
   calculateTrustScore,
   convertSplAmountToNumber,
-} from '@/utils/functions/utilFunctions';
+} from '@/utils/functions/genericTools';
 import { BN } from '@coral-xyz/anchor';
 import { Project } from '@/types';
 

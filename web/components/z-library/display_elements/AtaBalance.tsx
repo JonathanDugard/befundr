@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import InfoLabel from './InfoLabel';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { convertSplAmountToNumber } from '@/utils/functions/genericTools';
 
 type Props = {
   /*empty*/
