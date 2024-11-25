@@ -6,6 +6,7 @@ import FundsRequestCard from '../z-library/card/VoteCard';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
 import Image from 'next/image';
+import DonateCard from './DonateCard';
 
 export const AboutBlock = ({
   description,
@@ -14,9 +15,12 @@ export const AboutBlock = ({
   description: string;
   xAccount: string;
 }) => {
+
+  const xLink = "https://" + xAccount;
+
   return (
     <div className="flex flex-col justify-start items-start gap-4">
-      <a href={xAccount} className="flex gap-2" target="_blank">
+      <a href={xLink} className="flex gap-2" target="_blank">
         <Image
           alt="x"
           src={'/x.jpg'}
@@ -24,7 +28,7 @@ export const AboutBlock = ({
           height={30}
           className="rounded-full object-contain"
         />
-        <p className="textStyle-subheadline underline">Project page on X</p>
+        <p className="textStyle-subheadline underline">{xAccount}</p>
       </a>
       <p className="textStyle-body">{description}</p>
     </div>
@@ -40,20 +44,18 @@ export const RewardBlock = ({
   projectId: string;
   refetchProject: () => void;
 }) => {
+
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
       {project.status === ProjectStatus.Fundraising.enum && (
-        <div className="flex justify-between items-center w-full">
-          <div className="flex flex-col items-start justify-between gap-2 w-full ">
-            <p className="textStyle-subheadline">Donation</p>
-            <p className="textStyle-headline">Free amount</p>
-            <p className="textStyle-body">No reward associated</p>
-          </div>
-          <button>
-            <MainButtonLabel label="Contribute" />
-          </button>
-        </div>
+        <div className="flex flex-col gap-6 w-full h-full">
+        <DonateCard
+          project={project}
+          projectId={projectId}
+          refetchProject={refetchProject}
+        />
+      </div>
       )}
       <Divider />
       {/* rewars level */}

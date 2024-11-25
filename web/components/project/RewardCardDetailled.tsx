@@ -27,7 +27,6 @@ const RewardCardDetailled = (props: Props) => {
 
   //* LOCAL STATE
   const [isShowPopup, setIsShowPopup] = useState(false);
-
   // Use React Query to fetch userPDA address based on public key
   const { data: userEntryAddress, isLoading: isFetchingUserEntryAddress } =
     getUserEntryAddress(publicKey);

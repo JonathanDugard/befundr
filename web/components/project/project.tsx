@@ -11,8 +11,7 @@ import {
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import TrustScore from '../z-library/display_elements/TrustScore';
-import MainButtonLabelBig from '../z-library/button/MainButtonLabelBig';
-import SecondaryButtonLabelBig from '../z-library/button/SecondaryButtonLabelBig';
+import MainButtonLabel from '../z-library/button/MainButtonLabelBig';
 import {
   AboutBlock,
   FounderBlock,
@@ -68,9 +67,19 @@ const Project = (props: Props) => {
       <button onClick={() => router.back()}>
         <BackButton />
       </button>
-      <div className="flex items-center gap-10">
-        <h1 className="textStyle-title">{props.project.name}</h1>
-        <InfoLabel label={`${props.project.status}`} />
+      <div className="flex items-center justify-between w-full gap-10">
+        <div className="flex items-center gap-10">
+          <h1 className="textStyle-title">{props.project.name}</h1>
+          <InfoLabel label={`${props.project.status}`} />
+        </div>
+        <div className="ml-auto flex gap-2">
+          <button className="flex items-center gap-2">
+              <SecondaryButtonLabel label="Share on X" />
+          </button>
+          <button className="flex items-center gap-2">
+            <SecondaryButtonLabel label="+ Follow" />
+          </button>
+        </div>
       </div>
       <Divider />
       {/* main info */}
@@ -86,6 +95,9 @@ const Project = (props: Props) => {
         />
         {/* info */}
         <div className="flex flex-col items-start justify-start gap-4 w-1/2  h-full">
+        <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+          Granted by Foundation
+          </span>
           <div className="flex justify-between w-full">
             <p className="textStyle-subheadline">
               <strong className="textStyle-subtitle">
@@ -130,17 +142,14 @@ const Project = (props: Props) => {
               className="flex-1"
               onClick={() => setSelectedMenu('rewards')}
             >
-              <MainButtonLabelBig label="Contribute" />
-            </button>
-            <button className="flex-1">
-              <SecondaryButtonLabelBig label="Share direct contribution link on X" />
+              <MainButtonLabel label="Contribute" />
             </button>
           </div>
           )}
           {/* button if realizing status */}
           {props.project.status === ProjectStatus.Realising.enum && (
             <Link href={`/marketplace/${props.projectId}`} className="w-full">
-              <MainButtonLabelBig label="Look for rewards to buy" />
+              <MainButtonLabel label="Look for rewards to buy" />
             </Link>
           )}
         </div>
@@ -201,7 +210,7 @@ const Project = (props: Props) => {
         )}
       </div>
       {props.project.user === userPdaKey?.toString() && (
-        <div className="w-full h-10 bg-accent flex justify-center items-center px-4  -mt-14 mb-10">
+        <div className="w-full flex justify-left -mt-10">
           {selectedMenu === 'update' && (
             <button>
               <SecondaryButtonLabel label="Add an update" />
