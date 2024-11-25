@@ -14,6 +14,7 @@ import TrustScore from '../z-library/display_elements/TrustScore';
 import MainButtonLabel from '../z-library/button/MainButtonLabelBig';
 import {
   AboutBlock,
+  MilestonesBlock,
   FounderBlock,
   RewardBlock,
   UpdateBlock,
@@ -43,7 +44,7 @@ const Project = (props: Props) => {
 
   //* LOCAL STATE
   const [selectedMenu, setSelectedMenu] = useState<
-    'about' | 'rewards' | 'funder' | 'update' | 'vote'
+    'about' | 'milestones' | 'rewards' | 'funder' | 'update' | 'vote'
   >('about');
 
   const trustScore = useMemo(
@@ -88,7 +89,7 @@ const Project = (props: Props) => {
         <ImageWithFallback
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
-          classname="w-1/4 md:w-1/4 aspect-square object-cover"
+          classname="w-1/5 md:w-1/5 aspect-square object-cover"
           src={props.project.imageUrl}
           height={200}
           width={200}
@@ -133,8 +134,6 @@ const Project = (props: Props) => {
               </p>
             </div>
           </div>
-          {/* spacer */}
-          <div className="flex-grow "></div>
           {/* buttons if fundraising*/}
           {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex flex-row gap-4 w-full">
@@ -143,6 +142,12 @@ const Project = (props: Props) => {
               onClick={() => setSelectedMenu('rewards')}
             >
               <MainButtonLabel label="Contribute" />
+            </button>
+            <button
+              className="flex-1"
+              onClick={() => setSelectedMenu('milestones')}
+              >
+              <MainButtonLabel label="Milestone Unlock Request" />
             </button>
           </div>
           )}
@@ -155,7 +160,7 @@ const Project = (props: Props) => {
         </div>
       </div>
       {/* menu */}
-      <div className="w-full h-10 bg-second flex justify-between items-center px-4 mt-20 mb-10">
+      <div className="w-full h-10 bg-second flex justify-between items-center px-4 mt-10">
         <button
           className={`${
             selectedMenu === 'about'
@@ -165,6 +170,17 @@ const Project = (props: Props) => {
           onClick={() => setSelectedMenu('about')}
         >
           About the project
+        </button>
+        <button
+          className={`${
+            selectedMenu === 'milestones'
+              ? 'textStyle-body-accent !font-normal'
+              : 'textStyle-body'
+          }`}
+          onClick={() => setSelectedMenu('milestones')}
+        >
+          Milestones
+          <span className="ml-1 bg-red-500 rounded-full w-2 h-2 inline-block"></span>
         </button>
         <button
           className={`${
@@ -228,6 +244,13 @@ const Project = (props: Props) => {
         <AboutBlock
           description={props.project.description}
           xAccount={props.project.xAccountUrl}
+        />
+      )}
+      {selectedMenu === 'milestones' && (
+        <MilestonesBlock
+          project={props.project}
+          projectId={props.projectId}
+          refetchProject={props.refetchProject}
         />
       )}
       {selectedMenu === 'rewards' && (

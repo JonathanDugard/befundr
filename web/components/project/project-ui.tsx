@@ -35,6 +35,69 @@ export const AboutBlock = ({
   );
 };
 
+export const MilestonesBlock = ({
+  project,
+  projectId,
+  refetchProject,
+}: {
+  project: Project;
+  projectId: string;
+  refetchProject: () => void;
+}) => {
+
+  // Mocked milestones data
+  const mockedMilestones = [
+    {
+      title: "Prototype Development",
+      description: "Create the initial prototype of the connected clothing with integrated sensors and connectivity features.",
+      dueDate: new Date('2024-07-01'),
+      state: "Approved",
+    },
+    {
+      title: "User Testing Phase",
+      description: "Conduct user testing sessions to gather feedback on the prototype's functionality and design.",
+      dueDate: new Date('2024-11-15'),
+      state: "Pending",
+    },
+    {
+      title: "Manufacturing Setup",
+      description: "Establish manufacturing processes and partnerships for large-scale production of connected clothes.",
+      dueDate: new Date('2025-03-10'),
+      state: "Upcoming",
+    },
+  ];
+
+  return (
+    <div className="flex flex-col items-start justify-start gap-6 w-full">
+      {mockedMilestones.map((milestone, index) => (
+        <div key={index} className="flex items-center justify-between w-full p-4 border-b">
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <p className="text-lg font-bold">{milestone.dueDate.getFullYear()}</p>
+              <p className="text-sm">{milestone.dueDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })}</p>
+            </div>
+            <div className="flex flex-col">
+              <h3 className="textStyle-headline">{milestone.title}</h3>
+              <p className="textStyle-body">{milestone.description}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className={`tag ${milestone.state.toLowerCase()}`}>
+              {milestone.state}
+            </span>
+            {milestone.state === "Pending" && (
+              <button className="btn-vote">Vote</button>
+            )}
+            {milestone.state === "Approved" && (
+              <button className="btn-claim">Claim</button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export const RewardBlock = ({
   project,
   projectId,

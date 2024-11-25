@@ -55,3 +55,36 @@ body {
 .animate-bounce-button {
   animation: bounce-button 0.5s infinite;
 }
+
+.tag {
+  padding: 0.5em 1em;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.tag.pending {
+  background-color: #ffe5e5;
+  color: #ff5e5e;
+}
+
+.tag.approved {
+  background-color: #e5f7ff;
+  color: #5eafff;
+}
+
+.btn-vote, .btn-claim {
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-vote {
+  background-color: #000;
+  color: #fff;
+}
+
+.btn-claim {
+  background-color: #5eafff;
+  color: #fff;
+}
