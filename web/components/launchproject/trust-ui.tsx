@@ -26,8 +26,7 @@ type TrustProps = {
 export const TrustBlock = (props: TrustProps) => {
   const collateralRatio = useMemo(
     () =>
-      (props.projectToCreate.safetyDeposit * 100) /
-      props.projectToCreate.goalAmount,
+      ((props.projectToCreate.safetyDeposit * 100) / props.projectToCreate.goalAmount).toFixed(2),
     [props.projectToCreate.safetyDeposit, props.projectToCreate.goalAmount]
   );
 
@@ -60,12 +59,12 @@ export const TrustBlock = (props: TrustProps) => {
       <h3 className="textStyle-headline">Step 5 : Trustworthiness elements</h3>
       {/* verifeid info */}
       <p className="textStyle-subheadline !text-textColor-main">
-        Your verified informations
+        Project's X Account
       </p>
-      <p className="textStyle-subheadline">
+      {/* <p className="textStyle-subheadline">
         Befundr is based on confidence. The more information you provide, the
         more contributors will trust you and your project.
-      </p>
+      </p> */}
       <div className="flex justify-start gap-2 w-full">
         <Image
           alt="x"
@@ -77,8 +76,8 @@ export const TrustBlock = (props: TrustProps) => {
         <InputField
           handleChange={props.handleChange}
           inputName="xAccountUrl"
-          label="Set the project X profile"
-          placeholder="The url of the project X account"
+          label=""
+          placeholder="X Account full URL"
           type="text"
           value={props.projectToCreate.xAccountUrl}
         />
@@ -88,7 +87,7 @@ export const TrustBlock = (props: TrustProps) => {
       <p className="textStyle-subheadline !text-textColor-main mt-10">
         Safety deposit
       </p>
-      <p className="textStyle-body">
+      {/* <p className="textStyle-body">
         A minimum amount of $50 is needed to start a funding campaign. These
         funds are escrowed to show your personal commitment to the project and
         to promote legitimate projects. The funds will be returned to you if the
@@ -102,18 +101,20 @@ export const TrustBlock = (props: TrustProps) => {
         <br /> A 5% ratio between your safety deposit and your fundraising goal
         will give you a 100% trust score. This trust score will evolve during
         the project based on community votes regarding your project.
-      </p>
+      </p> */}
+      <p className="w-1/2">{collateralRatio}% <br />of your fundraising target.</p>
       <div className="flex justify-start items-center gap-2 w-full">
+      
         <Slider
           initValue={50}
-          max={props.projectToCreate.goalAmount * 0.05}
+          max={Math.round(props.projectToCreate.goalAmount * 0.05)}
           min={50}
-          step={10}
+          step={1}
           handleChange={props.handleChange}
           name="safetyDeposit"
           value={props.projectToCreate.safetyDeposit}
         />
-        <p className="w-1/2">{collateralRatio}% of your fundraising target.</p>
+        
       </div>
       <div className="flex justify-start items-center gap-2 w-full">
         <AtaBalance />
@@ -127,31 +128,6 @@ export const TrustBlock = (props: TrustProps) => {
         )}
       </div>
 
-      {/* trust score */}
-      <p className="textStyle-subheadline !text-textColor-main mt-10 mb-4">
-        Final trust score{' '}
-      </p>
-      <div className=" flex justify-center items-center gap-4 w-full">
-        <div className="h-52 aspect-square flex flex-col justify-center items-center gap-2">
-          <TrustScore
-            trustValue={calculateTrustScore(
-              props.projectToCreate.safetyDeposit,
-              props.projectToCreate.goalAmount
-            )}
-          />
-          <p className="textStyle-headline">
-            Trust score :{' '}
-            {calculateTrustScore(
-              props.projectToCreate.safetyDeposit,
-              props.projectToCreate.goalAmount
-            ).toFixed(0)}
-          </p>
-        </div>
-        <p className="textStyle-body border border-accent rounded-md p-2">
-          Aggregated trust level that will be displayed to contributors. An
-          higher score is better{' '}
-        </p>
-      </div>
     </div>
   );
 };

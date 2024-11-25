@@ -117,12 +117,6 @@ const Project = (props: Props) => {
                 </p>
               )}
             </div>
-            <div className="w-1/3 aspect-square flex flex-col justify-center items-center gap-2">
-              <TrustScore trustValue={trustScore} />
-              <p className="flex justify-center w-full textStyle-subheadline">
-                Trust level {trustScore.toFixed(0)}
-              </p>
-            </div>
           </div>
           {/* spacer */}
           <div className="flex-grow "></div>
