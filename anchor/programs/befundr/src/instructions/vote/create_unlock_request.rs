@@ -16,11 +16,6 @@ pub fn create_unlock_request(
     let unlock_requests = &mut ctx.accounts.unlock_requests;
     let new_unlock_request = &mut ctx.accounts.new_unlock_request;
 
-    require!(
-        project.status == ProjectStatus::Realising,
-        CreateUnlockRequestError::WrongProjectStatus
-    );
-
     let max_allowed_amount = project.raised_amount * MAX_REQUESTED_PERCENTAGE_AMOUNT / 100;
 
     require!(
