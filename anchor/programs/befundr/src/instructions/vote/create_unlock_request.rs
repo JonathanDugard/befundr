@@ -1,9 +1,7 @@
 use anchor_lang::prelude::*;
 
 use crate::{
-    constants::unlock_request::{
-        MAX_REQUESTED_PERCENTAGE_AMOUNT, REJECTED_REQUEST_COOLDOWN, REQUEST_COOLDOWN, VOTING_PERIOD,
-    },
+    constants::unlock_request::{MAX_REQUESTED_PERCENTAGE_AMOUNT, REJECTED_REQUEST_COOLDOWN},
     errors::CreateUnlockRequestError,
     state::{Project, ProjectStatus, UnlockRequest, UnlockRequests, UnlockStatus, User},
 };
@@ -36,7 +34,7 @@ pub fn create_unlock_request(
 
     //If there is already an unlock request ongoing, do additional checks
     if let Some(current_unlock_request_vote) = &ctx.accounts.current_unlock_request {
-        let mut vote_cooldown = REQUEST_COOLDOWN;
+        let mut vote_cooldown = 0;
 
         require!(
             current_unlock_request_vote.end_time < now,
@@ -56,7 +54,7 @@ pub fn create_unlock_request(
     new_unlock_request.project = project.key();
     new_unlock_request.amount_requested = amount_requested;
     new_unlock_request.created_time = now;
-    new_unlock_request.end_time = now + VOTING_PERIOD;
+    new_unlock_request.end_time = now + 0;
     new_unlock_request.status = UnlockStatus::Approved;
 
     unlock_requests.request_counter += 1;
