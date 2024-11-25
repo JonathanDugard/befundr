@@ -79,60 +79,63 @@ const Project = (props: Props) => {
         <ImageWithFallback
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
-          classname="w-1/2 md:w-1/3 aspect-square object-cover"
+          classname="w-1/4 md:w-1/4 aspect-square object-cover"
           src={props.project.imageUrl}
-          height={400}
-          width={400}
+          height={200}
+          width={200}
         />
         {/* info */}
         <div className="flex flex-col items-start justify-start gap-4 w-1/2  h-full">
-          <p className="textStyle-subheadline">Contributions amount</p>
+          <div className="flex justify-between w-full">
+            <p className="textStyle-subheadline">
+              <strong className="textStyle-subtitle">
+                ${convertSplAmountToNumber(new BN(props.project.raisedAmount))}
+              </strong>
+            </p>
+            <p className="textStyle-subheadline">
+              <strong className="textStyle-subtitle">
+                ${convertSplAmountToNumber(new BN(props.project.goalAmount))} target
+              </strong>
+            </p>
+          </div>
           <ProgressBar
             currentAmount={props.project.raisedAmount}
             goalAmount={props.project.goalAmount}
           />
           {/* metrics + trust */}
-          <div className="flex justify-between items-center  w-full gap-4 ">
+          <div className="flex justify-between items-center  w-full gap-4">
             <div className="flex flex-col items-start justify-center w-1/2 flex-grow">
+              {props.project.status === ProjectStatus.Fundraising.enum && (
               <p className="textStyle-subheadline">
                 <strong className="textStyle-subtitle">
-                  {convertSplAmountToNumber(new BN(props.project.raisedAmount))}{' '}
-                  $
+                  {calculateTimeRemaining(props.project.endTime)}
                 </strong>{' '}
-                out of {convertSplAmountToNumber(new BN(props.project.goalAmount))}$
-                goal
+                days left
               </p>
+              )}
               <p className="textStyle-subheadline">
                 <strong className="textStyle-subtitle">
                   {props.project.contributionCounter}
                 </strong>{' '}
-                contributors
+                {props.project.contributionCounter === 1 ? 'contribution' : 'contributions'}
               </p>
-              {props.project.status === ProjectStatus.Fundraising.enum && (
-                <p className="textStyle-subheadline">
-                  <strong className="textStyle-subtitle">
-                    {calculateTimeRemaining(props.project.endTime)}
-                  </strong>{' '}
-                  days remaining
-                </p>
-              )}
             </div>
           </div>
           {/* spacer */}
           <div className="flex-grow "></div>
           {/* buttons if fundraising*/}
           {props.project.status === ProjectStatus.Fundraising.enum && (
-            <div className="flex flex-col gap-4 w-full">
-              <button
-                className="w-full"
-                onClick={() => setSelectedMenu('rewards')}
-              >
-                <MainButtonLabelBig label="Contribute" />
-              </button>
-              <button className="w-full">
-                <SecondaryButtonLabelBig label="Share direct contribution link on X" />
-              </button>
-            </div>
+            <div className="flex flex-row gap-4 w-full">
+            <button
+              className="flex-1"
+              onClick={() => setSelectedMenu('rewards')}
+            >
+              <MainButtonLabelBig label="Contribute" />
+            </button>
+            <button className="flex-1">
+              <SecondaryButtonLabelBig label="Share direct contribution link on X" />
+            </button>
+          </div>
           )}
           {/* button if realizing status */}
           {props.project.status === ProjectStatus.Realising.enum && (

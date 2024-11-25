@@ -7,9 +7,9 @@ type Props = {
 
 const ProgressBar = (props: Props) => {
   return (
-    <div className="w-full bg-second z-0 rounded-full h-3">
+    <div className="w-full bg-second z-0 rounded-full h-8">
       <div
-        className="bg-accent h-3 rounded-full"
+        className="bg-accent h-8 rounded-full"
         style={{
           width: `${Math.min(
             (props.currentAmount * 100) / props.goalAmount,
