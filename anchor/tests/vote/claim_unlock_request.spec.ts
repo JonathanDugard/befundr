@@ -59,7 +59,7 @@ describe('claimUnlockRequest', () => {
         const unlockRequests = await program.account.unlockRequests.fetch(unlockRequestsPubkey);
 
 
-        const unlockRequestPdaKey = await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, expectedUnlockAmount);
+        const unlockRequestPdaKey = await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, expectedUnlockAmount, Date.now() + 60000);
 
         //const unlockRequest = await program.account.unlockRequest.fetch(unlockRequestPdaKey);
 

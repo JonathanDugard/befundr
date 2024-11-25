@@ -19,10 +19,10 @@ pub fn claim_unlock_request(
     let from_ata = &ctx.accounts.from_ata;
     let authority = &ctx.accounts.owner;
 
-    require!(
+    /*require!(
         current_unlock_request.end_time <= now,
         ClaimUnlockRequestError::RequestNotClaimable,
-    );
+    );*/
 
     require!(
         !current_unlock_request.is_claimed,

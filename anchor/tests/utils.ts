@@ -230,7 +230,8 @@ export const createUnlockRequest = async (
     userPubkey: PublicKey,
     wallet: Keypair,
     unlockRequestsCounter: number,
-    amountRequested: number
+    amountRequested: number,
+    endTime: number
 ): Promise<PublicKey> => {
     const [unlockRequestsPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
         [
@@ -260,7 +261,7 @@ export const createUnlockRequest = async (
 
     const createTx = await program.methods
         .createUnlockRequest(
-            new BN(amountRequested)
+            new BN(amountRequested), new BN(endTime)
         )
         .accountsPartial({
             user: userPubkey,
