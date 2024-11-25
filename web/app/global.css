@@ -63,13 +63,18 @@ body {
 }
 
 .tag.pending {
-  background-color: #ffe5e5;
-  color: #ff5e5e;
+  background-color: #eedfcb;
+  color: #e47535;
 }
 
 .tag.approved {
   background-color: #e5f7ff;
   color: #5eafff;
+}
+
+.tag.complete {
+  background-color: #d6f3d5;
+  color: #157e23;
 }
 
 .btn-vote, .btn-claim {

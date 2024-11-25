@@ -96,8 +96,8 @@ const Project = (props: Props) => {
         />
         {/* info */}
         <div className="flex flex-col items-start justify-start gap-4 w-1/2  h-full">
-        <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-          Granted by Foundation
+          <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+            Granted by Foundation
           </span>
           <div className="flex justify-between w-full">
             <p className="textStyle-subheadline">
