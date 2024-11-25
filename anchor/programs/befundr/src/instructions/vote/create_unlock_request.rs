@@ -1,14 +1,15 @@
 use anchor_lang::prelude::*;
 
 use crate::{
-    constants::unlock_request::{MAX_REQUESTED_PERCENTAGE_AMOUNT, REJECTED_REQUEST_COOLDOWN},
+    constants::unlock_request::REJECTED_REQUEST_COOLDOWN,
     errors::CreateUnlockRequestError,
-    state::{Project, ProjectStatus, UnlockRequest, UnlockRequests, UnlockStatus, User},
+    state::{Project, UnlockRequest, UnlockRequests, UnlockStatus, User},
 };
 
 pub fn create_unlock_request(
     ctx: Context<CreateUnlockRequest>,
     amount_requested: u64,
+    end_time: i64,
 ) -> Result<()> {
     let now: i64 = Clock::get()?.unix_timestamp;
 
@@ -16,14 +17,8 @@ pub fn create_unlock_request(
     let unlock_requests = &mut ctx.accounts.unlock_requests;
     let new_unlock_request = &mut ctx.accounts.new_unlock_request;
 
-    let max_allowed_amount = project.raised_amount * MAX_REQUESTED_PERCENTAGE_AMOUNT / 100;
-
     require!(
-        amount_requested <= max_allowed_amount,
-        CreateUnlockRequestError::RequestedAmountTooHigh
-    );
-    require!(
-        project.raised_amount - unlock_requests.unlocked_amount >= amount_requested,
+        project.raised_amount >= amount_requested,
         CreateUnlockRequestError::NotEnoughFunds
     );
 
@@ -31,10 +26,6 @@ pub fn create_unlock_request(
     if let Some(current_unlock_request_vote) = &ctx.accounts.current_unlock_request {
         let mut vote_cooldown = 0;
 
-        require!(
-            current_unlock_request_vote.end_time < now,
-            CreateUnlockRequestError::UnlockVoteAlreadyOngoing
-        );
         if current_unlock_request_vote.status == UnlockStatus::Rejected {
             vote_cooldown = REJECTED_REQUEST_COOLDOWN;
         }
@@ -45,11 +36,12 @@ pub fn create_unlock_request(
             CreateUnlockRequestError::WaitBeforeNewRequest
         );
     }
+    require!(end_time > now, CreateUnlockRequestError::InvalidEndTime);
 
     new_unlock_request.project = project.key();
     new_unlock_request.amount_requested = amount_requested;
     new_unlock_request.created_time = now;
-    new_unlock_request.end_time = now + 0;
+    new_unlock_request.end_time = end_time;
     new_unlock_request.status = UnlockStatus::Approved;
 
     unlock_requests.request_counter += 1;

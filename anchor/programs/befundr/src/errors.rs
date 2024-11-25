@@ -90,6 +90,8 @@ pub enum CreateUnlockRequestError {
     UnlockVoteAlreadyOngoing,
     #[msg("Request cooldown ongoing")]
     WaitBeforeNewRequest,
+    #[msg("Invalid end time")]
+    InvalidEndTime,
 }
 
 #[error_code]

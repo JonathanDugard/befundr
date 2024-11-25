@@ -87,8 +87,9 @@ pub mod befundr {
     pub fn create_unlock_request(
         ctx: Context<CreateUnlockRequest>,
         amount_requested: u64,
+        end_time: i64,
     ) -> Result<()> {
-        instructions::create_unlock_request(ctx, amount_requested)
+        instructions::create_unlock_request(ctx, amount_requested, end_time)
     }
 
     pub fn claim_unlock_request(
