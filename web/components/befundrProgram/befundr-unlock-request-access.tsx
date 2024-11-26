@@ -24,6 +24,7 @@ interface CreateUnlockRequestArgs {
 interface ClaimUnlockRequestArgs {
   unlockRequestPubkey: PublicKey;
   projectPubkey: PublicKey;
+  userWalletPubkey: PublicKey;
   userPubkey: PublicKey;
   createdProjectCounter: number;
 }
@@ -168,6 +169,7 @@ export function useBefundrProgramUnlockRequest() {
     mutationFn: async ({
       unlockRequestPubkey,
       projectPubkey,
+      userWalletPubkey,
       userPubkey,
       createdProjectCounter,
     }) => {
@@ -175,39 +177,13 @@ export function useBefundrProgramUnlockRequest() {
         throw new Error('User public key is required');
       }
 
-      // get user pda
-      const [userPda] = await PublicKey.findProgramAddressSync(
-        [Buffer.from('user'), userPubkey.toBuffer()],
-        programId
-      );
-
-      // Fetch necessary accounts
-      const [projectPublicKey] = await PublicKey.findProgramAddressSync(
-        [
-          Buffer.from('project'),
-          userPubkey.toBuffer(),
-          new BN(createdProjectCounter).toArray('le', 2),
-        ],
-        programId
-      );
-
       const [unlockRequestsPublicKey] = await PublicKey.findProgramAddressSync(
-        [Buffer.from('project_unlock_requests'), projectPublicKey.toBuffer()],
+        [Buffer.from('project_unlock_requests'), projectPubkey.toBuffer()],
         programId
       );
-
-      const [currentUnlockRequestPublicKey] =
-        await PublicKey.findProgramAddressSync(
-          [
-            Buffer.from('unlock_request'),
-            projectPublicKey.toBuffer(),
-            new BN(1).toArray('le', 2),
-          ],
-          programId
-        );
 
       const { account: fromAta } = await getATA(projectPubkey, connection);
-      const { account: toAta } = await getATA(userPubkey, connection);
+      const { account: toAta } = await getATA(userWalletPubkey, connection);
 
       console.log('fromAta', fromAta?.address.toString());
       console.log('toAta', toAta?.address.toString());
@@ -219,15 +195,15 @@ export function useBefundrProgramUnlockRequest() {
       );
       console.log(
         'currentUnlockRequestPublicKey',
-        currentUnlockRequestPublicKey.toString()
+        unlockRequestPubkey.toString()
       );
 
       const tx = await program.methods
         .claimUnlockRequest(createdProjectCounter)
         .accountsPartial({
-          user: userPda,
+          user: userPubkey,
           unlockRequests: unlockRequestsPublicKey,
-          currentUnlockRequest: currentUnlockRequestPublicKey,
+          currentUnlockRequest: unlockRequestPubkey,
           fromAta: fromAta?.address,
           toAta: toAta?.address,
           project: projectPubkey,

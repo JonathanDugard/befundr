@@ -6,6 +6,8 @@ import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { BN } from '@coral-xyz/anchor';
+import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 
 type Props = {
   unlockRequest: UnlockRequest;
@@ -20,7 +22,7 @@ const UnlockRequestCard = (props: Props) => {
   const { publicKey } = useWallet();
   const { claimUnlockRequest } = useBefundrProgramUnlockRequest();
   const { userAccountFromWalletPublicKey } = useBefundrProgramUser();
-
+  const { findCorrectProjectCounter } = useBefundrProgramProject();
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
     userAccountFromWalletPublicKey(publicKey);
@@ -41,13 +43,16 @@ const UnlockRequestCard = (props: Props) => {
   const handleWithDraw = async () => {
     setIsWithdrawLoading(true);
     console.log('withdraw');
+    const projectPubkey = new PublicKey(props.projectId);
+    const userPubkey = new PublicKey(props.project.user);
     if (publicKey && userProfile) {
       try {
         await claimUnlockRequest.mutateAsync({
           unlockRequestPubkey: props.unlockRequestPubkey,
-          projectPubkey: new PublicKey(props.projectId),
-          userPubkey: publicKey,
-          createdProjectCounter: userProfile?.createdProjectCounter,
+          projectPubkey: projectPubkey,
+          userWalletPubkey: publicKey,
+          userPubkey: userPubkey,
+          createdProjectCounter: findCorrectProjectCounter(projectPubkey, userPubkey, userProfile.createdProjectCounter),
         });
       } catch (e) {
         console.error(e);
@@ -56,6 +61,8 @@ const UnlockRequestCard = (props: Props) => {
     setIsWithdrawLoading(false);
     props.refetchProject();
   };
+
+
 
   return (
     <div className="flex items-center justify-between w-full p-4 border-b">

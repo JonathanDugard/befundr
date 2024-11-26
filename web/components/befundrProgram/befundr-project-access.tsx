@@ -197,7 +197,31 @@ export function useBefundrProgramProject() {
     onError: async () => toast.error('Error creating project'),
   });
 
+  const findCorrectProjectCounter = (projectPubkey: PublicKey, userPubkey: PublicKey, maxProjectCounter: number) => {
+    for (let i = 1; i <= maxProjectCounter; i++) {
+      try {
+        // Generate the seed
+        const [projectPdaKey] = PublicKey.findProgramAddressSync(
+          [
+            Buffer.from('project'),
+            userPubkey.toBuffer(),
+            new BN(i).toArray('le', 2),
+          ],
+          programId
+        );
+
+        if (projectPubkey.toString() === projectPdaKey.toString()) {
+          return i;
+        }
+      } catch (error) {
+        console.error(`Error computing project address for counter ${i}:`, error);
+      }
+    }
+    throw new Error("Created project counter not found for given project key");
+  }
+
   return {
+    findCorrectProjectCounter,
     projectAccountFromAccountPublicKey,
     allProjectsAccounts,
     projectsAccountsFromPublicKeysArray,
