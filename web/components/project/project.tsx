@@ -1,13 +1,12 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useMemo, useState } from 'react';
+import { useState } from 'react';
 import BackButton from '../z-library/button/BackButton';
 import Divider from '../z-library/display_elements/Divider';
 import InfoLabel from '../z-library/display_elements/InfoLabel';
 import ProgressBar from '../z-library/display_elements/ProgressBar';
 import {
   calculateTimeRemaining,
-  calculateTrustScore,
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
 import MainButtonLabel from '../z-library/button/MainButtonLabelBig';
@@ -41,29 +40,28 @@ const Project = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
   const { publicKey } = useWallet();
-  const { userAccountFromAccountPublicKey, getUserPdaPublicKey } = useBefundrProgramUser();
-  const { getUnlockRequestsFromProjectPubkey } = useBefundrProgramUnlockRequests();
+  const { userAccountFromAccountPublicKey, getUserPdaPublicKey } =
+    useBefundrProgramUser();
+  const { getUnlockRequestsFromProjectPubkey } =
+    useBefundrProgramUnlockRequests();
   const { getUnlockRequestFromPubkey } = useBefundrProgramUnlockRequest();
 
-  const [isNewUnlockRequestPopupVisible, setIsNewUnlockRequestPopupVisible] = useState(false);
+  const [isNewUnlockRequestPopupVisible, setIsNewUnlockRequestPopupVisible] =
+    useState(false);
 
   //* LOCAL STATE
-  const [selectedMenu, setSelectedMenu] = 
-    useState<
-      'about' 
-      | 'milestones' 
-      | 'rewards' 
-      | 'funder' 
-      | 'update' 
-      | 'vote'
-    >('about');
+  const [selectedMenu, setSelectedMenu] = useState<
+    'about' | 'milestones' | 'rewards' | 'funder' | 'update' | 'vote'
+  >('about');
 
   // Use React Query to fetch user profile based on public key
-  const { data: userProfile, isLoading: isFetchingUser } = userAccountFromAccountPublicKey(new PublicKey(props.project.user));
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromAccountPublicKey(new PublicKey(props.project.user));
   const { data: userPdaKey } = getUserPdaPublicKey(publicKey);
 
   // Get project's unlock requests
-  const { data: unlockRequestsData, isLoading: isFetchingUnlockRequests } = getUnlockRequestsFromProjectPubkey(new PublicKey(props.projectId));
+  const { data: unlockRequestsData, isLoading: isFetchingUnlockRequests } =
+    getUnlockRequestsFromProjectPubkey(new PublicKey(props.projectId));
   const unlockedAmount = unlockRequestsData?.unlockedAmount ?? 0;
   const requestCounter = unlockRequestsData?.requestCounter ?? 0;
   const requests = unlockRequestsData?.requests;
@@ -89,7 +87,7 @@ const Project = (props: Props) => {
         </div>
         <div className="ml-auto flex gap-2">
           <button className="flex items-center gap-2">
-              <SecondaryButtonLabel label="Share on X" />
+            <SecondaryButtonLabel label="Share on X" />
           </button>
           <button className="flex items-center gap-2">
             <SecondaryButtonLabel label="+ Follow" />
@@ -113,15 +111,16 @@ const Project = (props: Props) => {
           <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
             Granted by Foundation
           </span>
-          <div className="flex justify-between w-full">
+          <div className="flex justify-between items-baseline w-full -mb-4">
             <p className="textStyle-subheadline">
               <strong className="textStyle-subtitle">
                 ${convertSplAmountToNumber(new BN(props.project.raisedAmount))}
               </strong>
             </p>
             <p className="textStyle-subheadline">
-              <strong className="textStyle-subtitle">
-                ${convertSplAmountToNumber(new BN(props.project.goalAmount))} target
+              <strong className="textStyle-headline">
+                on ${convertSplAmountToNumber(new BN(props.project.goalAmount))}{' '}
+                target
               </strong>
             </p>
           </div>
@@ -133,43 +132,45 @@ const Project = (props: Props) => {
           <div className="flex justify-between items-center  w-full gap-4">
             <div className="flex flex-col items-start justify-center w-1/2 flex-grow">
               {props.project.status === ProjectStatus.Fundraising.enum && (
-              <p className="textStyle-subheadline">
-                <strong className="textStyle-subtitle">
-                  {calculateTimeRemaining(props.project.endTime)}
-                </strong>{' '}
-                days left
-              </p>
+                <p className="textStyle-subheadline">
+                  <strong className="textStyle-subtitle">
+                    {calculateTimeRemaining(props.project.endTime)}
+                  </strong>{' '}
+                  days left
+                </p>
               )}
               <p className="textStyle-subheadline">
                 <strong className="textStyle-subtitle">
                   {props.project.contributionCounter}
                 </strong>{' '}
-                {props.project.contributionCounter === 1 ? 'contribution' : 'contributions'}
+                {props.project.contributionCounter === 1
+                  ? 'contribution'
+                  : 'contributions'}
               </p>
             </div>
           </div>
           {/* buttons if fundraising*/}
           {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex flex-row gap-4 w-full">
-            <button
-              className="flex-1"
-              onClick={() => setSelectedMenu('rewards')}
-            >
-              <MainButtonLabel label="Contribute" />
-            </button>
-            <button
-              className="flex-1"
-              // onClick={() => setSelectedMenu('milestones')}
-              onClick={() => setIsNewUnlockRequestPopupVisible(true)}
+              <button
+                className="flex-1"
+                onClick={() => setSelectedMenu('rewards')}
               >
-              <MainButtonLabel label="New Unlock Request" />
-            </button>
-          </div>
+                <MainButtonLabel label="Contribute" />
+              </button>
+              <button
+                className="flex-1"
+                // onClick={() => setSelectedMenu('milestones')}
+                onClick={() => setIsNewUnlockRequestPopupVisible(true)}
+              >
+                <MainButtonLabel label="New Unlock Request" />
+              </button>
+            </div>
           )}
 
           {/* New Unlock Request Popup */}
           {isNewUnlockRequestPopupVisible && (
-            <NewUnlockRequestPopup     
+            <NewUnlockRequestPopup
               onClose={() => setIsNewUnlockRequestPopupVisible(false)}
               projectId={props.projectId}
               requestCounter={requestCounter} // Assuming requests is an array
@@ -188,7 +189,7 @@ const Project = (props: Props) => {
         </div>
       </div>
       {/* menu */}
-      <div className="w-full h-10 bg-second flex justify-between items-center px-4 mt-10">
+      <div className="w-full h-10 bg-second flex justify-between items-center px-4 mt-10 mb-8">
         <button
           className={`${
             selectedMenu === 'about'

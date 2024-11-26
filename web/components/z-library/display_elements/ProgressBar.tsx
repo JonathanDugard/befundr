@@ -1,5 +1,3 @@
-import React from 'react';
-
 type Props = {
   goalAmount: number;
   currentAmount: number;
@@ -7,9 +5,9 @@ type Props = {
 
 const ProgressBar = (props: Props) => {
   return (
-    <div className="w-full bg-second z-0 rounded-full h-8">
+    <div className="w-full bg-second z-0 rounded-full h-2">
       <div
-        className="bg-accent h-8 rounded-full"
+        className="bg-accent h-2 rounded-full"
         style={{
           width: `${Math.min(
             (props.currentAmount * 100) / props.goalAmount,

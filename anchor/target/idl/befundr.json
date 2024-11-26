@@ -758,6 +758,10 @@
       ],
       "args": [
         {
+          "name": "title",
+          "type": "string"
+        },
+        {
           "name": "amount_requested",
           "type": "u64"
         },
@@ -1318,6 +1322,9 @@
           },
           {
             "name": "Sports"
+          },
+          {
+            "name": "Web3"
           }
         ]
       }
@@ -1451,6 +1458,10 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
           {
             "name": "project",
             "type": "pubkey"

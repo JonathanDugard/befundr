@@ -1,4 +1,3 @@
-import MainButtonLabel from '../z-library/button/MainButtonLabel';
 import RewardCardDetailled from './RewardCardDetailled';
 import FeedCard from '../z-library/card/FeedCard';
 import Divider from '../z-library/display_elements/Divider';
@@ -7,9 +6,9 @@ import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { ProjectStatus } from '@/data/projectStatus';
 import Image from 'next/image';
 import DonateCard from './DonateCard';
-import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
+import UnlockRequestCard from './UnlockRequestCard';
 
 export const AboutBlock = ({
   description,
@@ -18,8 +17,7 @@ export const AboutBlock = ({
   description: string;
   xAccount: string;
 }) => {
-
-  const xLink = "https://" + xAccount;
+  const xLink = 'https://' + xAccount;
 
   return (
     <div className="flex flex-col justify-start items-start gap-4">
@@ -49,56 +47,70 @@ export const MilestonesBlock = ({
   requestsPubkey: PublicKey[];
   refetchProject: () => void;
 }) => {
-
   const { getAllUnlockRequestFromPubkeys } = useBefundrProgramUnlockRequest();
 
   // Call getAllUnlockRequestFromPubkeys
 
-  console.log("requestsPubkey {}", requestsPubkey);
-  const { data: unlockRequests, isLoading, error } = getAllUnlockRequestFromPubkeys(requestsPubkey);
+  // console.log('requestsPubkey {}', requestsPubkey);
+  const {
+    data: unlockRequests,
+    isLoading,
+    error,
+  } = getAllUnlockRequestFromPubkeys(requestsPubkey);
+  // console.log('unlockRequests', unlockRequests);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {
     console.log(error);
-  } 
+  }
 
   // Mocked milestones data
-  const mockedMilestones = [
-    {
-      title: "Initial Grant",
-      description: "",
-      dueDate: new Date('2024-03-01'),
-      amountRequested: 1000000000,
-      state: "Complete",
-    },
-    {
-      title: "Prototype Development",
-      description: "Create the initial prototype of the connected clothing with integrated sensors and connectivity features.",
-      dueDate: new Date('2024-07-01'),
-      amountRequested: 2000000000,
-      state: "Approved",
-    },
-    {
-      title: "User Testing Phase",
-      description: "Conduct user testing sessions to gather feedback on the prototype's functionality and design.",
-      dueDate: new Date('2024-11-15'),
-      amountRequested: 1000000000,
-      state: "Pending",
-    },
-    {
-      title: "Manufacturing Setup",
-      description: "Establish manufacturing processes and partnerships for large-scale production of connected clothes.",
-      dueDate: new Date('2025-03-10'),
-      amountRequested: 3000000000,
-      state: "Upcoming",
-    },
-  ];
+  // const mockedMilestones = [
+  //   {
+  //     title: 'Initial Grant',
+  //     description: '',
+  //     dueDate: new Date('2024-03-01'),
+  //     amountRequested: 1000000000,
+  //     state: 'Complete',
+  //   },
+  //   {
+  //     title: 'Prototype Development',
+  //     description:
+  //       'Create the initial prototype of the connected clothing with integrated sensors and connectivity features.',
+  //     dueDate: new Date('2024-07-01'),
+  //     amountRequested: 2000000000,
+  //     state: 'Approved',
+  //   },
+  //   {
+  //     title: 'User Testing Phase',
+  //     description:
+  //       "Conduct user testing sessions to gather feedback on the prototype's functionality and design.",
+  //     dueDate: new Date('2024-11-15'),
+  //     amountRequested: 1000000000,
+  //     state: 'Pending',
+  //   },
+  //   {
+  //     title: 'Manufacturing Setup',
+  //     description:
+  //       'Establish manufacturing processes and partnerships for large-scale production of connected clothes.',
+  //     dueDate: new Date('2025-03-10'),
+  //     amountRequested: 3000000000,
+  //     state: 'Upcoming',
+  //   },
+  // ];
 
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
-      {unlockRequests && unlockRequests.map((unlockRequest, index) => (
-        <span key={index}>{unlockRequest.publicKey.toString()}</span>
-      ))}
+      {unlockRequests &&
+        unlockRequests.map((unlockRequest, index) => (
+          <UnlockRequestCard
+            key={unlockRequest.publicKey.toString()}
+            unlockRequest={unlockRequest.account}
+            project={project}
+            projectId={projectId}
+            refetchProject={refetchProject}
+          />
+        ))}
     </div>
   );
 };
@@ -112,18 +124,17 @@ export const RewardBlock = ({
   projectId: string;
   refetchProject: () => void;
 }) => {
-
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full ">
       {/* donation */}
       {project.status === ProjectStatus.Fundraising.enum && (
         <div className="flex flex-col gap-6 w-full h-full">
-        <DonateCard
-          project={project}
-          projectId={projectId}
-          refetchProject={refetchProject}
-        />
-      </div>
+          <DonateCard
+            project={project}
+            projectId={projectId}
+            refetchProject={refetchProject}
+          />
+        </div>
       )}
       <Divider />
       {/* rewars level */}
@@ -179,9 +190,9 @@ export const FounderBlock = ({
         <p className="textStyle-headline">Safety deposit</p>
         <p className="textStyle-title">{safetyDeposit} $</p>
         <p className="textStyle-footnote-black text-right">
-          Safety deposits are escrowed and will be returned to the founder if the
-          project is canceled due to lack of initial contributions or when the
-          project is successful.
+          Safety deposits are escrowed and will be returned to the founder if
+          the project is canceled due to lack of initial contributions or when
+          the project is successful.
           <br />
           In case of non-delivery of the expected rewards for this project,
           these funds will be used to refund contributors.

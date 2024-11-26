@@ -764,6 +764,10 @@ export type Befundr = {
       ],
       "args": [
         {
+          "name": "title",
+          "type": "string"
+        },
+        {
           "name": "amountRequested",
           "type": "u64"
         },
@@ -1324,6 +1328,9 @@ export type Befundr = {
           },
           {
             "name": "sports"
+          },
+          {
+            "name": "web3"
           }
         ]
       }
@@ -1457,6 +1464,10 @@ export type Befundr = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
           {
             "name": "project",
             "type": "pubkey"

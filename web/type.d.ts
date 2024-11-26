@@ -84,13 +84,13 @@ type FundsRequest = {
 
 type UnlockRequest = {
   title: string;
-  project: PublicKey; 
+  project: PublicKey;
   amountRequested: number;
   votesAgainst: number;
   createdTime: number;
   endTime: number;
-  unlockTime: number; 
-  status: string;
+  unlockTime: number;
+  status: UnlockRequestStatus;
   isClaimed: boolean;
   votes: PublicKey[];
 };
