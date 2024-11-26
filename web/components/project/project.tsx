@@ -29,6 +29,7 @@ import { ProjectStatus } from '@/data/projectStatus';
 import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
 import NewUnlockRequestPopup from './NewUnlockRequestPopup';
+import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 
 type Props = {
   project: Project;
@@ -42,6 +43,9 @@ const Project = (props: Props) => {
   const { publicKey } = useWallet();
   const { userAccountFromAccountPublicKey, getUserPdaPublicKey } = useBefundrProgramUser();
   const { getUnlockRequestsFromProjectPubkey } = useBefundrProgramUnlockRequests();
+  const { getUnlockRequestFromPubkey } = useBefundrProgramUnlockRequest();
+
+  const [isNewUnlockRequestPopupVisible, setIsNewUnlockRequestPopupVisible] = useState(false);
 
   //* LOCAL STATE
   const [selectedMenu, setSelectedMenu] = 
@@ -64,7 +68,13 @@ const Project = (props: Props) => {
   const requestCounter = unlockRequestsData?.requestCounter ?? 0;
   const requests = unlockRequestsData?.requests;
 
-  const [isNewUnlockRequestPopupVisible, setIsNewUnlockRequestPopupVisible] = useState(false);
+  // State requests array
+
+  // if (unlockRequestsData && unlockRequestsData.requests.length > 0) {
+  //   console.log(unlockRequestsData.requests[0].toString());
+  //   const { data: req } = getUnlockRequestFromPubkey(new PublicKey(unlockRequestsData.requests[0].toString()));
+  //   // console.log(req);
+  // }
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -268,6 +278,7 @@ const Project = (props: Props) => {
         <MilestonesBlock
           project={props.project}
           projectId={props.projectId}
+          requestsPubkey={requests ?? []}
           refetchProject={props.refetchProject}
         />
       )}

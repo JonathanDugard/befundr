@@ -28,6 +28,23 @@ interface ClaimUnlockRequestArgs {
   createdProjectCounter: number;
 }
 
+const transformAccountToUnlockRequest = (
+  account: UnlockRequest
+): UnlockRequest => {
+  return {
+    title: account.title ? account.title.toString() : '',
+    project: account.project, // Add this line
+    amountRequested: new BN(account.amountRequested).toNumber(),
+    votesAgainst: new BN(account.votesAgainst).toNumber(), // Add this line
+    createdTime: new BN(account.createdTime).toNumber(),
+    endTime: new BN(account.endTime).toNumber(),
+    unlockTime: new BN(account.unlockTime).toNumber(), // Add this line
+    status: account.status.toString(),
+    isClaimed: account.isClaimed,
+    votes: account.votes, // Add this line
+  };
+};
+
 export function useBefundrProgramUnlockRequest() {
   const { sendTransaction } = useWallet();
   const { program, programId, transactionToast, router, connection } =
@@ -66,22 +83,24 @@ export function useBefundrProgramUnlockRequest() {
     publicKeys: PublicKey[] | null | undefined
   ) => {
     return useQuery({
-      queryKey: ['project', 'array', publicKeys?.[0]?.toString()],
+      queryKey: ['unlockRequests', 'array', publicKeys?.[0]?.toString()],
       queryFn: async () => {
         if (!publicKeys || publicKeys.length === 0)
           throw new Error('PublicKeys are required');
 
-        const projects = await Promise.all(
+        const unlockRequests = await Promise.all(
           publicKeys.map(async (key) => {
-            const projectAccount = await program.account.project.fetch(key);
+            console.log("Fetch key: {}", key.toString());
+            const unlockRequestAccount = await program.account.unlockRequest.fetch(key);
+            console.log(unlockRequestAccount);
             return {
               publicKey: key,
-              account: transformAccountToProject(projectAccount), // Transformation en type Project
+              account: transformAccountToUnlockRequest(unlockRequestAccount),
             };
           })
         );
 
-        return projects as AccountWrapper<Project>[];
+        return unlockRequests as AccountWrapper<UnlockRequest>[];
       },
       staleTime: 60000,
       enabled: !!publicKeys,

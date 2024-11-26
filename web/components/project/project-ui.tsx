@@ -8,6 +8,8 @@ import { ProjectStatus } from '@/data/projectStatus';
 import Image from 'next/image';
 import DonateCard from './DonateCard';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import { PublicKey } from '@solana/web3.js';
+import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 
 export const AboutBlock = ({
   description,
@@ -39,12 +41,26 @@ export const AboutBlock = ({
 export const MilestonesBlock = ({
   project,
   projectId,
+  requestsPubkey,
   refetchProject,
 }: {
   project: Project;
   projectId: string;
+  requestsPubkey: PublicKey[];
   refetchProject: () => void;
 }) => {
+
+  const { getAllUnlockRequestFromPubkeys } = useBefundrProgramUnlockRequest();
+
+  // Call getAllUnlockRequestFromPubkeys
+
+  console.log("requestsPubkey {}", requestsPubkey);
+  const { data: unlockRequests, isLoading, error } = getAllUnlockRequestFromPubkeys(requestsPubkey);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    console.log(error);
+  } 
 
   // Mocked milestones data
   const mockedMilestones = [
@@ -80,36 +96,8 @@ export const MilestonesBlock = ({
 
   return (
     <div className="flex flex-col items-start justify-start gap-6 w-full">
-      {mockedMilestones.map((milestone, index) => (
-        <div key={index} className="flex items-center justify-between w-full p-4 border-b">
-          <div className="flex items-center gap-4">
-            <div className="text-center border-secondary border-r pr-4">
-              <p className="text-lg font-bold">{milestone.dueDate.getFullYear()}</p>
-              <p className="text-sm">{milestone.dueDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })}</p>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex justify-between items-center">
-                <h3 className="textStyle-headline">{milestone.title}</h3>
-                <a href="#" className="textStyle-body-accent underline ml-2">Show more</a> {/* Added "show more" link */}
-              </div>
-              <p className="textStyle-body">
-                  Requested amount: ${convertSplAmountToNumber(BigInt(milestone.amountRequested)).toLocaleString()}</p> {/* Displaying requested amount */}
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-4">
-            <span className={`tag ${milestone.state.toLowerCase()}`}>
-              {milestone.state}
-            </span>
-          </div>
-          <div className="flex items-center justify-center gap-4">
-            {milestone.state === "Pending" && (
-              <button className="btn-vote">Vote</button>
-            )}
-            {milestone.state === "Approved" && (
-              <button className="btn-claim">Withdraw</button>
-            )}
-          </div>
-        </div>
+      {unlockRequests && unlockRequests.map((unlockRequest, index) => (
+        <span key={index}>{unlockRequest.publicKey.toString()}</span>
       ))}
     </div>
   );
