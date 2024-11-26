@@ -10,7 +10,6 @@ import {
   calculateTrustScore,
   convertSplAmountToNumber,
 } from '@/utils/functions/utilFunctions';
-import TrustScore from '../z-library/display_elements/TrustScore';
 import MainButtonLabel from '../z-library/button/MainButtonLabelBig';
 import {
   AboutBlock,
@@ -24,10 +23,12 @@ import Link from 'next/link';
 import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import ImageWithFallback from '../z-library/display_elements/ImageWithFallback';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
+import { useBefundrProgramUnlockRequests } from '../befundrProgram/befundr-unlock-requests-access';
 import { PublicKey } from '@solana/web3.js';
 import { ProjectStatus } from '@/data/projectStatus';
 import { BN } from '@coral-xyz/anchor';
 import { useWallet } from '@solana/wallet-adapter-react';
+import NewUnlockRequestPopup from './NewUnlockRequestPopup';
 
 type Props = {
   project: Project;
@@ -39,28 +40,31 @@ const Project = (props: Props) => {
   //* GENERAL STATE
   const router = useRouter();
   const { publicKey } = useWallet();
-  const { userAccountFromAccountPublicKey, getUserPdaPublicKey } =
-    useBefundrProgramUser();
+  const { userAccountFromAccountPublicKey, getUserPdaPublicKey } = useBefundrProgramUser();
+  const { getUnlockRequestsFromProjectPubkey } = useBefundrProgramUnlockRequests();
 
   //* LOCAL STATE
-  const [selectedMenu, setSelectedMenu] = useState<
-    'about' | 'milestones' | 'rewards' | 'funder' | 'update' | 'vote'
-  >('about');
-
-  const trustScore = useMemo(
-    () =>
-      calculateTrustScore(
-        props.project.safetyDeposit,
-        props.project.goalAmount
-      ),
-    [props.project]
-  );
+  const [selectedMenu, setSelectedMenu] = 
+    useState<
+      'about' 
+      | 'milestones' 
+      | 'rewards' 
+      | 'funder' 
+      | 'update' 
+      | 'vote'
+    >('about');
 
   // Use React Query to fetch user profile based on public key
-  const { data: userProfile, isLoading: isFetchingUser } =
-    userAccountFromAccountPublicKey(new PublicKey(props.project.user));
-
+  const { data: userProfile, isLoading: isFetchingUser } = userAccountFromAccountPublicKey(new PublicKey(props.project.user));
   const { data: userPdaKey } = getUserPdaPublicKey(publicKey);
+
+  // Get project's unlock requests
+  const { data: unlockRequestsData, isLoading: isFetchingUnlockRequests } = getUnlockRequestsFromProjectPubkey(new PublicKey(props.projectId));
+  const unlockedAmount = unlockRequestsData?.unlockedAmount ?? 0;
+  const requestCounter = unlockRequestsData?.requestCounter ?? 0;
+  const requests = unlockRequestsData?.requests;
+
+  const [isNewUnlockRequestPopupVisible, setIsNewUnlockRequestPopupVisible] = useState(false);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
@@ -145,12 +149,26 @@ const Project = (props: Props) => {
             </button>
             <button
               className="flex-1"
-              onClick={() => setSelectedMenu('milestones')}
+              // onClick={() => setSelectedMenu('milestones')}
+              onClick={() => setIsNewUnlockRequestPopupVisible(true)}
               >
-              <MainButtonLabel label="Milestone Unlock Request" />
+              <MainButtonLabel label="New Unlock Request" />
             </button>
           </div>
           )}
+
+          {/* New Unlock Request Popup */}
+          {isNewUnlockRequestPopupVisible && (
+            <NewUnlockRequestPopup     
+              onClose={() => setIsNewUnlockRequestPopupVisible(false)}
+              projectId={props.projectId}
+              requestCounter={requestCounter} // Assuming requests is an array
+              userEntryAddress={userPdaKey}
+              project={props.project}
+              refetchProject={props.refetchProject}
+            />
+          )}
+
           {/* button if realizing status */}
           {props.project.status === ProjectStatus.Realising.enum && (
             <Link href={`/marketplace/${props.projectId}`} className="w-full">
