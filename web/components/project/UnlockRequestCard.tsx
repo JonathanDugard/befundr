@@ -36,13 +36,24 @@ const UnlockRequestCard = (props: Props) => {
   }, [publicKey, props.project.owner]);
 
   const isOver = useMemo(() => {
-    return new Date() > new Date(props.unlockRequest.endTime);
+    return (
+      new Date() > new Date(props.unlockRequest.endTime) 
+        || props.unlockRequest.isClaimed
+      );
   }, [props.unlockRequest.endTime]);
+
+  const displayStatus = useMemo(() => {
+    let state = "withdrawn";
+    if (!props.unlockRequest.isClaimed) {
+      state = props.unlockRequest.status;
+    }
+    return state;
+  }, [props.unlockRequest]);
 
   //* PROGRAM INTERACTION
   const handleWithDraw = async () => {
     setIsWithdrawLoading(true);
-    console.log('withdraw');
+
     const projectPubkey = new PublicKey(props.projectId);
     const userPubkey = new PublicKey(props.project.user);
     if (publicKey && userProfile) {
@@ -84,12 +95,11 @@ const UnlockRequestCard = (props: Props) => {
           </p>
         </div>
         <div className="flex flex-col">
-          <div className="flex justify-between items-center">
-            <h3 className="textStyle-headline">{props.unlockRequest.title}</h3>
+          <div className="flex justify-left items-center">
+            <h3 className="justify-left textStyle-headline">{props.unlockRequest.title}</h3>
             <a href="#" className="textStyle-body-accent underline ml-2">
               Show more
-            </a>{' '}
-            {/* Added "show more" link */}
+            </a>
           </div>
           <p className="textStyle-body">
             Requested amount: $
@@ -101,8 +111,8 @@ const UnlockRequestCard = (props: Props) => {
         </div>
       </div>
       <div className="flex items-center justify-center gap-4">
-        <span className={`tag ${props.unlockRequest.status.toLowerCase()}`}>
-          {props.unlockRequest.status}
+        <span className={`tag ${displayStatus.toLowerCase()}`}>
+          {displayStatus}
         </span>
       </div>
       <div className="justify-self-end flex items-center justify-center gap-4">
