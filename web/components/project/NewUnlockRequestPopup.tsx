@@ -5,11 +5,7 @@ import SecondaryButtonLabel from '../z-library/button/SecondaryButtonLabel';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramUser } from '@/components/befundrProgram/befundr-user-access';
 import { useWallet } from '@solana/wallet-adapter-react';
-import AtaBalance from '../z-library/display_elements/AtaBalance';
-import ClaimUSDCButton from '../z-library/button/ClaimUSDCButton';
-import { requiresCheckBeforeAddContribution } from './utils';
 import { PublicKey } from '@solana/web3.js';
-import toast from 'react-hot-toast';
 import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 import Link from 'next/link';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
@@ -31,6 +27,12 @@ const NewUnlockRequestPopup = (props: Props) => {
     useBefundrProgramUser();
   const { publicKey } = useWallet();
   const { createUnlockRequest } = useBefundrProgramUnlockRequest();
+
+  const [title, setTitle] = useState(''); // New state for the title
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
 
   //* LOCAL STATE
   const { data: userWalletAtaBalance, refetch } =
@@ -58,18 +60,6 @@ const NewUnlockRequestPopup = (props: Props) => {
 
   const handleCreateUnlockRequest = async () => {
     setIsLoading(true);
-    // const check = requiresCheckBeforeAddContribution(
-    //   props.project,
-    //   donationAmount
-    // );
-    // if (check !== true) {
-    //   console.error(check);
-    //   if (typeof check === 'string') {
-    //     toast.error(check);
-    //   }
-    //   setIsLoading(false);
-    //   return;
-    // }
 
     if (!props.userEntryAddress) {
       throw new Error('Missing User Account PublicKey');
@@ -84,6 +74,7 @@ const NewUnlockRequestPopup = (props: Props) => {
           requestCounter: props.requestCounter,
           amount: convertNumberToSplAmount(amount),
           endTime: endTimeInMilliseconds,
+          title: title,
         });
       } catch (e) {
         console.error(e);
@@ -106,6 +97,16 @@ const NewUnlockRequestPopup = (props: Props) => {
         </div>
         <div className="flex justify-start items-center gap-4 w-full">
           <div className="flex flex-col items-start gap-4">
+          <p className="textStyle-body -mb-2">
+            Unlock Request Title
+          </p>
+          <input
+            type="text"
+            value={title}
+            onChange={handleTitleChange}
+            className="bg-main rounded-md w-full border border-gray-300 p-2 textStyle-body"
+            placeholder="Enter title"
+          />
             <p className="textStyle-body -mb-2">
               Enter Amount
             </p>

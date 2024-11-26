@@ -3,11 +3,11 @@
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { useBefundrProgramGlobal } from './befundr-global-access';
 import { BN } from '@coral-xyz/anchor';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { getOrCreateATA } from '@/utils/functions/AtaFunctions';
+import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getATA, getOrCreateATA } from '@/utils/functions/AtaFunctions';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { transformAccountToProject } from '@/utils/functions/projectsFunctions';
 import { confirmTransaction } from '@/utils/functions/utilFunctions';
@@ -18,6 +18,14 @@ interface CreateUnlockRequestArgs {
   requestCounter: number;
   amount: number;
   endTime: number;
+  title: string;
+}
+
+interface ClaimUnlockRequestArgs {
+  unlockRequestPubkey: PublicKey;
+  projectPubkey: PublicKey;
+  userPubkey: PublicKey;
+  createdProjectCounter: number;
 }
 
 export function useBefundrProgramUnlockRequest() {
@@ -29,7 +37,7 @@ export function useBefundrProgramUnlockRequest() {
    * Fetch all unlock requests accounts
    */
   const getAllUnlockRequestAccounts = useQuery({
-    queryKey: ['unlock_request', 'all'],
+    queryKey: ['allUnlockRequest', 'all'],
     queryFn: () => program.account.unlockRequest.all(),
     staleTime: 60000,
   });
@@ -41,16 +49,16 @@ export function useBefundrProgramUnlockRequest() {
     publicKey: PublicKey | null | undefined
   ) => {
     return useQuery({
-      queryKey: ['unlock_request', publicKey?.toString()],
+      queryKey: ['unlockRequest', publicKey?.toString()],
       queryFn: async () => {
         if (!publicKey) throw new Error('PublicKey is required');
         return program.account.unlockRequest.fetch(publicKey);
       },
       staleTime: 60000,
-      enabled: !!publicKey,
+      enabled: !!publicKey, // Ensure enabled is a boolean
     });
   };
-
+  
   /*
    * Fetch unlock requests account for one project
    */
@@ -88,6 +96,7 @@ export function useBefundrProgramUnlockRequest() {
       requestCounter,
       amount,
       endTime,
+      title,
     }) => {
 
       // Set new unlock request seed
@@ -122,14 +131,9 @@ export function useBefundrProgramUnlockRequest() {
         programId
       );
 
-      console.log('Project PublicKey:', projectPubkey.toString());
-      console.log('User PublicKey:', userPubkey.toString());
-      console.log('New Unlock Request PublicKey:', newUnlockRequestPublicKey.toString());
-      console.log('Current Unlock Request PublicKey:', currentUnlockRequestPublicKey.toString());
-      console.log('Project Unlock Requests PublicKey:', projectUnlockRequestsPublicKey.toString());
-
       const tx = await program.methods
         .createUnlockRequest(
+          title,
           new BN(amount),
           new BN(endTime)
         )
@@ -156,10 +160,68 @@ export function useBefundrProgramUnlockRequest() {
     },
   });
 
+  const claimUnlockRequest = useMutation<void, Error, ClaimUnlockRequestArgs>({
+    mutationKey: ['befundr', 'claimUnlockRequest'],
+    mutationFn: async ({ 
+      unlockRequestPubkey,
+      projectPubkey,
+      userPubkey,
+      createdProjectCounter,
+    }) => {
+
+
+      if (!userPubkey) {
+        throw new Error('User public key is required');
+      }
+
+      // Fetch necessary accounts
+      const [projectPublicKey] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('project'), userPubkey.toBuffer(), new BN(createdProjectCounter).toArray('le', 2)],
+        programId
+      );
+
+      const [unlockRequestsPublicKey] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('project_unlock_requests'), projectPublicKey.toBuffer()],
+        programId
+      );
+
+      const [currentUnlockRequestPublicKey] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('unlock_request'), projectPublicKey.toBuffer(), new BN(0).toArray('le', 2)],
+        programId
+      );
+
+      const { account: fromAta } = await getATA(projectPubkey, connection);
+      const { account: toAta } = await getATA(userPubkey, connection);
+
+      const tx = await program.methods
+        .claimUnlockRequest(createdProjectCounter)
+        .accountsPartial({
+          user: userPubkey,
+          unlockRequests: unlockRequestsPublicKey,
+          currentUnlockRequest: currentUnlockRequestPublicKey,
+          fromAta: fromAta?.address,
+          toAta: toAta?.address,
+          project: projectPubkey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .rpc();
+
+      // Wait for the confirmation of the transaction
+      await confirmTransaction(program, tx);
+    },
+    onSuccess: async () => {
+      toast.success('Unlock request claimed successfully!');
+    },
+    onError: async () => {
+      toast.error('Error claiming unlock request');
+    },
+  });
+
   return {
     getAllUnlockRequestAccounts,
     getUnlockRequestFromPubkey,
     getAllUnlockRequestFromPubkeys,
-    createUnlockRequest
+    createUnlockRequest,
+    claimUnlockRequest,
   };
 }
