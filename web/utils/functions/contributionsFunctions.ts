@@ -16,7 +16,7 @@ export const transformAccountToContribution = (
     creationTimestamp: new BN(account.creationTimestamp).toNumber(),
     isClaimed: account.isClaimed,
     project: account.project,
-    rewardId: new BN(account.rewardId).toNumber(),
+    rewardId: account.rewardId ? new BN(account.rewardId).toNumber() : null,
     status: status,
   };
 };

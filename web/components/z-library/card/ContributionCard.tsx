@@ -66,7 +66,9 @@ const ContributionCard = (props: Props) => {
             <p className="textStyle-headline">{projectToDisplay.name}</p>
             <Divider />
             <p className="textStyle-subheadline mt-auto">
-              {projectToDisplay.rewards[contributionToDisplay.rewardId].name}
+              {contributionToDisplay.rewardId && 
+                projectToDisplay.rewards[contributionToDisplay.rewardId].name
+              }
             </p>
           </div>
         </div>
