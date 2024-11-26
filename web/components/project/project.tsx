@@ -108,15 +108,14 @@ const Project = (props: Props) => {
           </span>
           <div className="flex justify-between items-baseline w-full -mb-4">
             <p className="textStyle-subheadline">
-              <strong className="textStyle-subtitle">
-                ${convertSplAmountToNumber(new BN(props.project.raisedAmount))}
-              </strong>
+              <strong className="textStyle-headline">
+                ${convertSplAmountToNumber(new BN(props.project.raisedAmount)).toLocaleString()}
+              </strong> raised
             </p>
             <p className="textStyle-subheadline">
               <strong className="textStyle-headline">
-                on ${convertSplAmountToNumber(new BN(props.project.goalAmount))}{' '}
-                target
-              </strong>
+                on ${convertSplAmountToNumber(new BN(props.project.goalAmount)).toLocaleString()}{' '}
+              </strong> target
             </p>
           </div>
           <ProgressBar
@@ -126,24 +125,30 @@ const Project = (props: Props) => {
           {/* metrics + trust */}
           <div className="flex justify-between items-center  w-full gap-4">
             <div className="flex flex-col items-start justify-center w-1/2 flex-grow">
+              <p className="textStyle-subheadline">
+                <strong className="textStyle-headline">
+                  ${convertSplAmountToNumber(new BN(unlockedAmount)).toLocaleString()}{' '}
+                </strong> already withdrawn
+              </p>
               {props.project.status === ProjectStatus.Fundraising.enum && (
                 <p className="textStyle-subheadline">
-                  <strong className="textStyle-subtitle">
+                  <strong className="textStyle-headline">
                     {calculateTimeRemaining(props.project.endTime)}
                   </strong>{' '}
                   days left
                 </p>
               )}
               <p className="textStyle-subheadline">
-                <strong className="textStyle-subtitle">
+                <strong className="textStyle-headline">
                   {props.project.contributionCounter}
                 </strong>{' '}
                 {props.project.contributionCounter === 1
-                  ? 'contribution'
-                  : 'contributions'}
+                  ? 'contributor'
+                  : 'contributors'}
               </p>
             </div>
           </div>
+          <Divider />
           {/* buttons if fundraising*/}
           {props.project.status === ProjectStatus.Fundraising.enum && (
             <div className="flex flex-row gap-4 w-full">
