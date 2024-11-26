@@ -9,7 +9,10 @@ import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 import Link from 'next/link';
 import MainButtonLabel from '../z-library/button/MainButtonLabel';
-import { convertNumberToSplAmount, convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
+import {
+  convertNumberToSplAmount,
+  convertSplAmountToNumber,
+} from '@/utils/functions/utilFunctions';
 import InputField from '../z-library/button/InputField';
 
 type Props = {
@@ -19,6 +22,7 @@ type Props = {
   userEntryAddress: PublicKey | undefined;
   project: Project;
   refetchProject: () => void;
+  refetchUnlockRequests: () => void;
 };
 
 const NewUnlockRequestPopup = (props: Props) => {
@@ -67,7 +71,8 @@ const NewUnlockRequestPopup = (props: Props) => {
 
     if (publicKey) {
       try {
-        const endTimeInMilliseconds = Date.now() + endTime * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+        const endTimeInMilliseconds =
+          Date.now() + endTime * 24 * 60 * 60 * 1000; // Convert days to milliseconds
         await createUnlockRequest.mutateAsync({
           projectPubkey: new PublicKey(props.projectId),
           userPubkey: props.userEntryAddress,
@@ -83,6 +88,7 @@ const NewUnlockRequestPopup = (props: Props) => {
     setIsLoading(false);
     refetch();
     props.refetchProject();
+    props.refetchUnlockRequests();
     props.onClose();
   };
 
@@ -93,23 +99,20 @@ const NewUnlockRequestPopup = (props: Props) => {
           New Unlock Request for {props.project.name}
         </p>
         <div className="w-full flex justify-start -mt-10">
-          Total raised amount: ${convertSplAmountToNumber(BigInt(props.project.raisedAmount))}
+          Total raised amount: $
+          {convertSplAmountToNumber(BigInt(props.project.raisedAmount))}
         </div>
         <div className="flex justify-start items-center gap-4 w-full">
           <div className="flex flex-col items-start gap-4">
-          <p className="textStyle-body -mb-2">
-            Unlock Request Title
-          </p>
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            className="bg-main rounded-md w-full border border-gray-300 p-2 textStyle-body"
-            placeholder="Enter title"
-          />
-            <p className="textStyle-body -mb-2">
-              Enter Amount
-            </p>
+            <p className="textStyle-body -mb-2">Unlock Request Title</p>
+            <input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              className="bg-main rounded-md w-full border border-gray-300 p-2 textStyle-body"
+              placeholder="Enter title"
+            />
+            <p className="textStyle-body -mb-2">Enter Amount</p>
             <input
               type="number"
               value={amount}
@@ -117,9 +120,7 @@ const NewUnlockRequestPopup = (props: Props) => {
               className="bg-main rounded-md w-full border border-gray-300 p-2 textStyle-body"
               placeholder="Enter amount"
             />
-            <p className="textStyle-body -mb-2">
-              End in (days)
-            </p>
+            <p className="textStyle-body -mb-2">End in (days)</p>
             <InputField
               label=""
               placeholder="Select the duration (between 1 to 90 days)"
@@ -138,12 +139,12 @@ const NewUnlockRequestPopup = (props: Props) => {
           </button>
           {userProfile ? (
             <button onClick={handleCreateUnlockRequest}>
-            <MainButtonLabelAsync
-              label="Send unlock request"
-              isLoading={isLoading}
-              loadingLabel={'Opening wallet...'}
-            />
-          </button>
+              <MainButtonLabelAsync
+                label="Send unlock request"
+                isLoading={isLoading}
+                loadingLabel={'Opening wallet...'}
+              />
+            </button>
           ) : (
             <Link href={'/profile/myprofile'}>
               <MainButtonLabel label="Create your profile" />

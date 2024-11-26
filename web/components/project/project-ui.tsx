@@ -9,6 +9,7 @@ import DonateCard from './DonateCard';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 import UnlockRequestCard from './UnlockRequestCard';
+import { useEffect } from 'react';
 
 export const AboutBlock = ({
   description,
@@ -49,15 +50,16 @@ export const MilestonesBlock = ({
 }) => {
   const { getAllUnlockRequestFromPubkeys } = useBefundrProgramUnlockRequest();
 
-  // Call getAllUnlockRequestFromPubkeys
-
-  // console.log('requestsPubkey {}', requestsPubkey);
   const {
     data: unlockRequests,
     isLoading,
     error,
+    refetch: refetchUnlockRequests,
   } = getAllUnlockRequestFromPubkeys(requestsPubkey);
-  // console.log('unlockRequests', unlockRequests);
+
+  useEffect(() => {
+    refetchUnlockRequests();
+  }, [requestsPubkey, refetchUnlockRequests]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {
@@ -110,6 +112,7 @@ export const MilestonesBlock = ({
             project={project}
             projectId={projectId}
             refetchProject={refetchProject}
+            refetchUnlockRequests={refetchUnlockRequests}
           />
         ))}
     </div>

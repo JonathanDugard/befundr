@@ -6,7 +6,6 @@ import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
 import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
 import { PublicKey } from '@solana/web3.js';
 import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
-import { BN } from '@coral-xyz/anchor';
 import { useBefundrProgramProject } from '../befundrProgram/befundr-project-access';
 
 type Props = {
@@ -15,6 +14,7 @@ type Props = {
   project: Project;
   projectId: string;
   refetchProject: () => void;
+  refetchUnlockRequests: () => void;
 };
 
 const UnlockRequestCard = (props: Props) => {
@@ -52,7 +52,11 @@ const UnlockRequestCard = (props: Props) => {
           projectPubkey: projectPubkey,
           userWalletPubkey: publicKey,
           userPubkey: userPubkey,
-          createdProjectCounter: findCorrectProjectCounter(projectPubkey, userPubkey, userProfile.createdProjectCounter),
+          createdProjectCounter: findCorrectProjectCounter(
+            projectPubkey,
+            userPubkey,
+            userProfile.createdProjectCounter
+          ),
         });
       } catch (e) {
         console.error(e);
@@ -60,12 +64,11 @@ const UnlockRequestCard = (props: Props) => {
     }
     setIsWithdrawLoading(false);
     props.refetchProject();
+    props.refetchUnlockRequests();
   };
 
-
-
   return (
-    <div className="flex items-center justify-between w-full p-4 border-b">
+    <div className="grid grid-cols-3 w-full p-4 border-b">
       <div className="flex items-center gap-4">
         <div className="text-center border-accent border-r pr-4">
           <p className="text-lg font-bold">
@@ -102,7 +105,7 @@ const UnlockRequestCard = (props: Props) => {
           {props.unlockRequest.status}
         </span>
       </div>
-      <div className="flex items-center justify-center gap-4">
+      <div className="justify-self-end flex items-center justify-center gap-4">
         {!isOver && !isOwner && (
           <button>
             <MainButtonLabelAsync

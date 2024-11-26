@@ -60,8 +60,11 @@ const Project = (props: Props) => {
   const { data: userPdaKey } = getUserPdaPublicKey(publicKey);
 
   // Get project's unlock requests
-  const { data: unlockRequestsData, isLoading: isFetchingUnlockRequests } =
-    getUnlockRequestsFromProjectPubkey(new PublicKey(props.projectId));
+  const {
+    data: unlockRequestsData,
+    isLoading: isFetchingUnlockRequests,
+    refetch: refetchUnlockRequests,
+  } = getUnlockRequestsFromProjectPubkey(new PublicKey(props.projectId));
   const unlockedAmount = unlockRequestsData?.unlockedAmount ?? 0;
   const requestCounter = unlockRequestsData?.requestCounter ?? 0;
   const requests = unlockRequestsData?.requests;
@@ -177,6 +180,7 @@ const Project = (props: Props) => {
               userEntryAddress={userPdaKey}
               project={props.project}
               refetchProject={props.refetchProject}
+              refetchUnlockRequests={refetchUnlockRequests}
             />
           )}
 
