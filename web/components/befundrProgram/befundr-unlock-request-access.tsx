@@ -90,6 +90,8 @@ export function useBefundrProgramUnlockRequest() {
     });
   };
 
+  //* MUTATIONS
+  //* Create a unlock request --------------------
   const createUnlockRequest = useMutation<
     PublicKey,
     Error,
@@ -173,6 +175,12 @@ export function useBefundrProgramUnlockRequest() {
         throw new Error('User public key is required');
       }
 
+      // get user pda
+      const [userPda] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('user'), userPubkey.toBuffer()],
+        programId
+      );
+
       // Fetch necessary accounts
       const [projectPublicKey] = await PublicKey.findProgramAddressSync(
         [
@@ -193,7 +201,7 @@ export function useBefundrProgramUnlockRequest() {
           [
             Buffer.from('unlock_request'),
             projectPublicKey.toBuffer(),
-            new BN(0).toArray('le', 2),
+            new BN(1).toArray('le', 2),
           ],
           programId
         );
@@ -201,10 +209,23 @@ export function useBefundrProgramUnlockRequest() {
       const { account: fromAta } = await getATA(projectPubkey, connection);
       const { account: toAta } = await getATA(userPubkey, connection);
 
+      console.log('fromAta', fromAta?.address.toString());
+      console.log('toAta', toAta?.address.toString());
+      console.log('projectPubkey', projectPubkey.toString());
+      console.log('userPubkey', userPubkey.toString());
+      console.log(
+        'unlockRequestsPublicKey',
+        unlockRequestsPublicKey.toString()
+      );
+      console.log(
+        'currentUnlockRequestPublicKey',
+        currentUnlockRequestPublicKey.toString()
+      );
+
       const tx = await program.methods
         .claimUnlockRequest(createdProjectCounter)
         .accountsPartial({
-          user: userPubkey,
+          user: userPda,
           unlockRequests: unlockRequestsPublicKey,
           currentUnlockRequest: currentUnlockRequestPublicKey,
           fromAta: fromAta?.address,

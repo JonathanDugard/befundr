@@ -1,11 +1,15 @@
 'use client';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import MainButtonLabelAsync from '../z-library/button/MainButtonLabelAsync';
+import { useBefundrProgramUnlockRequest } from '../befundrProgram/befundr-unlock-request-access';
+import { PublicKey } from '@solana/web3.js';
+import { useBefundrProgramUser } from '../befundrProgram/befundr-user-access';
 
 type Props = {
   unlockRequest: UnlockRequest;
+  unlockRequestPubkey: PublicKey;
   project: Project;
   projectId: string;
   refetchProject: () => void;
@@ -14,8 +18,16 @@ type Props = {
 const UnlockRequestCard = (props: Props) => {
   //* GLOBAL STATE
   const { publicKey } = useWallet();
+  const { claimUnlockRequest } = useBefundrProgramUnlockRequest();
+  const { userAccountFromWalletPublicKey } = useBefundrProgramUser();
+
+  // Use React Query to fetch user profile based on public key
+  const { data: userProfile, isLoading: isFetchingUser } =
+    userAccountFromWalletPublicKey(publicKey);
 
   //* LOCAL STATE
+  // loader
+  const [isWithdrawLoading, setIsWithdrawLoading] = useState(false);
   // Check if the current user is the owner of the project
   const isOwner = useMemo(() => {
     return props.project.owner.toString() === publicKey?.toString();
@@ -24,6 +36,26 @@ const UnlockRequestCard = (props: Props) => {
   const isOver = useMemo(() => {
     return new Date() > new Date(props.unlockRequest.endTime);
   }, [props.unlockRequest.endTime]);
+
+  //* PROGRAM INTERACTION
+  const handleWithDraw = async () => {
+    setIsWithdrawLoading(true);
+    console.log('withdraw');
+    if (publicKey && userProfile) {
+      try {
+        await claimUnlockRequest.mutateAsync({
+          unlockRequestPubkey: props.unlockRequestPubkey,
+          projectPubkey: new PublicKey(props.projectId),
+          userPubkey: publicKey,
+          createdProjectCounter: userProfile?.createdProjectCounter,
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    setIsWithdrawLoading(false);
+    props.refetchProject();
+  };
 
   return (
     <div className="flex items-center justify-between w-full p-4 border-b">
@@ -76,9 +108,9 @@ const UnlockRequestCard = (props: Props) => {
         {props.unlockRequest.status === 'approved' &&
           props.unlockRequest.isClaimed === false &&
           isOwner && (
-            <button>
+            <button onClick={handleWithDraw} disabled={isWithdrawLoading}>
               <MainButtonLabelAsync
-                isLoading={false}
+                isLoading={isWithdrawLoading}
                 label="Withdraw"
                 loadingLabel="Withdrawing..."
               />

@@ -106,6 +106,7 @@ export const MilestonesBlock = ({
           <UnlockRequestCard
             key={unlockRequest.publicKey.toString()}
             unlockRequest={unlockRequest.account}
+            unlockRequestPubkey={unlockRequest.publicKey}
             project={project}
             projectId={projectId}
             refetchProject={refetchProject}
