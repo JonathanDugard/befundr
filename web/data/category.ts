@@ -15,6 +15,7 @@ export class ProjectCategory extends Enum {
   static Science = new ProjectCategory({ science: 'science' });
   static Finance = new ProjectCategory({ finance: 'finance' });
   static Sports = new ProjectCategory({ sports: 'sports' });
+  static Web3 = new ProjectCategory({ web3: 'web3' });
 }
 
 export const projectCategoryOptions = [
@@ -28,4 +29,5 @@ export const projectCategoryOptions = [
   { label: 'Science', value: 'Science' },
   { label: 'Finance', value: 'Finance' },
   { label: 'Sports', value: 'Sports' },
+  { label: 'Web3', value: 'Web3' },
 ];
