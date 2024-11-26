@@ -1,12 +1,14 @@
 use anchor_lang::prelude::*;
 
-use crate::constants::unlock_request_vote::MAX_VOTE_NUMBER;
+use crate::constants::{unlock_request::MAX_REQUEST_TITLE, unlock_request_vote::MAX_VOTE_NUMBER};
 
 use super::UnlockStatus;
 
 #[account]
 #[derive(InitSpace)]
 pub struct UnlockRequest {
+    #[max_len(MAX_REQUEST_TITLE)]
+    pub title: String,
     pub project: Pubkey,
     pub amount_requested: u64,
     pub votes_against: u64,

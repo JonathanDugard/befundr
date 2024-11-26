@@ -39,6 +39,7 @@ describe('claimUnlockRequest', () => {
         const projectContributionCounter = new BN(projectPda.contributionCounter);
         const contributionAmount = convertAmountToDecimals(100);
         const expectedUnlockAmount = convertAmountToDecimals(10);
+        const requestName = "Marketing Campaign";
         await createContribution(
             projectPdaKey,
             contributorPdaKey,
@@ -59,7 +60,7 @@ describe('claimUnlockRequest', () => {
         const unlockRequests = await program.account.unlockRequests.fetch(unlockRequestsPubkey);
 
 
-        const unlockRequestPdaKey = await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, expectedUnlockAmount, Date.now() + 60000);
+        const unlockRequestPdaKey = await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, requestName, expectedUnlockAmount, Date.now() + 60000);
 
         //const unlockRequest = await program.account.unlockRequest.fetch(unlockRequestPdaKey);
 

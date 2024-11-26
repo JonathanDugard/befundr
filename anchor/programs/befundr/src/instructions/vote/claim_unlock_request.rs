@@ -10,8 +10,6 @@ pub fn claim_unlock_request(
     ctx: Context<ClaimUnlockRequest>,
     created_project_counter: u16,
 ) -> Result<()> {
-    let now: i64 = Clock::get()?.unix_timestamp;
-
     let project = &mut ctx.accounts.project;
     let user = &mut ctx.accounts.user;
     let current_unlock_request = &mut ctx.accounts.current_unlock_request;

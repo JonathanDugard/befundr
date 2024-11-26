@@ -230,6 +230,7 @@ export const createUnlockRequest = async (
     userPubkey: PublicKey,
     wallet: Keypair,
     unlockRequestsCounter: number,
+    requestTitle: string,
     amountRequested: number,
     endTime: number
 ): Promise<PublicKey> => {
@@ -261,7 +262,9 @@ export const createUnlockRequest = async (
 
     const createTx = await program.methods
         .createUnlockRequest(
-            new BN(amountRequested), new BN(endTime)
+            requestTitle,
+            new BN(amountRequested),
+            new BN(endTime)
         )
         .accountsPartial({
             user: userPubkey,

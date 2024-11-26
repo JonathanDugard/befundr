@@ -12,4 +12,5 @@ pub enum ProjectCategory {
     Science,
     Finance,
     Sports,
+    Web3,
 }

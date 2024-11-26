@@ -8,6 +8,7 @@ use crate::{
 
 pub fn create_unlock_request(
     ctx: Context<CreateUnlockRequest>,
+    title: String,
     amount_requested: u64,
     end_time: i64,
 ) -> Result<()> {
@@ -38,6 +39,7 @@ pub fn create_unlock_request(
     }
     require!(end_time > now, CreateUnlockRequestError::InvalidEndTime);
 
+    new_unlock_request.title = title;
     new_unlock_request.project = project.key();
     new_unlock_request.amount_requested = amount_requested;
     new_unlock_request.created_time = now;

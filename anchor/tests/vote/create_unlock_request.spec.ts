@@ -41,6 +41,8 @@ describe('createUnlockRequest', () => {
         const expectedUnlockAmount = convertAmountToDecimals(10);
         const expectedCounterBefore = 0;
         const expectedCounterAfter = 1;
+        const requestName = "Marketing Campaign";
+
         await createContribution(
             projectPdaKey,
             contributorPdaKey,
@@ -59,7 +61,7 @@ describe('createUnlockRequest', () => {
         const unlockRequests = await program.account.unlockRequests.fetch(unlockRequestsPubkey);
         expect(unlockRequests.requestCounter).toEqual(expectedCounterBefore);
 
-        const unlockRequestPdaKey = await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, expectedUnlockAmount, Date.now() + 60000);
+        const unlockRequestPdaKey = await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, requestName, expectedUnlockAmount, Date.now() + 60000);
 
         const unlockRequest = await program.account.unlockRequest.fetch(unlockRequestPdaKey);
 
@@ -83,6 +85,8 @@ describe('createUnlockRequest', () => {
         const contributionAmount = convertAmountToDecimals(100);
         const expectedUnlockAmount = convertAmountToDecimals(10);
         const expectedError = /Error Code: UnlockVoteAlreadyOngoing\. Error Number: .*\. Error Message: There is already a vote ongoing.*/;
+        const requestName = "Marketing Campaign";
+        const secondRequestName = "Hire a dev";
 
         await createContribution(
             projectPdaKey,
@@ -103,10 +107,10 @@ describe('createUnlockRequest', () => {
 
         const unlockRequests = await program.account.unlockRequests.fetch(unlockRequestsPubkey);
 
-        await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, expectedUnlockAmount, Date.now() + 60000);
+        await createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, requestName, expectedUnlockAmount, Date.now() + 60000);
 
         const freshUnlockRequests = await program.account.unlockRequests.fetch(unlockRequestsPubkey);
-        await expect(createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, freshUnlockRequests.requestCounter, expectedUnlockAmount, Date.now() + 60000)).rejects.toThrow(expectedError);
+        await expect(createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, freshUnlockRequests.requestCounter, secondRequestName, expectedUnlockAmount, Date.now() + 60000)).rejects.toThrow(expectedError);
     });
 
     it.skip("should reject as the project status is not Realising", async () => {
@@ -116,6 +120,7 @@ describe('createUnlockRequest', () => {
         const contributionAmount = convertAmountToDecimals(100);
         const expectedUnlockAmount = convertAmountToDecimals(10);
         const expectedError = /Error Code: WrongProjectStatus\. Error Number: .*\. Error Message: The project is not in realization.*/;
+        const requestName = "Marketing Campaign";
 
         await createContribution(
             projectPdaKey,
@@ -135,6 +140,6 @@ describe('createUnlockRequest', () => {
 
         const unlockRequests = await program.account.unlockRequests.fetch(unlockRequestsPubkey);
 
-        await expect(createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, expectedUnlockAmount, Date.now() + 60000)).rejects.toThrow(expectedError);
+        await expect(createUnlockRequest(projectPdaKey, creatorUserPdaKey, creatorWallet, unlockRequests.requestCounter, requestName, expectedUnlockAmount, Date.now() + 60000)).rejects.toThrow(expectedError);
     });
 });
