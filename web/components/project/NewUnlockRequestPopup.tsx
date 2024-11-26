@@ -21,6 +21,7 @@ type Props = {
   requestCounter: number;
   userEntryAddress: PublicKey | undefined;
   project: Project;
+  remainingAmount: number;
   refetchProject: () => void;
   refetchUnlockRequests: () => void;
 };
@@ -99,8 +100,7 @@ const NewUnlockRequestPopup = (props: Props) => {
           New Unlock Request for {props.project.name}
         </p>
         <div className="w-full flex justify-start -mt-10">
-          Total raised amount: $
-          {convertSplAmountToNumber(BigInt(props.project.raisedAmount))}
+          Remaining amount: ${convertSplAmountToNumber(BigInt(props.remainingAmount)).toLocaleString()}
         </div>
         <div className="flex justify-start items-center gap-4 w-full">
           <div className="flex flex-col items-start gap-4">

@@ -69,14 +69,6 @@ const Project = (props: Props) => {
   const requestCounter = unlockRequestsData?.requestCounter ?? 0;
   const requests = unlockRequestsData?.requests;
 
-  // State requests array
-
-  // if (unlockRequestsData && unlockRequestsData.requests.length > 0) {
-  //   console.log(unlockRequestsData.requests[0].toString());
-  //   const { data: req } = getUnlockRequestFromPubkey(new PublicKey(unlockRequestsData.requests[0].toString()));
-  //   // console.log(req);
-  // }
-
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-full">
       {/* header */}
@@ -179,6 +171,7 @@ const Project = (props: Props) => {
               requestCounter={requestCounter} // Assuming requests is an array
               userEntryAddress={userPdaKey}
               project={props.project}
+              remainingAmount={props.project.raisedAmount-unlockedAmount}
               refetchProject={props.refetchProject}
               refetchUnlockRequests={refetchUnlockRequests}
             />
