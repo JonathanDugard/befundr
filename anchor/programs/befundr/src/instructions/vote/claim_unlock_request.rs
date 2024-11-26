@@ -73,11 +73,7 @@ pub struct ClaimUnlockRequest<'info> {
   )]
     pub unlock_requests: Account<'info, UnlockRequests>,
 
-    #[account(mut,
-      has_one = project,
-      seeds = [b"unlock_request", project.key().as_ref(), &(unlock_requests.request_counter + 0).to_le_bytes()],
-      bump
-    )]
+    #[account(mut,has_one = project)]
     pub current_unlock_request: Account<'info, UnlockRequest>,
 
     #[account(mut)]
