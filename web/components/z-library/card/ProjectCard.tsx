@@ -39,7 +39,6 @@ const ProjectCard = (props: Props) => {
   const unlockedAmount = unlockRequestsData?.unlockedAmount ?? 0;
   const requestCounter = unlockRequestsData?.requestCounter ?? 0;
   const requests = unlockRequestsData?.requests;
-
   return (
     <Link
       href={`/projects/${props.projectAccountPublicKey}`}
@@ -50,9 +49,9 @@ const ProjectCard = (props: Props) => {
       flex justify-between items-start 
       w-[400px] h-[200px] bg-second"
       >
-      <span className="absolute m-2 bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-            Granted by Foundation
-      </span>
+        {props.project.raisedAmount >= 20000 && <span className="absolute m-2 bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+          Granted by Foundation
+        </span>}
         {/* project image */}
         <ImageWithFallback
           alt="image"
@@ -67,20 +66,19 @@ const ProjectCard = (props: Props) => {
           <div
             className="bg-second h-full"
             style={{
-              height: `${
-                100 -
+              height: `${100 -
                 getProgressPercentage(
                   props.project.raisedAmount,
                   props.project.goalAmount
                 )
-              }%`,
+                }%`,
             }}
           ></div>
         </div>
         {/* project infos */}
-        
+
         <div className="flex flex-col justify-start items-stretch w-1/2 p-2 h-full ">
-        <span className="bg-white text-gray-800 text-xs font-lighter px-2.5 py-0.5 rounded text-center">
+          <span className="bg-white text-gray-800 text-xs font-lighter px-2.5 py-0.5 rounded text-center">
             {props.project.category}
           </span>
           <p className="textStyle-subheadline !text-textColor-main !font-normal truncate">
@@ -89,7 +87,7 @@ const ProjectCard = (props: Props) => {
           {/* {userProfile && (
             <p className="textStyle-body">By {userProfile.name}</p>
           )} */}
-            <Divider />
+          <Divider />
 
           <p className="textStyle-body">
             ${convertSplAmountToNumber(new BN(props.project.goalAmount)).toLocaleString()} to

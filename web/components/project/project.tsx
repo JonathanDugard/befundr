@@ -52,7 +52,7 @@ const Project = (props: Props) => {
   //* LOCAL STATE
   const [selectedMenu, setSelectedMenu] = useState<
     'about' | 'milestones' | 'rewards' | 'funder' | 'update' | 'vote'
-  >('about');
+  >('rewards');
 
   // Use React Query to fetch user profile based on public key
   const { data: userProfile, isLoading: isFetchingUser } =
@@ -103,9 +103,9 @@ const Project = (props: Props) => {
         />
         {/* info */}
         <div className="flex flex-col items-start justify-start gap-4 w-1/2  h-full">
-          <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+          {props.project.raisedAmount >= 20000 ? <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
             Granted by Foundation
-          </span>
+          </span> : <span className='mt-5'></span>}
           <div className="flex justify-between items-baseline w-full -mb-4">
             <p className="textStyle-subheadline">
               <strong className="textStyle-headline">
@@ -176,7 +176,7 @@ const Project = (props: Props) => {
               requestCounter={requestCounter} // Assuming requests is an array
               userEntryAddress={userPdaKey}
               project={props.project}
-              remainingAmount={props.project.raisedAmount-unlockedAmount}
+              remainingAmount={props.project.raisedAmount - unlockedAmount}
               refetchProject={props.refetchProject}
               refetchUnlockRequests={refetchUnlockRequests}
             />
@@ -193,63 +193,57 @@ const Project = (props: Props) => {
       {/* menu */}
       <div className="w-full h-10 bg-second flex justify-between items-center px-4 mt-10 mb-8">
         <button
-          className={`${
-            selectedMenu === 'about'
-              ? 'textStyle-body-accent !font-normal'
-              : 'textStyle-body'
-          }`}
+          className={`active:bg-black ${selectedMenu === 'about'
+            ? 'textStyle-body-accent !font-normal'
+            : 'textStyle-body'
+            }`}
           onClick={() => setSelectedMenu('about')}
         >
           About the project
         </button>
         <button
-          className={`${
-            selectedMenu === 'milestones'
-              ? 'textStyle-body-accent !font-normal'
-              : 'textStyle-body'
-          }`}
+          className={`${selectedMenu === 'milestones'
+            ? 'textStyle-body-accent !font-normal'
+            : 'textStyle-body'
+            }`}
           onClick={() => setSelectedMenu('milestones')}
         >
           Milestones
           <span className="ml-1 bg-red-500 rounded-full w-2 h-2 inline-block"></span>
         </button>
         <button
-          className={`${
-            selectedMenu === 'rewards'
-              ? 'textStyle-body-accent !font-normal'
-              : 'textStyle-body'
-          }`}
+          className={`${selectedMenu === 'rewards'
+            ? 'textStyle-body-accent !font-normal'
+            : 'textStyle-body'
+            }`}
           onClick={() => setSelectedMenu('rewards')}
         >
           Rewards
         </button>
         <button
-          className={`${
-            selectedMenu === 'funder'
-              ? 'textStyle-body-accent !font-normal'
-              : 'textStyle-body'
-          }`}
+          className={`${selectedMenu === 'funder'
+            ? 'textStyle-body-accent !font-normal'
+            : 'textStyle-body'
+            }`}
           onClick={() => setSelectedMenu('funder')}
         >
           Funder trustworthiness
         </button>
         <button
-          className={`${
-            selectedMenu === 'update'
-              ? 'textStyle-body-accent !font-normal'
-              : 'textStyle-body'
-          }`}
+          className={`${selectedMenu === 'update'
+            ? 'textStyle-body-accent !font-normal'
+            : 'textStyle-body'
+            }`}
           onClick={() => setSelectedMenu('update')}
         >
           Update
         </button>
         {props.project.status === ProjectStatus.Realising.enum && (
           <button
-            className={`${
-              selectedMenu === 'vote'
-                ? 'textStyle-body-accent'
-                : 'textStyle-body'
-            }`}
+            className={`${selectedMenu === 'vote'
+              ? 'textStyle-body-accent'
+              : 'textStyle-body'
+              }`}
             onClick={() => setSelectedMenu('vote')}
           >
             Vote
