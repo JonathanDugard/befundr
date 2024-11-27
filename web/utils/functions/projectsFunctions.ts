@@ -87,6 +87,7 @@ const getCategoryFromAccount = (category: any): ProjectCategory => {
   if (category.science) return ProjectCategory.Science;
   if (category.finance) return ProjectCategory.Finance;
   if (category.sports) return ProjectCategory.Sports;
+  if (category.web3) return ProjectCategory.Web3;
 
   throw new Error(
     `Unknown category received from account: ${JSON.stringify(category)}`

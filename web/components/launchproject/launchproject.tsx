@@ -147,6 +147,9 @@ const Launchproject = () => {
       case 'Sports':
         selectedCategory = ProjectCategory.Sports;
         break;
+      case 'Web3':
+        selectedCategory = ProjectCategory.Web3;
+        break;  
       default:
         break;
     }
