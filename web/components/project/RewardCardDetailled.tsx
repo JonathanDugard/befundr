@@ -11,6 +11,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { convertSplAmountToNumber } from '@/utils/functions/utilFunctions';
 import { BN } from '@coral-xyz/anchor';
 import { WalletButton } from '../solana/solana-provider';
+import { getImageUrl } from '../launchproject/utils';
 
 type Props = {
   reward: Reward;
@@ -39,7 +40,7 @@ const RewardCardDetailled = (props: Props) => {
           alt="image"
           fallbackImageSrc="/images/default_project_image.jpg"
           classname=" aspect-square object-cover"
-          src={props.project.imageUrl}
+          src={getImageUrl(props.project.name, props.reward.name)}
           height={400}
           width={400}
         />

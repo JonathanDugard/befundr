@@ -51,6 +51,8 @@ export const prepareDataForProjectCreation = async (
             )}_${timestamp}/rewards/${toCamelCase(reward.name)}`,
             reward.imageFile
           );
+          storeImageUrl(project.name, reward.name, rewardImageUrl);
+
           // convert stringify number to real number
           let convertedSupply = null;
           if (reward.maxSupply) convertedSupply = Number(reward.maxSupply);
@@ -171,3 +173,31 @@ const validateProjectToCreate = (
   // If everything is good, return true
   return true;
 };
+
+export const getImageUrl = (name: string, subName: string) => {
+  const key = `${name}_${subName}`;
+  const storedData = localStorage.getItem(key);
+
+  if (!storedData) {
+    console.warn(`No data found for key: ${key}`);
+    return "";
+  }
+
+  return storedData;
+
+}
+
+export const storeImageUrl = (name: string, subName: string, imageUrl: string) => {
+  if (!name || !subName || !imageUrl) {
+    console.error("Invalid input. Ensure name, subName and imageUrl are strings.");
+    return;
+  }
+
+  const key = `${name}_${subName}`;
+  try {
+    localStorage.setItem(key, imageUrl);
+    console.log(`Image URLs successfully stored with key: ${key}`);
+  } catch (error) {
+    console.error("Error storing image URLs in localStorage:", error);
+  }
+}
